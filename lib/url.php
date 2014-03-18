@@ -284,7 +284,7 @@ class Url {
 url::$home = url::base();
 
 // basic url generator setup
-url::$to = function($path) {
+url::$to = function($path = '/') {
 
   if(url::isAbsolute($path)) return $path;
 
