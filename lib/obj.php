@@ -23,4 +23,12 @@ class Obj extends stdClass {
     return $this->$method;
   }
 
+  public function set($key, $value) {
+    $this->$key = $value;
+  }
+
+  public function get($key, $default = null) {
+    return isset($this->$key) ? $this->$key : $default;
+  }
+
 }

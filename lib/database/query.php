@@ -621,7 +621,7 @@ class DatabaseQuery {
   public function aggregate($method, $column = '*', $default = 0) {
     
     $fetch  = $this->fetch;
-    $row    = $this->select($method . '(' . $column . ') as aggregation')->fetch('Object')->first();
+    $row    = $this->select($method . '(' . $column . ') as aggregation')->fetch('Obj')->first();
     $result =  $row ? $row->get('aggregation', $default) : 0;
     $this->fetch($fetch);
     return $result;

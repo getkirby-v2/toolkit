@@ -426,6 +426,16 @@ class Collection extends I {
     return $this->pagination;
   }
 
+  /**
+   * Map a function to each item in the collection
+   * 
+   * @param function $callback
+   * @return Collection
+   */
+  public function map($callback) {
+    $this->data = array_map($callback, $this->data);
+    return $this;
+  }
 
   /**
    * Makes it possible to echo the entire object

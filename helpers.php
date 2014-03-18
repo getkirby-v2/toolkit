@@ -247,3 +247,19 @@ function yaml($string) {
 function thumb($image, $params = array()) {
   return new Thumb($image, $params);
 }
+
+/**
+ * Getter and setter for global path variables
+ * 
+ * @param string $key
+ * @param string $value
+ * @return string
+ */
+function path($key, $value = null) {
+
+  static $paths = array();
+
+  if(is_null($value)) return $paths[$key];
+  return $paths[$key] = $value;
+
+}

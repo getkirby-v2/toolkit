@@ -281,7 +281,7 @@ class Database {
     if(!$this->hit($query, $bindings)) return false;
 
     // define the default flag for the fetch method
-    $flags = $options['fetch'] == 'array' ? PDO::FETCH_ASSOC : PDO::FETCH_CLASS; 
+    $flags = $options['fetch'] == 'array' ? PDO::FETCH_ASSOC : PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE; 
 
     // add optional flags
     if(!empty($options['flag'])) $flags |= $options['flag'];

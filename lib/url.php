@@ -279,3 +279,19 @@ class Url {
   }
 
 }
+
+// basic home url setup
+url::$home = url::base();
+
+// basic url generator setup
+url::$to = function($path) {
+
+  if(url::isAbsolute($path)) return $path;
+
+  $path = ltrim($path, '/');
+
+  if(empty($path)) return url::home();
+
+  return url::home() . '/' . $path;
+
+};
