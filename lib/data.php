@@ -28,7 +28,7 @@ class Data {
       }
     }
 
-    throw Exception('Invalid adapter type');
+    throw new Exception('Invalid adapter type');
 
   }
 
@@ -47,7 +47,15 @@ class Data {
     // type autodetection
     if(is_null($type)) $type = f::extension($file);
 
-    return data::decode(f::read($file), $type);
+    // get the adapter
+    $adapter = static::adapter($type);
+
+    if(isset($adapter['read'])) {
+      return call($adapter['read'], $file);
+    } else {
+      return data::decode(f::read($file), $type);      
+    }
+
 
   }
 
@@ -125,4 +133,18 @@ data::$adapters['kd'] = array(
 
   }
 
+);
+
+data::$adapters['php'] = array(
+  'extension' => array('php'),
+  'encode' => function($array) {
+    return '<?php ' . PHP_EOL . PHP_EOL . 'return ' . var_export($array, true) . PHP_EOL . PHP_EOL . '?>';
+  },
+  'decode' => function($string) {
+    throw new Exception('Decoding PHP strings is not supported');
+  }, 
+  'read' => function($file) {
+    $array = require $file;
+    return $array;
+  }
 );

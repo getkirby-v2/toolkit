@@ -221,6 +221,19 @@ class Collection extends I {
   }
 
   /**
+   * Find a single item by a key and value pair
+   * 
+   * @param string $key
+   * @param mixed $value
+   * @return mixed
+   */
+  public function findBy($key, $value) {
+    foreach($this->data as $item) {
+      if($this->extractValue($item, $key) == $value) return $item;
+    }
+  }
+
+  /**
    * Filters the current collection by a field, operator and search value
    * 
    * @return Collection
@@ -248,9 +261,9 @@ class Collection extends I {
 
         foreach($collection->data as $key => $item) {
           if($split) {
-            $values = explode($split, (string)$this->filterByValue($item, $field));
+            $values = explode($split, (string)$this->extractValue($item, $field));
             if(in_array($value, $values)) unset($collection->$key);
-          } else if($this->filterByValue($item, $field) == $value) {
+          } else if($this->extractValue($item, $field) == $value) {
             unset($collection->$key);
           }
         }
@@ -261,14 +274,14 @@ class Collection extends I {
         
         foreach($collection->data as $key => $item) {
           if($split) {
-            $values = explode($split, (string)$this->filterByValue($item, $field));
+            $values = explode($split, (string)$this->extractValue($item, $field));
             foreach($values as $val) {
               if(strpos($val, $value) === false) {
                 unset($collection->$key);
                 break;
               }
             }
-          } else if(strpos($this->filterByValue($item, $field), $value) === false) {
+          } else if(strpos($this->extractValue($item, $field), $value) === false) {
             unset($collection->$key);
           }
         }
@@ -279,7 +292,7 @@ class Collection extends I {
       case '>':
 
         foreach($collection->data as $key => $item) {
-          if($this->filterByValue($item, $field) > $value) continue;
+          if($this->extractValue($item, $field) > $value) continue;
           unset($collection->$key);
         }
 
@@ -289,7 +302,7 @@ class Collection extends I {
       case '<':
 
         foreach($collection->data as $key => $item) {
-          if($this->filterByValue($item, $field) < $value) continue;
+          if($this->extractValue($item, $field) < $value) continue;
           unset($collection->$key);
         }
 
@@ -299,7 +312,7 @@ class Collection extends I {
       case '>=':
 
         foreach($collection->data as $key => $item) {
-          if($this->filterByValue($item, $field) >= $value) continue;
+          if($this->extractValue($item, $field) >= $value) continue;
           unset($collection->$key);
         }
 
@@ -309,7 +322,7 @@ class Collection extends I {
       case '<=':
 
         foreach($collection->data as $key => $item) {
-          if($this->filterByValue($item, $field) <= $value) continue;
+          if($this->extractValue($item, $field) <= $value) continue;
           unset($collection->$key);
         }
 
@@ -321,9 +334,9 @@ class Collection extends I {
         foreach($collection->data as $key => $item) {
 
           if($split) {
-            $values = explode($split, (string)$this->filterByValue($item, $field));
+            $values = explode($split, (string)$this->extractValue($item, $field));
             if(!in_array($value, $values)) unset($collection->$key);
-          } else if($this->filterByValue($item, $field) != $value) {            
+          } else if($this->extractValue($item, $field) != $value) {            
             unset($collection->$key);
           }
         
@@ -345,10 +358,10 @@ class Collection extends I {
    * @param string $field
    * @return mixed
    */
-  protected function filterByValue($item, $field) {
-    if(is_array($item)) {
-      return @$item[$field];
-    } else if(is_object($item) and method_exists($item, $field)) {
+  protected function extractValue($item, $field) {
+    if(is_array($item) and isset($item[$field])) {
+      return $item[$field];
+    } else if(is_object($item)) {
       return $item->$field();
     } else {
       return false;
@@ -435,6 +448,19 @@ class Collection extends I {
   public function map($callback) {
     $this->data = array_map($callback, $this->data);
     return $this;
+  }
+
+  /**
+   * Extracts all values for a single field into 
+   * a new array
+   * 
+   * @param string $field
+   * @return array
+   */
+  public function pluck($field) {
+    return array_values(array_map(function($item) use($field) {
+      return $this->extractValue($item, $field);
+    }, $this->data));
   }
 
   /**

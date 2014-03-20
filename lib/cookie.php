@@ -125,8 +125,8 @@ class Cookie {
 
     // extract hash and value
     $parts = str::split($string, '+');
-    $hash  = array_shift($parts);
-    $value = array_last($parts);
+    $hash  = a::first($parts);
+    $value = a::last($parts);
 
     // if the hash or the value is missing at all return null
     if(empty($hash) or empty($value)) return null;
