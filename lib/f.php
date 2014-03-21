@@ -241,6 +241,10 @@ class F {
   static public function write($file, $content, $append = false) {
     if(is_array($content) or is_object($content)) $content = serialize($content);
     $mode = ($append) ? FILE_APPEND | LOCK_EX : LOCK_EX;
+    // if the parent directory does not exist, create it
+    if(!is_dir(dirname($file))) {
+      if(!dir::make(dirname($file))) return false;
+    }
     return (@file_put_contents($file, $content, $mode)) ? true : false;
   }
 
