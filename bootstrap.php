@@ -46,6 +46,7 @@ load(array(
   'response'          => __DIR__ . DS . 'lib' . DS . 'response.php',
   'router'            => __DIR__ . DS . 'lib' . DS . 'router.php',
   's'                 => __DIR__ . DS . 'lib' . DS . 's.php',
+  'server'            => __DIR__ . DS . 'lib' . DS . 'server.php',
   'sql'               => __DIR__ . DS . 'lib' . DS . 'sql.php',
   'str'               => __DIR__ . DS . 'lib' . DS . 'str.php',
   'thumb'             => __DIR__ . DS . 'lib' . DS . 'thumb.php',
