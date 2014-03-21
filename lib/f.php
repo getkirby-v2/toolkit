@@ -245,7 +245,7 @@ class F {
     if(!is_dir(dirname($file))) {
       if(!dir::make(dirname($file))) return false;
     }
-    return (@file_put_contents($file, $content, $mode)) ? true : false;
+    return (@file_put_contents($file, $content, $mode) !== false) ? true : false;
   }
 
   /**

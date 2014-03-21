@@ -60,12 +60,9 @@ class Data {
   }
 
   static public function write($file, $data, $type = null) {
-
     // type autodetection
     if(is_null($type)) $type = f::extension($file);
-
     return f::write($file, data::encode($data, $type));
-
   }
 
 }
