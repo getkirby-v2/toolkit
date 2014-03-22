@@ -29,6 +29,7 @@ load(array(
   'detect'            => __DIR__ . DS . 'lib' . DS . 'detect.php',
   'dimensions'        => __DIR__ . DS . 'lib' . DS . 'dimensions.php',
   'dir'               => __DIR__ . DS . 'lib' . DS . 'dir.php',
+  'embed'             => __DIR__ . DS . 'lib' . DS . 'embed.php',
   'f'                 => __DIR__ . DS . 'lib' . DS . 'f.php',
   'folder'            => __DIR__ . DS . 'lib' . DS . 'folder.php',
   'form'              => __DIR__ . DS . 'lib' . DS . 'form.php',
