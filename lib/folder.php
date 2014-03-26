@@ -365,9 +365,17 @@ class Folder {
   /**
    * Checks if the directory is writable
    * 
+   * @param boolean $recursive
    * @return boolean
    */
-  public function isWritable() {
+  public function isWritable($recursive = false) {
+    if($recursive) {
+      if(!$this->isWritable()) return false;
+      foreach($this->content() as $f) {
+        if(!$f->isWritable(true)) return false;
+      }
+      return true;
+    }
     return is_writable($this->root);
   }
 
