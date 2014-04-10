@@ -2,8 +2,8 @@
 
 /**
  * Media
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -12,7 +12,7 @@
 class Media {
 
   // optional url where the file is reachable
-  protected $url = null;
+  public $url = null;
 
   // the full path for the file
   protected $root = null;
@@ -37,7 +37,7 @@ class Media {
 
   /**
    * Constructor
-   * 
+   *
    * @param string $root
    */
   public function __construct($root, $url = null) {
@@ -50,7 +50,7 @@ class Media {
 
   /**
    * Returns the full root of the asset
-   * 
+   *
    * @return string
    */
   public function root() {
@@ -59,7 +59,7 @@ class Media {
 
   /**
    * Returns the url
-   * 
+   *
    * @return string
    */
   public function url() {
@@ -67,7 +67,7 @@ class Media {
   }
 
   /**
-   * Returns a md5 hash of the root 
+   * Returns a md5 hash of the root
    */
   public function hash() {
     return md5($this->root);
@@ -93,7 +93,7 @@ class Media {
   }
 
   /**
-   * Returns the name of the file without extension   
+   * Returns the name of the file without extension
    *
    * @return string
    */
@@ -103,7 +103,7 @@ class Media {
 
   /**
    * Returns the filename as safe name
-   * 
+   *
    * @return string
    */
   public function safeName() {
@@ -111,7 +111,7 @@ class Media {
   }
 
   /**
-   * Returns the extension of the file 
+   * Returns the extension of the file
    * i.e. jpg
    *
    * @return string
@@ -122,8 +122,8 @@ class Media {
   }
 
   /**
-   * Reads the file content and parses it 
-   * 
+   * Reads the file content and parses it
+   *
    * @param string $format
    * @return mixed
    */
@@ -133,13 +133,13 @@ class Media {
 
   /**
    * Setter and getter for the file content
-   * 
+   *
    * @param string $content
    * @return string
    */
   public function content($content = null, $format = null) {
-    
-    if(!is_null($content)) {      
+
+    if(!is_null($content)) {
       if(is_array($content)) {
         switch($format) {
           case 'json':
@@ -168,7 +168,7 @@ class Media {
 
   /**
    * Saves the file
-   * 
+   *
    * @param string $content
    * @return boolean
    */
@@ -179,7 +179,7 @@ class Media {
 
   /**
    * Alternative for save
-   * 
+   *
    * @param string $content
    * @return boolean
    */
@@ -190,7 +190,7 @@ class Media {
   /**
    * Change the file's modification date to now
    * and create it with an empty content if it is not there yet
-   * 
+   *
    * @return boolean
    */
   public function touch() {
@@ -199,7 +199,7 @@ class Media {
 
   /**
    * Appends the content and saves the file
-   * 
+   *
    * @param string $content
    * @return boolean
    */
@@ -210,7 +210,7 @@ class Media {
 
   /**
    * Deletes the file
-   * 
+   *
    * @return boolean
    */
   public function delete() {
@@ -219,7 +219,7 @@ class Media {
 
   /**
    * Alternative for delete
-   * 
+   *
    * @return boolean
    */
   public function remove() {
@@ -228,7 +228,7 @@ class Media {
 
   /**
    * Moves the file to a new location
-   * 
+   *
    * @param string $to
    * @return boolean
    */
@@ -237,13 +237,13 @@ class Media {
       return false;
     } else {
       $this->root = $to;
-      return true;      
+      return true;
     }
   }
 
   /**
    * Copies the file to a new location
-   * 
+   *
    * @param string $to
    * @return boolean
    */
@@ -253,7 +253,7 @@ class Media {
 
   /**
    * Returns the file size as integer
-   * 
+   *
    * @return int
    */
   public function size() {
@@ -262,7 +262,7 @@ class Media {
 
   /**
    * Returns the human readable version of the file size
-   * 
+   *
    * @return string
    */
   public function niceSize() {
@@ -280,7 +280,7 @@ class Media {
 
   /**
    * Returns the mime type of a file
-   * 
+   *
    * @param string $file
    * @return string
    */
@@ -290,7 +290,7 @@ class Media {
 
   /**
    * Categorize the file
-   * 
+   *
    * @return string
    */
   public function type() {
@@ -299,17 +299,17 @@ class Media {
 
   /**
    * Checks if a file is of a certain type
-   * 
+   *
    * @param string $value An extension or mime type
    * @return boolean
    */
   public function is($value) {
-    return f::is($this->root, $value);    
+    return f::is($this->root, $value);
   }
 
   /**
    * Returns the file content as base64 encoded string
-   * 
+   *
    * @return string
    */
   public function base64() {
@@ -318,7 +318,7 @@ class Media {
 
   /**
    * Returns the file as data uri
-   * 
+   *
    * @return string
    */
   public function uri() {
@@ -327,7 +327,7 @@ class Media {
 
   /**
    * Checks if the file exists
-   * 
+   *
    * @return boolean
    */
   public function exists() {
@@ -336,7 +336,7 @@ class Media {
 
   /**
    * Checks if the file is writable
-   * 
+   *
    * @return boolean
    */
   public function isWritable() {
@@ -345,7 +345,7 @@ class Media {
 
   /**
    * Checks if the file is readable
-   * 
+   *
    * @return boolean
    */
   public function isReadable() {
@@ -354,7 +354,7 @@ class Media {
 
   /**
    * Checks if the file is executable
-   * 
+   *
    * @return boolean
    */
   public function isExecutable() {
@@ -363,7 +363,7 @@ class Media {
 
   /**
    * Sends an appropriate header for the asset
-   * 
+   *
    * @param boolean $send
    * @return mixed
    */
@@ -373,7 +373,7 @@ class Media {
 
   /**
    * Safely requires a file if it exists
-   * 
+   *
    * @param array $data Optional variables, which will be made available to the file
    */
   static public function load($data = array()) {
@@ -383,7 +383,7 @@ class Media {
   /*
    * Automatically sends all needed headers for the file to be downloaded
    * and echos the file's content
-   * 
+   *
    * @param string $filename Optional filename for the download
    */
   public function download($filename = null) {
@@ -392,7 +392,7 @@ class Media {
 
   /**
    * Returns the exif object for this file (if image)
-   * 
+   *
    * @return Exif
    */
   public function exif() {
@@ -402,7 +402,7 @@ class Media {
 
   /**
    * Returns the PHP imagesize array
-   * 
+   *
    * @return array
    */
   public function imagesize() {
@@ -411,7 +411,7 @@ class Media {
 
   /**
    * Returns the dimensions of the file if possible
-   * 
+   *
    * @return Dimensions
    */
   public function dimensions() {
@@ -433,7 +433,7 @@ class Media {
 
   /**
    * Returns the width of the asset
-   * 
+   *
    * @return int
    */
   public function width() {
@@ -442,7 +442,7 @@ class Media {
 
   /**
    * Returns the height of the asset
-   * 
+   *
    * @return int
    */
   public function height() {
@@ -451,7 +451,7 @@ class Media {
 
   /**
    * Returns the ratio of the asset
-   * 
+   *
    * @return int
    */
   public function ratio() {
@@ -460,7 +460,7 @@ class Media {
 
   /**
    * Checks if the dimensions of the asset are portrait
-   * 
+   *
    * @return boolean
    */
   public function isPortrait() {
@@ -469,7 +469,7 @@ class Media {
 
   /**
    * Checks if the dimensions of the asset are landscape
-   * 
+   *
    * @return boolean
    */
   public function isLandscape() {
@@ -478,7 +478,7 @@ class Media {
 
   /**
    * Checks if the dimensions of the asset are square
-   * 
+   *
    * @return boolean
    */
   public function isSquare() {
@@ -488,7 +488,7 @@ class Media {
   /**
    * Returns a full link to this file
    * Perfect for debugging in connection with echo
-   * 
+   *
    * @return string
    */
   public function __toString() {

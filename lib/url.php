@@ -2,10 +2,10 @@
 
 /**
  * Url
- * 
+ *
  * A bunch of handy methods to work with URLs
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -24,7 +24,7 @@ class Url {
 
   /**
    * Returns the current url with all bells and whistles
-   * 
+   *
    * @return string
    */
   static public function current() {
@@ -43,14 +43,14 @@ class Url {
    * Returns only the cleaned path of the url
    */
   static public function path($url = null) {
-    
+
     if(is_null($url)) $url = static::current();
 
     // if a path is passed, let's pretend this is an absolute url
     // to trick the url parser. It's a bit hacky but it works
     if(!static::isAbsolute($url)) $url = 'http://0.0.0.0/' . $url;
-    
-    return trim(parse_url($url, PHP_URL_PATH), '/');      
+
+    return trim(parse_url($url, PHP_URL_PATH), '/');
 
   }
 
@@ -66,7 +66,7 @@ class Url {
       $pos = strpos($part, ':');
       if($pos === false) continue;
       $params[substr($part, 0, $pos)] = substr($part, $pos+1);
-    }    
+    }
     return $params;
   }
 
@@ -80,7 +80,7 @@ class Url {
     $frag = array();
     foreach(explode('/', $path) as $part) {
       if(strpos($part, ':') === false) $frag[] = $part;
-    }    
+    }
     return $frag;
   }
 
@@ -101,7 +101,7 @@ class Url {
   }
 
   static public function build($parts = array(), $url = null) {
-    
+
     if(is_null($url)) $url = static::current();
 
     $defaults = array(
@@ -139,58 +139,58 @@ class Url {
 
   static public function stripPath($url = null) {
     if(is_null($url)) $url = static::current();
-    return static::build(array('fragments' => array(), 'params' => array()), $url);    
+    return static::build(array('fragments' => array(), 'params' => array()), $url);
   }
 
   static public function stripFragments($url = null) {
     if(is_null($url)) $url = static::current();
-    return static::build(array('fragments' => array()), $url);    
+    return static::build(array('fragments' => array()), $url);
   }
 
   static public function stripParams($url = null) {
     if(is_null($url)) $url = static::current();
-    return static::build(array('params' => array()), $url);    
+    return static::build(array('params' => array()), $url);
   }
 
-  /** 
+  /**
    * Strips the query from the URL
-   * 
+   *
    * <code>
-   * 
+   *
    * echo url::stripQuery('http://www.youtube.com/watch?v=9q_aXttJduk');
    * // output: http://www.youtube.com/watch
-   * 
+   *
    * </code>
-   * 
+   *
    * @param  string  $url
    * @return string
    */
   static public function stripQuery($url = null) {
     if(is_null($url)) $url = static::current();
-    return static::build(array('query' => array()), $url);    
+    return static::build(array('query' => array()), $url);
   }
 
-  /** 
+  /**
    * Strips a hash value from the URL
-   * 
+   *
    * <code>
-   * 
+   *
    * echo url::stripHash('http://testurl.com/#somehash');
    * // output: http://testurl.com/
-   * 
+   *
    * </code>
-   * 
+   *
    * @param  string  $url
    * @return string
    */
   static public function stripHash($url) {
     if(is_null($url)) $url = static::current();
-    return static::build(array('hash' => ''), $url);    
+    return static::build(array('hash' => ''), $url);
   }
 
   /**
-   * Checks if an URL is absolute 
-   * 
+   * Checks if an URL is absolute
+   *
    * @return boolean
    */
   static public function isAbsolute($url) {
@@ -200,7 +200,7 @@ class Url {
 
   /**
    * Tries to fix a broken url without protocol
-   * 
+   *
    * @param string $url
    * @return string
    */
@@ -211,7 +211,7 @@ class Url {
 
   /**
    * Returns the home url if defined
-   * 
+   *
    * @return string
    */
   static public function home() {
@@ -220,7 +220,7 @@ class Url {
 
   /**
    * The url smart handler. Must be defined before
-   * 
+   *
    * @return string
    */
   static public function to() {
@@ -229,7 +229,7 @@ class Url {
 
   /**
    * Return the last url the user has been on if detectable
-   * 
+   *
    * @return string
    */
   static public function last() {
@@ -238,13 +238,13 @@ class Url {
 
   /**
    * Returns the base url
-   * 
+   *
    * @param string $url
    * @return string
    */
   static public function base($url = null) {
     if(is_null($url)) $url = static::current();
-    return static::scheme($url) . '://' . static::host($url);    
+    return static::scheme($url) . '://' . static::host($url);
   }
 
   /**
@@ -252,30 +252,30 @@ class Url {
    * It removes http:// or https:// and uses str::short afterwards
    *
    * <code>
-   * 
+   *
    * echo url::short('http://veryveryverylongurl.com', 30);
    * // output: veryveryverylongurl.com
    *
    * </code>
-   * 
+   *
    * @param  string  $url The URL to be shortened
    * @param  int     $chars The final number of characters the URL should have
-   * @param  boolean $base True: only take the base of the URL. 
+   * @param  boolean $base True: only take the base of the URL.
    * @param  string  $rep The element, which should be added if the string is too long. Ellipsis is the default.
-   * @return string  The shortened URL  
-   */  
+   * @return string  The shortened URL
+   */
   static public function short($url, $length = false, $base = false, $rep = '…') {
-    
+
     if($base) $url = static::base($url);
 
     // replace all the nasty stuff from the url
     $url = str_replace(array('http://', 'https://', 'ftp://', 'www.'), '', $url);
-    
+
     // try to remove the last / after the url
     $url = rtrim($url, '/');
 
     return ($length) ? str::short($url, $length, $rep) : $url;
-  
+
   }
 
 }

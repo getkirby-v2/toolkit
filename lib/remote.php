@@ -2,11 +2,11 @@
 
 /**
  * Remote
- * 
+ *
  * A handy little class to handle
- * all kind of remote requests 
- * 
- * @package   Kirby Toolkit 
+ * all kind of remote requests
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -21,30 +21,30 @@ class Remote {
     'timeout'  => 10,
     'headers'  => array(),
     'encoding' => 'utf-8',
-    'agent'    => null, 
+    'agent'    => null,
     'body'     => true,
   );
 
   // store for the response object
   protected $response = null;
-  
+
   // all options for the request
   protected $options = array();
-  
+
   // all received headers
   protected $headers = array();
 
   /**
    * Constructor
-   * 
+   *
    * @param string $url
    * @param array $options
    */
   public function __construct($url, $options = array()) {
-    
+
     // set all options
-    $this->options = array_merge(static::$defaults, $options);    
-    
+    $this->options = array_merge(static::$defaults, $options);
+
     // add the url
     $this->options['url'] = $url;
 
@@ -56,7 +56,7 @@ class Remote {
   /**
    * Sets up all curl options and sends the request
    *
-   * @return object Response 
+   * @return object Response
    */
   protected function send() {
 
@@ -77,7 +77,7 @@ class Remote {
       CURLOPT_HEADER          => false,
       CURLOPT_HEADERFUNCTION  => array($this, 'header'),
     );
-    
+
     // add all headers
     if(!empty($this->options['headers'])) $params[CURLOPT_HTTPHEADER] = $this->options['headers'];
 
@@ -95,12 +95,12 @@ class Remote {
         $params[CURLOPT_PUT]        = true;
         $params[CURLOPT_POSTFIELDS] = $this->postfields($this->options['data']);
 
-        // put a file 
+        // put a file
         if($this->options['file']) {
           $params[CURLOPT_INFILE]     = fopen($this->options['file'], 'r');
           $params[CURLOPT_INFILESIZE] = f::size($this->options['file']);
         }
-    
+
         break;
       case 'delete':
         $params[CURLOPT_CUSTOMREQUEST] = 'DELETE';
@@ -122,41 +122,41 @@ class Remote {
 
     curl_close($curl);
 
-    $this->response = new Obj();
+    $this->response = new RemoteResponse();
     $this->response->headers = $this->headers;
     $this->response->error   = $error;
     $this->response->message = $message;
     $this->response->content = $content;
     $this->response->code    = $info['http_code'];
-    $this->response->info    = $info;    
-  
+    $this->response->info    = $info;
+
     return $this->response;
 
   }
 
   /**
    * Used by curl to parse incoming headers
-   * 
+   *
    * @param object $curl the curl connection
    * @param string $header the header line
    * @return int the length of the heade
    */
   protected function header($curl, $header) {
-  
+
     $parts = str::split($header, ':');
-    
+
     if(!empty($parts[0]) && !empty($parts[1])) {
-      $this->headers[$parts[0]] = $parts[1];  
+      $this->headers[$parts[0]] = $parts[1];
     }
-  
+
     return strlen($header);
-  
+
   }
 
   /**
-   * Returns all options which have been 
+   * Returns all options which have been
    * set for the current request
-   * 
+   *
    * @return array
    */
   public function options() {
@@ -164,9 +164,9 @@ class Remote {
   }
 
   /**
-   * Returns the response object for 
+   * Returns the response object for
    * the current request
-   * 
+   *
    * @return object Response
    */
   public function response() {
@@ -175,7 +175,7 @@ class Remote {
 
   /**
    * Static method to init this class and send a request
-   * 
+   *
    * @param string $url
    * @param array $params
    * @return object Response
@@ -187,7 +187,7 @@ class Remote {
 
   /**
    * Static method to send a GET request
-   * 
+   *
    * @param string $url
    * @param array $params
    * @return object Response
@@ -195,15 +195,15 @@ class Remote {
   static public function get($url, $params = array()) {
 
     $defaults = array(
-      'method' => 'GET', 
+      'method' => 'GET',
       'data'   => array(),
     );
 
     $options = array_merge($defaults, $params);
-    $query   = http_build_query($options['data']);    
+    $query   = http_build_query($options['data']);
 
     if(!empty($query)) {
-      $url = (url::hasQuery($url)) ? $url . '&' . $query : $url . '?' . $query;      
+      $url = (url::hasQuery($url)) ? $url . '&' . $query : $url . '?' . $query;
     }
 
     // remove the data array from the options
@@ -216,7 +216,7 @@ class Remote {
 
   /**
    * Static method to send a POST request
-   * 
+   *
    * @param string $url
    * @param array $params
    * @return object Response
@@ -234,7 +234,7 @@ class Remote {
 
   /**
    * Static method to send a PUT request
-   * 
+   *
    * @param string $url
    * @param array $params
    * @return object Response
@@ -252,7 +252,7 @@ class Remote {
 
   /**
    * Static method to send a DELETE request
-   * 
+   *
    * @param string $url
    * @param array $params
    * @return object Response
@@ -270,7 +270,7 @@ class Remote {
 
   /**
    * Static method to send a HEAD request
-   * 
+   *
    * @param string $url
    * @param array $params
    * @return object Response
@@ -289,7 +289,7 @@ class Remote {
   /**
    * Static method to send a HEAD request
    * which only returns an array of headers
-   * 
+   *
    * @param string $url
    * @param array $params
    * @return array
@@ -301,18 +301,26 @@ class Remote {
 
   /**
    * Internal method to handle post field data
-   * 
+   *
    * @param mixed $data
    * @return mixed
    */
   protected function postfields($data) {
-    
+
     if(is_object($data) or is_array($data)) {
       return http_build_query($data);
     } else {
       return $data;
     }
-    
+
+  }
+
+}
+
+class RemoteResponse extends Obj {
+
+  public function __toString() {
+    return (string)$this->content;
   }
 
 }

@@ -1,12 +1,12 @@
 <?php
 
 /**
- * 
+ *
  * String
- * 
+ *
  * A set of handy string methods
  *
- * @package   Kirby Toolkit 
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -93,19 +93,19 @@ class Str {
    * Converts a string to a html-safe string
    *
    * <code>
-   * 
+   *
    * echo str::html('some <em>über crazy</em> stuff');
    * // output: some <em>&uuml;ber crazy</em> stuff
-   * 
-   * echo str::html('some <em>über crazy</em> stuff', false);    
+   *
+   * echo str::html('some <em>über crazy</em> stuff', false);
    * // output: some &lt;em&gt;&uuml;ber crazy&lt;/em&gt; stuff
-   * 
-   * </code>   
+   *
+   * </code>
    *
    * @param  string  $string
-   * @param  boolean $keepTags True: lets stuff inside html tags untouched. 
+   * @param  boolean $keepTags True: lets stuff inside html tags untouched.
    * @return string  The html string
-   */  
+   */
   static public function html($string, $keepTags = true) {
     return html::encode($string, $keepTags);
   }
@@ -114,15 +114,15 @@ class Str {
    * Removes all html tags and encoded chars from a string
    *
    * <code>
-   * 
+   *
    * echo str::unhtml('some <em>crazy</em> stuff');
    * // output: some uber crazy stuff
-   * 
+   *
    * </code>
-   * 
+   *
    * @param  string  $string
    * @return string  The html string
-   */  
+   */
   static public function unhtml($string) {
     return html::decode($string);
   }
@@ -135,14 +135,14 @@ class Str {
    * <code>
    *
    * echo str::xml('some über crazy stuff');
-   * // output: some &#252;ber crazy stuff 
-   *  
+   * // output: some &#252;ber crazy stuff
+   *
    * </code>
-   * 
+   *
    * @param  string  $text
    * @param  boolean $html True: convert to html first
    * @return string
-   */  
+   */
   static public function xml($text, $html = true) {
     return xml::encode($text, $html);
   }
@@ -153,15 +153,15 @@ class Str {
    * and remove all html entities afterwards.
    *
    * <code>
-   * 
+   *
    * echo str::unxml('some <em>&#252;ber</em> crazy stuff');
    * // output: some &uuml;ber crazy stuff
-   * 
+   *
    * </code>
-   * 
+   *
    * @param  string  $string
    * @return string
-   */  
+   */
   static public function unxml($string) {
     return xml::decode($string);
   }
@@ -177,26 +177,26 @@ class Str {
    * - php
    *
    * <code>
-   * 
+   *
    * str::parse('{"test":"cool","super":"genious"}');
    * // output: array(
    * //  'test' => 'cool',
    * //  'super' => 'genious'
    * // );
-   * 
+   *
    * str::parse('<xml><entries><cool>nice</cool></entries></xml>', 'xml');
    * // output: array(
    * //    'entries' => array(
    * //        'cool' => 'nice'
    * //    )
    * // );
-   * 
+   *
    * </code>
-   * 
+   *
    * @param  string  $string
    * @param  string  $mode
    * @return string
-   */  
+   */
   static public function parse($string, $mode = 'json') {
 
     if(is_array($string) or is_object($string)) return $string;
@@ -226,7 +226,7 @@ class Str {
    *
    * @param  string  $string
    * @return string
-   */  
+   */
   static public function encode($string) {
     $string  = (string)$string;
     $encoded = '';
@@ -238,14 +238,14 @@ class Str {
 
   /**
    * Generates an "a mailto" tag
-   * 
+   *
    * <code>
-   * 
+   *
    * echo str::email('bastian@getkirby.com');
    * echo str::email('bastian@getkirby.com', 'mail me');
-   * 
+   *
    * </code>
-   * 
+   *
    * @param string $href The url for the a tag
    * @param mixed $text The optional text. If null, the url will be used as text
    * @param array $attr Additional attributes for the tag
@@ -257,7 +257,7 @@ class Str {
 
   /**
    * Generates an a tag
-   * 
+   *
    * @param string $href The url for the a tag
    * @param mixed $text The optional text. If null, the url will be used as text
    * @param array $attr Additional attributes for the tag
@@ -269,7 +269,7 @@ class Str {
 
   /**
    * Returns an array with all words in a string
-   * 
+   *
    * @param string $string
    */
   static public function words($string) {
@@ -279,7 +279,7 @@ class Str {
 
   /**
    * Returns an array with all sentences in a string
-   * 
+   *
    * @param string $string
    * @return string
    */
@@ -289,7 +289,7 @@ class Str {
 
   /**
    * Returns an array with all lines in a string
-   * 
+   *
    * @param string $string
    * @return array
    */
@@ -301,35 +301,36 @@ class Str {
    * Shortens a string and adds an ellipsis if the string is too long
    *
    * <code>
-   * 
+   *
    * echo str::short('This is a very, very, very long string', 10);
    * // output: This is a…
-   * 
+   *
    * echo str::short('This is a very, very, very long string', 10, '####');
    * // output: This i####
-   * 
+   *
    * </code>
-   * 
+   *
    * @param  string  $string The string to be shortened
    * @param  int     $chars The final number of characters the string should have
    * @param  string  $rep The element, which should be added if the string is too long. Ellipsis is the default.
-   * @return string  The shortened string  
-   */  
+   * @return string  The shortened string
+   */
   static public function short($string, $length, $rep = '…') {
+    if(!$length) return $string;
     if(static::length($string) <= $length) return $string;
     $string = static::substr($string, 0, $length);
     return $string . $rep;
   }
 
-  /** 
+  /**
    * Creates an excerpt of a string
    * It removes all html tags first and then uses str::short
    *
    * @param  string  $string The string to be shortened
    * @param  int     $chars The final number of characters the string should have
-   * @param  boolean $removehtml True: remove the HTML tags from the string first 
+   * @param  boolean $removehtml True: remove the HTML tags from the string first
    * @param  string  $rep The element, which should be added if the string is too long. Ellipsis is the default.
-   * @return string  The shortened string  
+   * @return string  The shortened string
    */
   static public function excerpt($string, $chars = 140, $removehtml = true, $rep='…') {
     if($removehtml) $string = strip_tags($string);
@@ -339,10 +340,10 @@ class Str {
   }
 
   /**
-   * The widont function makes sure that there are no 
+   * The widont function makes sure that there are no
    * typographical widows at the end of a paragraph –
    * that's a single word in the last line
-   * 
+   *
    * @param string $string
    * @return string
    */
@@ -350,55 +351,55 @@ class Str {
     return preg_replace('|([^\s])\s+([^\s]+)\s*$|', '$1&nbsp;$2', $string);
   }
 
-  /** 
+  /**
    * An UTF-8 safe version of substr()
-   * 
+   *
    * @param  string  $str
    * @param  int     $start
-   * @param  int     $length 
-   * @return string  
+   * @param  int     $length
+   * @return string
    */
-  static public function substr($str, $start, $length = null) {    
+  static public function substr($str, $start, $length = null) {
     return MB ? mb_substr($str, $start, $length == null ? static::length($str) : $length, 'UTF-8') : substr($str, $start, $length);
   }
 
-  /** 
+  /**
    * An UTF-8 safe version of strtolower()
-   * 
+   *
    * @param  string  $str
-   * @return string  
+   * @return string
    */
   static public function lower($str) {
     return MB ? mb_strtolower($str, 'UTF-8') : strtolower($str);
   }
 
-  /** 
+  /**
    * An UTF-8 safe version of strotoupper()
-   * 
+   *
    * @param  string  $str
-   * @return string  
+   * @return string
    */
   static public function upper($str) {
     return MB ? mb_strtoupper($str, 'UTF-8') : strtoupper($str);
   }
 
-  /** 
+  /**
    * An UTF-8 safe version of strlen()
-   * 
+   *
    * @param  string  $str
-   * @return string  
+   * @return string
    */
   static public function length($str) {
     return MB ? mb_strlen($str, 'UTF-8') : strlen($str);
   }
 
-  /** 
+  /**
    * Checks if a str contains another string
-   * 
+   *
    * @param  string  $str
    * @param  string  $needle
    * @param  boolean $i ignore upper/lowercase
-   * @return string  
+   * @return string
    */
   static public function contains($str, $needle, $i = true) {
     if($i) {
@@ -408,11 +409,11 @@ class Str {
     return strstr($str, $needle) ? true : false;
   }
 
-  /** 
+  /**
    * Generates a random string
-   * 
+   *
    * @param  int  $length The length of the random string
-   * @return string  
+   * @return string
    */
   static public function random($length = false, $type = 'alphaNum') {
     $length = $length ? $length : rand(5,10);
@@ -426,9 +427,9 @@ class Str {
     return $hash;
   }
 
-  /** 
+  /**
    * Convert a string to a safe version to be used in a URL
-   * 
+   *
    * @param  string  $text The unsafe string
    * @param  string  $separator To be used instead of space and other non-word characters.
    * @return string  The safe string
@@ -452,15 +453,15 @@ class Str {
 
   }
 
-  /** 
+  /**
    * Better alternative for explode()
    * It takes care of removing empty values
    * and it has a built-in way to skip values
-   * which are too short. 
-   * 
+   * which are too short.
+   *
    * @param  string  $string The string to split
    * @param  string  $separator The string to split by
-   * @param  int     $length The min length of values. 
+   * @param  int     $length The min length of values.
    * @return array   An array of found values
    */
   static public function split($string, $separator = ',', $length = 1) {
@@ -480,21 +481,21 @@ class Str {
 
   }
 
-  /** 
+  /**
    * An UTF-8 safe version of ucwords()
-   * 
-   * @param  string  $string 
-   * @return string 
+   *
+   * @param  string  $string
+   * @return string
    */
   static public function ucwords($string) {
     return MB ? mb_convert_case($string, MB_CASE_TITLE, 'UTF-8') : ucwords(strtolower($string));
   }
 
-  /** 
+  /**
    * An UTF-8 safe version of ucfirst()
-   * 
+   *
    * @param  string $string
-   * @return string 
+   * @return string
    */
   static public function ucfirst($string) {
     return static::upper(static::substr($string, 0, 1)) . static::substr($string, 1);
@@ -502,14 +503,14 @@ class Str {
 
   /**
    * Tries to detect the string encoding
-   * 
+   *
    * @param string $string
    * @return string
    */
   static public function encoding($string) {
 
     if(MB) {
-      return mb_detect_encoding($string, 'UTF-8, ISO-8859-1, windows-1251');  
+      return mb_detect_encoding($string, 'UTF-8, ISO-8859-1, windows-1251');
     } else {
       foreach(array('utf-8', 'iso-8859-1', 'windows-1251') as $item) {
         if(md5(iconv($item, $item, $string)) == md5($string)) return $item;
@@ -521,7 +522,7 @@ class Str {
 
   /**
    * Converts a string to a different encoding
-   * 
+   *
    * @param string $string
    * @param string $targetEncoding
    * @param string $sourceEncoding (optional)
@@ -530,24 +531,24 @@ class Str {
   static public function convert($string, $targetEncoding, $sourceEncoding = null) {
     // detect the source encoding if not passed as third argument
     if(is_null($sourceEncoding)) $sourceEncoding = static::encoding($string);
-    return iconv($sourceEncoding, $targetEncoding, $string); 
+    return iconv($sourceEncoding, $targetEncoding, $string);
   }
 
-  /** 
+  /**
    * Converts a string to UTF-8
-   * 
-   * @param  string  $string 
-   * @return string 
+   *
+   * @param  string  $string
+   * @return string
    */
   static public function utf8($string) {
     return static::convert($string, 'utf-8');
   }
 
-  /** 
+  /**
    * A better way to strip slashes
-   * 
-   * @param  string  $string 
-   * @return string 
+   *
+   * @param  string  $string
+   * @return string
    */
   static public function stripslashes($string) {
     if(is_array($string)) return $string;
@@ -555,16 +556,16 @@ class Str {
   }
 
   /**
-   * A super simple string template engine, 
+   * A super simple string template engine,
    * which replaces tags like {mytag} with any other string
-   * 
+   *
    * @param  string $string
    * @param  array  $replace An associative array with keys, which should be replaced and values.
    * @return string
    */
-  static public function template($string, $data = array()) {  
+  static public function template($string, $data = array()) {
     $replace = array();
-    foreach($data as $key => $value) $replace['{' . $key . '}'] = $value;    
+    foreach($data as $key => $value) $replace['{' . $key . '}'] = $value;
     return str_replace(array_keys($replace), array_values($replace), $string);
   }
 
@@ -575,14 +576,14 @@ class Str {
    * @return string
    */
   static public function ascii($string) {
-    $foreign = static::$ascii;  
+    $foreign = static::$ascii;
     $string  = preg_replace(array_keys($foreign), array_values($foreign), $string);
     return preg_replace('/[^\x09\x0A\x0D\x20-\x7E]/', '', $string);
   }
 
   /**
    * Forces a download of the string as text file
-   * 
+   *
    * @param string $string
    * @param string $name Optional name for the downloaded file
    */
@@ -600,7 +601,7 @@ class Str {
 
   /**
    * Checks if a string starts with the passed needle
-   * 
+   *
    * @param string $string
    * @param string $needle
    * @return boolean
@@ -611,7 +612,7 @@ class Str {
 
   /**
    * Checks if a string ends with the passed needle
-   * 
+   *
    * @param string $string
    * @param string $needle
    * @return boolean
@@ -624,13 +625,13 @@ class Str {
    * Get a character pool with various possible combinations
    *
    * @param  string  $type
-   * @param  boolean $array 
+   * @param  boolean $array
    * @return string
    */
   static public function pool($type, $array = true) {
 
     $pool = array();
-    
+
     if(is_array($type)) {
       foreach($type as $t) {
         $pool = array_merge($pool, static::pool($t));

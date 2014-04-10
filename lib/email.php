@@ -2,188 +2,45 @@
 
 /**
  * Email
- * 
+ *
  * A simple email handling class which supports
  * multiple email services. Check out the email subfolder
  * for all available services
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
-class Email {
+class Email extends Obj {
 
   static public $services = array();
+  static public $disabled = false;
 
-  // configuration
-  static public $defaults = array(
-    'disabled' => false,
-    'service'  => 'mail',
-    'to'       => null,
-    'from'     => null,
-    'replyTo'  => null,
-    'subject'  => null,
-    'body'     => null,
-  );
-
-  public $options = array();
-
-  // email details
-  public $service = null;
-  public $to      = null;
-  public $from    = null;
-  public $replyTo = null;
-  public $subject = null;
-  public $body    = null;
-
-  protected $errors = array();
-  
-  public $response = array();
-
-  /**
-   * Constructor
-   * 
-   * @param string $service The name of the service driver you want to use
-   */
-  public function __construct($params = null) {
-    $this->options = array_merge(static::$defaults, (array)$params);
-    $this->service = $this->options['service'];
-    $this->to      = $this->options['to'];
-    $this->from    = $this->options['from'];
-    $this->replyTo = $this->options['replyTo'];
-    $this->subject = $this->options['subject'];
-    $this->body    = $this->options['body'];
-  }
-
-  /**
-   * Sends the constructed email
-   * 
-   * @param array $params Optional way to set values for the email
-   * @return boolean
-   */
-  public function send($params = null) {
-
-    if(!is_null($params)) {
-
-      $this->options['service'] = $this->service;
-      $this->options['to']      = $this->to;
-      $this->options['from']    = $this->from;
-      $this->options['replyTo'] = $this->replyTo;
-      $this->options['subject'] = $this->subject;
-      $this->options['body']    = $this->body;
-      $this->options = array_merge($this->options, (array)$params);
-
-      // overwrite the values
-      $this->service = $this->options['service'];
-      $this->to      = $this->options['to'];
-      $this->from    = $this->options['from'];
-      $this->replyTo = $this->options['replyTo'];
-      $this->subject = $this->options['subject'];
-      $this->body    = $this->options['body'];
-
+  public function __set($key, $value) {
+    if(in_array($key, array('to', 'from', 'replyTo'))) {
+      $this->$key = $this->extractAddress($value);
+    } else {
+      $this->$key = $value;
     }
-
-    // if there's no dedicated reply to address, use the from address
-    if(is_null($this->replyTo)) $this->replyTo = $this->from;
-
-    // validate the email 
-    $this->validate();
-
-    // don't send if the validation failed
-    if($this->failed()) return false;
-
-    // check if the email service is available
-    if(!isset(static::$services[$this->service])) throw new Exception('The email service is not available: ' . $this->service);
-
-    // run the service
-    call(static::$services[$this->service], $this);
-
-    return ($this->failed()) ? false : true;
-
   }
 
   /**
-   * Validates the constructed email 
+   * Validates the constructed email
    * to make sure it can be sent at all
    */
   public function validate() {
-
-    if(static::$defaults['disabled']) $this->raise('disabled', 'Email has been disabled');
-  
-    $data = array(
-      'to'      => $this->extractAddress($this->to),
-      'from'    => $this->extractAddress($this->from),
-      'replyTo' => $this->extractAddress($this->replyTo),
-      'subject' => $this->subject,
-      'body'    => $this->body
-    );
-
-    if(!v::email($data['to']))      $this->raise('to', 'Invalid recipient');
-    if(!v::email($data['from']))    $this->raise('from', 'Invalid sender');
-    if(!v::email($data['replyTo'])) $this->raise('replyTo', 'Invalid reply address');
-
-    if(empty($data['subject']))     $this->raise('subject', 'Missing subject');
-    if(empty($data['body']))        $this->raise('body', 'Missing body');
-
-  }
-
-  /**
-   * Returns all errors
-   * 
-   * @return array
-   */
-  public function errors() {
-    return $this->errors;
-  }
-
-  /**
-   * Returns a specific error by code
-   * 
-   * @param string $code
-   */
-  public function error($code = null) {
-    return is_null($code) ? a::first($this->errors) : a::get($this->errors, $code);
-  }
-
-  /**
-   * Raises an internal error
-   */
-  public function raise($code = null, $message) {
-    return $this->errors[$code] = $message;
-  }
-  
-  /**
-   * Returns the optional response from the service
-   * 
-   * @return mixed
-   */
-  public function response() {
-    return $this->response;
-  }
-
-  /**
-   * Checks if sending the email failed
-   * 
-   * @return boolean
-   */
-  public function failed() {
-    return count($this->errors) > 0;
-  }
-
-  /**
-   * Checks if sending the email succeeded
-   * 
-   * @return boolean
-   */
-  public function passed() {
-    return !$this->failed();
+    if(!v::email($this->to))      throw new Exception('Invalid recipient');
+    if(!v::email($this->from))    throw new Exception('Invalid sender');
+    if(!v::email($this->replyTo)) throw new Exception('Invalid reply address');
+    if(!isset($this->subject))    throw new Exception('Missing subject');
+    if(!isset($this->body))       throw new Exception('Missing body');;
   }
 
   /**
    * Extracts the email address from an address string
-   * 
+   *
    * @return string
    */
   protected function extractAddress($string) {
@@ -192,12 +49,164 @@ class Email {
     return (empty($array[1])) ? $string : $array[1];
   }
 
+  /**
+   * Sends the constructed email
+   *
+   * @param array $params Optional way to set values for the email
+   * @return boolean
+   */
+  public function send($params = null) {
+
+    // fail silently if sending emails is disabled
+    if(static::$disabled) return false;
+
+    // overwrite already set values
+    if(is_array($params) and !empty($params)) {
+      if(isset($params['service'])) $this->service = $params['service'];
+      if(isset($params['options'])) $this->options = $params['options'];
+      if(isset($params['to']))      $this->to      = $params['to'];
+      if(isset($params['from']))    $this->from    = $params['from'];
+      if(isset($params['replyTo'])) $this->replyTo = $params['replyTo'];
+      if(isset($params['subject'])) $this->subject = $params['subject'];
+      if(isset($params['body']))    $this->body    = $params['body'];
+    }
+
+    // default service
+    if(empty($this->service)) $this->service = 'mail';
+
+    // if there's no dedicated reply to address, use the from address
+    if(empty($this->replyTo)) $this->replyTo = $this->from;
+
+    // validate the email
+    $this->validate();
+
+    // check if the email service is available
+    if(!isset(static::$services[$this->service])) throw new Exception('The email service is not available: ' . $this->service);
+
+    // run the service
+    call(static::$services[$this->service], $this);
+
+  }
+
 }
 
 
+/**
+ * Default mail driver
+ */
+email::$services['mail'] = function($email) {
+
+  $headers = array(
+    'From: ' . $email->from,
+    'Reply-To: ' . $email->replyTo,
+    'Return-Path: ' . $email->replyTo,
+    'Message-ID: <' . time() . '-' . $email->from . '>',
+    'X-Mailer: PHP v' . phpversion(),
+    'Content-Type: text/plain; charset=utf-8',
+    'Content-Transfer-Encoding: 8bit',
+  );
+
+  ini_set('sendmail_from', $email->from);
+  $send = mail($email->to, str::utf8($email->subject), str::utf8($email->body), implode(PHP_EOL, $headers));
+  ini_restore('sendmail_from');
+
+  if(!$send) {
+    throw Exception('The email could not be sent');
+  }
+
+};
+
+/**
+ * Amazon mail driver
+ */
+email::$services['amazon'] = function($email) {
+
+  if(empty($email->options['key']))    throw new Exception('Missing Amazon API key');
+  if(empty($email->options['secret'])) throw new Exception('Missing Amazon API secret');
+
+  $setup = array(
+    'Action'                           => 'SendEmail',
+    'Destination.ToAddresses.member.1' => $email->to,
+    'ReplyToAddresses.member.1'        => $email->replyTo,
+    'ReturnPath'                       => $email->replyTo,
+    'Source'                           => $email->from,
+    'Message.Subject.Data'             => $email->subject,
+    'Message.Body.Text.Data'           => $email->body
+  );
+
+  $params = array();
+
+  foreach($setup as $key => $value) {
+    $params[] = $key . '=' . str_replace('%7E', '~', rawurlencode($value));
+  }
+
+  sort($params, SORT_STRING);
+
+  $host      = a::get($email->options, 'host', 'email.us-east-1.amazonaws.com');
+  $url       = 'https://' . $host . '/';
+  $date      = gmdate('D, d M Y H:i:s e');
+  $signature = base64_encode(hash_hmac('sha256', $date, $email->options['secret'], true));
+  $query     = implode('&', $params);
+  $headers   = array();
+  $auth      = 'AWS3-HTTPS AWSAccessKeyId=' . $email->options['key'];
+  $auth     .= ',Algorithm=HmacSHA256,Signature=' . $signature;
+
+  $headers[] = 'Date: ' . $date;
+  $headers[] = 'Host: ' . $host;
+  $headers[] = 'X-Amzn-Authorization: '. $auth;
+  $headers[] = 'Content-Type: application/x-www-form-urlencoded';
+
+  $this->response = remote::post($url, array(
+    'data'    => $query,
+    'headers' => $headers
+  ));
+
+  if(!in_array($this->response->code(), array(200, 201, 202, 204))) {
+    throw new Exception('The mail could not be sent!', $this->response->code());
+  }
+
+};
+
+/**
+ * Mailgun mail driver
+ */
+email::$services['mailgun'] = function($email) {
+
+  if(empty($email->options['key'])    throw new Exception('Missing Mailgun API key');
+  if(empty($email->options['domain']) throw new Exception('Missing Mailgun API domain');
+
+  $url  = 'https://api.mailgun.net/v2/' . $email->options['domain'] . '/messages';
+  $auth = base64_encode('api:' . $email->options['key']);
+
+  $headers = array(
+    'Accept: application/json',
+    'Authorization: Basic ' . $auth
+  );
+
+  $data = array(
+    'from'     => $email->from,
+    'to'       => $email->to,
+    'subject'  => $email->subject,
+    'text'     => $email->body
+  );
+
+  $this->response = remote::post($url, array(
+    'data'    => $data,
+    'headers' => $headers
+  ));
+
+  if($this->response->code() != 200) {
+    throw new Exception('The mail could not be sent!');
+  }
+
+};
+
+/**
+ * Postmark mail driver
+ */
 email::$services['postmark'] = function($email) {
 
-  if(empty($email->options['key'])) return $email->raise('invalid-api-key', 'Invalid API key');
+  if(empty($email->options['key'])) throw Exception('Invalid Postmark API Key')
 
   // reset the api key if we are in test mode
   if($email->options['test']) $email->options['key'] = 'POSTMARK_API_TEST';
@@ -220,11 +229,13 @@ email::$services['postmark'] = function($email) {
   );
 
   // fetch the response
-  $email->response = Remote::post($url, array(
-    'data'    => json_encode($data), 
+  $email->response = remote::post($url, array(
+    'data'    => json_encode($data),
     'headers' => $headers
   ));
-  
-  if($email->response->code() != 200) return $email->raise('send-error', 'The mail could not be sent!');
+
+  if($email->response->code() != 200) {
+    throw new Exception('The mail could not be sent');
+  }
 
 };

@@ -2,11 +2,11 @@
 
 /**
  * Data
- * 
- * Universal data writer/reader/decoder/encoder for 
+ *
+ * Universal data writer/reader/decoder/encoder for
  * json, yaml and structured kirby content
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -53,7 +53,7 @@ class Data {
     if(isset($adapter['read'])) {
       return call($adapter['read'], $file);
     } else {
-      return data::decode(f::read($file), $type);      
+      return data::decode(f::read($file), $type);
     }
 
 
@@ -67,6 +67,10 @@ class Data {
 
 }
 
+
+/**
+ * Json adapter
+ */
 data::$adapters['json'] = array(
   'extension' => 'json',
   'encode' => function($data) {
@@ -77,16 +81,10 @@ data::$adapters['json'] = array(
   }
 );
 
-data::$adapters['yaml'] = array(
-  'extension' => array('yaml', 'yml'),
-  'encode' => function($data) {
-    return yaml::encode($data);
-  },
-  'decode' => function($string) {
-    return yaml::decode($string);
-  }
-);
 
+/**
+ * Kirby data adapter
+ */
 data::$adapters['kd'] = array(
   'extension' => array('md', 'txt'),
   'encode' => function($data) {
@@ -99,9 +97,9 @@ data::$adapters['kd'] = array(
       $key = str::slug($key);
       $key = str::ucfirst(str_replace('-', '_', $key));
       if(in_array($key, $keys) || empty($key)) continue;
-      $keys[]  = $key;     
+      $keys[]  = $key;
       $result .= $break . $key . ': ' . trim($value);
-      $break   = $divider;    
+      $break   = $divider;
     }
     return $result;
 
@@ -109,7 +107,7 @@ data::$adapters['kd'] = array(
   'decode' => function($string) {
 
     // remove BOM
-    $string = str_replace("\xEF\xBB\xBF", '', $string);
+    $string = str_replace(BOM, '', $string);
     // explode all fields by the line separator
     $fields = explode(PHP_EOL . '----', $string);
     // start the data array
@@ -129,9 +127,12 @@ data::$adapters['kd'] = array(
     return $data;
 
   }
-
 );
 
+
+/**
+ * PHP serializer adapter
+ */
 data::$adapters['php'] = array(
   'extension' => array('php'),
   'encode' => function($array) {
@@ -139,9 +140,23 @@ data::$adapters['php'] = array(
   },
   'decode' => function($string) {
     throw new Exception('Decoding PHP strings is not supported');
-  }, 
+  },
   'read' => function($file) {
     $array = require $file;
     return $array;
+  }
+);
+
+
+/**
+ * YAML adapter
+ */
+data::$adapters['yaml'] = array(
+  'extension' => array('yaml', 'yml'),
+  'encode' => function($data) {
+    return yaml::encode($data);
+  },
+  'decode' => function($string) {
+    return yaml::decode($string);
   }
 );

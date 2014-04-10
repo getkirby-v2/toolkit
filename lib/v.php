@@ -1,12 +1,12 @@
 <?php
 
 /**
- * 
+ *
  * V
- * 
+ *
  * Validators
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -19,7 +19,7 @@ class V {
 
   /**
    * Return the list of all validators
-   * 
+   *
    * @return array
    */
   static public function validators() {
@@ -27,24 +27,8 @@ class V {
   }
 
   /**
-   * Install a new validator
-   * 
-   * @param mixed $name
-   * @param closure $validator
-   */
-  static public function install($name, $validator = null) {
-    if(is_array($name)) {
-      foreach($name as $k => $v) {
-        static::$validators[$k] = $v;
-      }
-      return $name;
-    }
-    return static::$validators[$name] = $validator;
-  }
-
-  /**
    * Calls an installed validator and passes all arguments
-   * 
+   *
    * @param string $method
    * @param array $arguments
    * @return boolean
@@ -60,23 +44,21 @@ class V {
 
 }
 
+
 /**
  * Default set of validators
  */
 v::$validators = array(
   'accepted' => function($value) {
-    return v::in($value, array('yes', '1', 'on'));    
+    return v::in($value, array(1, true, 'yes', '1', 'on'));
   },
   'alpha' => function($value) {
-    return v::match($value, '/^([a-z])+$/i');        
+    return v::match($value, '/^([a-z])+$/i');
   },
   'alphanum' => function($value) {
     return v::match($value, '/^[a-z0-9]+$/i');
   },
-  'array' => function($value) {
-    return is_array($value);
-  },
-  'between' => function($value, $min, $max) {    
+  'between' => function($value, $min, $max) {
     return v::min($value, $min) and v::max($value, $max);
   },
   'date' => function($value) {
@@ -91,25 +73,25 @@ v::$validators = array(
 
   },
   'different' => function($value, $other) {
-    return $value != $other;  
+    return $value !== $other;
   },
   'email' => function($value) {
     return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
   },
   'filename' => function($value) {
-    return v::match($value, '/^[a-z0-9@._-]+$/i') and v::min($value, 2);    
+    return v::match($value, '/^[a-z0-9@._-]+$/i') and v::min($value, 2);
   },
   'in' => function($value, $in) {
-    return in_array($value, $in);
+    return in_array($value, $in, true);
   },
   'integer' => function($value) {
-    return filter_var($value, FILTER_VALIDATE_INT) !== false;    
+    return filter_var($value, FILTER_VALIDATE_INT) !== false;
   },
   'ip' => function($value) {
     return filter_var($value, FILTER_VALIDATE_IP) !== false;
   },
   'match' => function($value, $preg) {
-    return preg_match($preg, $value);
+    return preg_match($preg, $value) == true;
   },
   'max' => function($value, $max) {
     return size($value) <= $max;
@@ -117,7 +99,7 @@ v::$validators = array(
   'min' => function($value, $min) {
     return size($value) >= $min;
   },
-  'notIn' => function($value, $notIn) {    
+  'notIn' => function($value, $notIn) {
     return !v::in($value, $notIn);
   },
   'num' => function($value) {
@@ -127,12 +109,9 @@ v::$validators = array(
     return !empty($array[$key]);
   },
   'same' => function($value, $other) {
-    return $value == $other;  
+    return $value === $other;
   },
   'size' => function($value, $size) {
     return size($value) == $size;
-  },
-  'string' => function($value) {
-    return is_string($value);
   }
 );

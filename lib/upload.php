@@ -2,10 +2,10 @@
 
 /**
  * Upload
- * 
+ *
  * File Upload class
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -18,15 +18,17 @@ class Upload {
   const ERROR_UNALLOWED_OVERWRITE = 2;
   const ERROR_FILE_TOO_BIG        = 3;
   const ERROR_MOVE_FAILED         = 4;
-  
-  public $options = array();
-  public $result  = null;
+  const ERROR_UNACCEPTED          = 5;
 
-  public function __construct($params = array()) {
+  public $options = array();
+  public $error   = null;
+  public $file    = null;
+
+  public function __construct($to, $params = array()) {
 
     $defaults = array(
       'input'     => 'file',
-      'to'        => null,
+      'to'        => $to,
       'overwrite' => true,
       'maxSize'   => detect::maxUploadSize(),
       'accept'    => null,
@@ -34,23 +36,24 @@ class Upload {
 
     $this->options = array_merge($defaults, $params);
 
+    try {
+      $this->move();
+      $this->file = new Media($this->to());
+    } catch(Exception $e) {
+      $this->error = $e;
+    }
+
+  }
+
+  public function error() {
+    return $this->error;
   }
 
   public function source() {
     return isset($_FILES[$this->options['input']]) ? $_FILES[$this->options['input']] : null;
   }
 
-  public function input($input) {
-    $this->options['input'] = $input;
-    return $this;
-  }
-
-  public function to($to = null) {
-  
-    if(!is_null($to)) {
-      $this->options['to'] = $to;
-      return $this;      
-    }
+  public function to() {
 
     $source    = $this->source();
     $name      = f::name($source['name']);
@@ -67,39 +70,23 @@ class Upload {
 
   }
 
-  public function overwrite($overwrite) {
-    $this->options['overwrite'] = $overwrite;
-    return $this;
+  public function file() {
+    return $this->file;
   }
 
-  public function accept($accept) {
-    $this->options['accept'] = $accept;
-    return $this;
-  }
-
-  public function maxSize($size) {
-    $this->options['maxSize'] = $size;
-    return $this;
-  }
-
-  /**
-   * Validates and moves the uploaded file
-   * 
-   * @return boolean
-   */
   protected function move() {
 
     $source = $this->source();
 
-    if(is_null($source['name']) || is_null($source['tmp_name'])) {
+    if(is_null($source['name']) or is_null($source['tmp_name'])) {
       throw new Exception('The file has not been found', static::ERROR_MISSING_FILE);
     }
 
-    if($source['error'] != 0) {
+    if($source['error'] !== 0) {
       throw new Exception('The upload failed', static::ERROR_FAILED_UPLOAD);
     }
 
-    if(file_exists($this->options['to']) and $this->options['overwrite'] === false) {
+    if(file_exists($this->to()) and $this->options['overwrite'] === false) {
       throw new Exception('The file exists and cannot be overwritten', static::ERROR_UNALLOWED_OVERWRITE);
     }
 
@@ -107,56 +94,16 @@ class Upload {
       throw new Exception('The file is too big', static::ERROR_FILE_TOO_BIG);
     }
 
+    if(is_callable($this->options['accept'])) {
+      $accepted = call($this->options['accept'], new Media($source['tmp_name']));
+      if($accepted === false) {
+        throw new Exception('The file is not accepted by the server', static::ERROR_UNACCEPTED);
+      }
+    }
+
     if(!@move_uploaded_file($source['tmp_name'], $this->to())) {
       throw new Exception('The file could not be moved', static::ERROR_MOVE_FAILED);
     }
-
-  }
-
-  protected function execute() {
-
-    if(!is_null($this->result)) return $this->result;
-
-    try {
-      $this->move();
-      $this->result = new Media($this->to());
-    } catch(Exception $e) {
-      $this->result = $e;      
-    }
-
-  }
-
-  public function then($callback) {
-
-    $this->execute();
-
-    call_user_func($callback, $this->result);
-
-    return $this;
-
-  }
-
-  public function success($callback) {
-    
-    $this->execute();
-    
-    if(!is_a($this->result, 'Exception')) {
-      call_user_func($callback, $this->result);
-    } 
-
-    return $this;
-
-  }
-
-  public function error($callback) {
-
-    $this->execute();
-    
-    if(is_a($this->result, 'Exception')) {
-      call_user_func($callback, $this->result);
-    } 
-
-    return $this;
 
   }
 

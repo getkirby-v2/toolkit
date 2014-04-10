@@ -1,19 +1,26 @@
 <?php
 
+namespace Database;
+
+use A;
+use Str;
+use Sql;
+use Exception;
+
 /**
- * 
+ *
  * Database Query
- * 
+ *
  * The query builder is used by the DB class
  * to build SQL queries in a fluent, jquery-style way
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
-class DatabaseQuery {
+class Query {
 
   protected $db = null;
 
@@ -22,58 +29,58 @@ class DatabaseQuery {
 
   // The iterator class, which should be used for result sets
   protected $iterator = 'Collection';
-  
+
   // An array of bindings for the final query
   protected $bindings = array();
-  
-  // The table name 
+
+  // The table name
   protected $table;
-  
+
   // The name of the primary key column
   protected $primaryKeyName = 'id';
 
   // An array with additional join parameters
   protected $join;
-  
+
   // A list of columns, which should be selected
   protected $select;
-  
+
   // Boolean for distinct select clauses
   protected $distinct;
-  
+
   // Boolean for if exceptions should be thrown on failing queries
   protected $fail = false;
-  
+
   // A list of values for update and insert clauses
   protected $values;
-  
+
   // WHERE clause
   protected $where;
-  
+
   // GROUP BY clause
   protected $group;
-  
+
   // HAVING clause
   protected $having;
-  
+
   // ORDER BY clause
   protected $order;
-  
+
   // The offset, which should be applied to the select query
   protected $offset = 0;
-  
+
   // The limit, which should be applied to the select query
   protected $limit;
-  
+
   // Boolean to enable query debugging
   protected $debug = false;
-  
-  // an array with reserved sql values 
-  static protected $literals = array('NOW()'); 
+
+  // an array with reserved sql values
+  static protected $literals = array('NOW()');
 
   /**
-   * Constructor 
-   * 
+   * Constructor
+   *
    * @param string $table Optional name of the table, which should be queried
    */
   public function __construct($db, $table) {
@@ -100,10 +107,10 @@ class DatabaseQuery {
   }
 
   /**
-   * Enables query debugging. 
-   * If enabled, the query will return an array with all important info about 
+   * Enables query debugging.
+   * If enabled, the query will return an array with all important info about
    * the query instead of actually executing the query and returning results
-   * 
+   *
    * @param boolean $debug
    * @return object
    */
@@ -113,8 +120,8 @@ class DatabaseQuery {
   }
 
   /**
-   * Enables distinct select clauses. 
-   * 
+   * Enables distinct select clauses.
+   *
    * @param boolean $distinct
    * @return object
    */
@@ -124,9 +131,9 @@ class DatabaseQuery {
   }
 
   /**
-   * Enables failing queries. 
+   * Enables failing queries.
    * If enabled queries will no longer fail silently but throw an exception
-   * 
+   *
    * @param boolean $fail
    * @return object
    */
@@ -138,7 +145,7 @@ class DatabaseQuery {
   /**
    * Sets the object class, which should be fetched
    * Set this to array to get a simple array instead of an object
-   * 
+   *
    * @param string $fetch
    * @return object
    */
@@ -150,7 +157,7 @@ class DatabaseQuery {
   /**
    * Sets the iterator class, which should be used for multiple results
    * Set this to array to get a simple array instead of an iterator object
-   * 
+   *
    * @param string $iterator
    * @return object
    */
@@ -161,7 +168,7 @@ class DatabaseQuery {
 
   /**
    * Sets the name of the table, which should be queried
-   * 
+   *
    * @param string $table
    * @return object
    */
@@ -172,7 +179,7 @@ class DatabaseQuery {
 
   /**
    * Sets the name of the primary key column
-   * 
+   *
    * @param string $primaryKeyName
    * @return object
    */
@@ -184,11 +191,11 @@ class DatabaseQuery {
   /**
    * Sets the columns, which should be selected from the table
    * By default all columns will be selected
-   * 
+   *
    * @param mixed $select Pass either a string of columns or an array
    * @return object
    */
-  public function select($select) {      
+  public function select($select) {
     if(is_string($select)) {
       $this->select = $select;
     } else {
@@ -199,7 +206,7 @@ class DatabaseQuery {
 
   /**
    * Adds a new join clause to the query
-   * 
+   *
    * @param string $table Name of the table, which should be joined
    * @param string $on The on clause for this join
    * @param string $type The join type. Uses an inner join by default
@@ -208,19 +215,19 @@ class DatabaseQuery {
   public function join($table, $on, $type = '') {
 
     $join = array(
-      'table' => $table, 
+      'table' => $table,
       'on'    => $on,
       'type'  => $type
     );
 
     $this->join[] = $join;
     return $this;
-  
+
   }
 
   /**
    * Shortcut for creating a left join clause
-   * 
+   *
    * @param string $table Name of the table, which should be joined
    * @param string $on The on clause for this join
    * @return object
@@ -231,7 +238,7 @@ class DatabaseQuery {
 
   /**
    * Shortcut for creating a right join clause
-   * 
+   *
    * @param string $table Name of the table, which should be joined
    * @param string $on The on clause for this join
    * @return object
@@ -242,7 +249,7 @@ class DatabaseQuery {
 
   /**
    * Shortcut for creating an inner join clause
-   * 
+   *
    * @param string $table Name of the table, which should be joined
    * @param string $on The on clause for this join
    * @return object
@@ -253,7 +260,7 @@ class DatabaseQuery {
 
   /**
    * Sets the values which should be used for the update or insert clause
-   * 
+   *
    * @param mixed $values Can either be a string or an array of values
    * @return object
    */
@@ -263,35 +270,35 @@ class DatabaseQuery {
   }
 
   /**
-   * Attaches additional bindings to the query. 
+   * Attaches additional bindings to the query.
    * Also can be used as getter for all attached bindings by not passing an argument.
-   * 
+   *
    * @param mixed $bindings Array of bindings or null to use this method as getter
    * @return mixed
    */
   public function bindings($bindings = null) {
 
     if(is_array($bindings)) {
-      $this->bindings = array_merge($this->bindings, $bindings);                            
+      $this->bindings = array_merge($this->bindings, $bindings);
       return $this;
-    } 
+    }
 
     return $this->bindings;
-  
+
   }
 
   /**
-   * Attaches an additional where clause 
+   * Attaches an additional where clause
    *
    * All available ways to add where clauses
-   * 
+   *
    * ->where('username like "myuser"');                        (args: 1)
    * ->where(array('username' => 'myuser'));                   (args: 1)
    * ->where(function($where) { $where->where('id', '=', 1) }) (args: 1)
    * ->where('username like ?', 'myuser')                      (args: 2)
    * ->where('username', 'like', 'myuser');                    (args: 3)
-   * 
-   * @param list 
+   *
+   * @param list
    * @return object
    */
   public function where() {
@@ -319,7 +326,7 @@ class DatabaseQuery {
         } else if(is_string($args[0])) {
 
           // simply add the entire string to the where clause
-          $where = $args[0];        
+          $where = $args[0];
 
         // ->where(array('username' => 'myuser'));
         } else if(is_array($args[0])) {
@@ -327,13 +334,13 @@ class DatabaseQuery {
           $sql = new SQL($this->db);
 
           // simple array mode (AND operator)
-          $where = $sql->values($args[0], ' AND ');                  
+          $where = $sql->values($args[0], ' AND ');
 
         } else if(is_callable($args[0])) {
 
           $query  = new static;
           $result = call_user_func($args[0], $query);
-          $where  = '(' . $query->where . ')'; 
+          $where  = '(' . $query->where . ')';
 
         }
 
@@ -342,10 +349,10 @@ class DatabaseQuery {
 
         // ->where('username like :username', array('username' => 'myuser'))
         if(is_string($args[0]) && is_array($args[1])) {
-          
+
           // prepared where clause
           $where = $args[0];
-          
+
           // store the bindings
           $this->bindings($args[1]);
 
@@ -354,7 +361,7 @@ class DatabaseQuery {
 
           // prepared where clause
           $where = $args[0];
-          
+
           // store the bindings
           $this->bindings(array($args[1]));
 
@@ -363,45 +370,45 @@ class DatabaseQuery {
         break;
       case 3:
 
-        // ->where('username', 'like', 'myuser'); 
+        // ->where('username', 'like', 'myuser');
         if(is_string($args[0]) && is_string($args[1])) {
 
-          // ->where('username', 'in', array('myuser', 'myotheruser'));        
+          // ->where('username', 'in', array('myuser', 'myotheruser'));
           if(is_array($args[2])) {
-  
-            // build a list of escaped values            
+
+            // build a list of escaped values
             $values = array();
             foreach($args[2] as $value) $values[] = '"' . $this->db->escape($value) . '"';
-            
+
             // add that to the where clause in parenthesis
             $where = $args[0] . ' ' . trim($args[1]) . ' (' . implode(', ', $values) . ')';
-          
-          // ->where('username', 'like', 'myuser'); 
+
+          // ->where('username', 'like', 'myuser');
           } else {
-            $where = $args[0] . ' ' . trim($args[1]) . ' "' . $this->db->escape($args[2]) . '"';    
-          }      
-        
+            $where = $args[0] . ' ' . trim($args[1]) . ' "' . $this->db->escape($args[2]) . '"';
+          }
+
         }
 
         break;
-    
+
     }
 
     // attach the where clause
     if(!empty($this->where)) {
-      $this->where = $this->where . ' ' . $mode . ' ' . $where;    
+      $this->where = $this->where . ' ' . $mode . ' ' . $where;
     } else {
       $this->where = $where;
     }
 
     return $this;
-    
+
   }
 
   /**
-   * Shortcut to attach a where clause with an OR operator. 
-   * Check out the where() method docs for additional info. 
-   * 
+   * Shortcut to attach a where clause with an OR operator.
+   * Check out the where() method docs for additional info.
+   *
    * @param list
    * @return object
    */
@@ -424,9 +431,9 @@ class DatabaseQuery {
   }
 
   /**
-   * Shortcut to attach a where clause with an AND operator. 
-   * Check out the where() method docs for additional info. 
-   * 
+   * Shortcut to attach a where clause with an AND operator.
+   * Check out the where() method docs for additional info.
+   *
    * @param list
    * @return object
    */
@@ -450,7 +457,7 @@ class DatabaseQuery {
 
   /**
    * Attaches a group by clause
-   * 
+   *
    * @param string $group
    * @return object
    */
@@ -461,7 +468,7 @@ class DatabaseQuery {
 
   /**
    * Attaches a having clause
-   * 
+   *
    * @param string $having
    * @return object
    */
@@ -472,7 +479,7 @@ class DatabaseQuery {
 
   /**
    * Attaches an order clause
-   * 
+   *
    * @param string $order
    * @return object
    */
@@ -483,7 +490,7 @@ class DatabaseQuery {
 
   /**
    * Sets the offset for select clauses
-   * 
+   *
    * @param int $offset
    * @return object
    */
@@ -494,7 +501,7 @@ class DatabaseQuery {
 
   /**
    * Sets the limit for select clauses
-   * 
+   *
    * @param int $limit
    * @return object
    */
@@ -505,8 +512,8 @@ class DatabaseQuery {
 
   /**
    * Builds the different types of SQL queries
-   * This uses the SQL class to build stuff. 
-   * 
+   * This uses the SQL class to build stuff.
+   *
    * @param string $type (select, update, insert)
    * @return string The final query
    */
@@ -518,7 +525,7 @@ class DatabaseQuery {
       case 'select':
 
         return $sql->select(array(
-          'table'    => $this->table, 
+          'table'    => $this->table,
           'columns'  => $this->select,
           'join'     => $this->join,
           'distinct' => $this->distinct,
@@ -562,16 +569,16 @@ class DatabaseQuery {
 
   /**
    * Builds a count query
-   * 
+   *
    * @return object
    */
-  public function count() {    
+  public function count() {
     return $this->aggregate('COUNT');
   }
 
   /**
    * Builds a max query
-   * 
+   *
    * @param string $column
    * @return object
    */
@@ -581,7 +588,7 @@ class DatabaseQuery {
 
   /**
    * Builds a min query
-   * 
+   *
    * @param string $column
    * @return object
    */
@@ -591,7 +598,7 @@ class DatabaseQuery {
 
   /**
    * Builds a sum query
-   * 
+   *
    * @param string $column
    * @return object
    */
@@ -601,7 +608,7 @@ class DatabaseQuery {
 
   /**
    * Builds an average query
-   * 
+   *
    * @param string $column
    * @return object
    */
@@ -610,16 +617,16 @@ class DatabaseQuery {
   }
 
   /**
-   * Builds an aggregation query. 
+   * Builds an aggregation query.
    * This is used by all the aggregation methods above
-   * 
+   *
    * @param string $method
    * @param string $column
    * @param string $default An optional default value, which should be returned if the query fails
    * @return object
    */
   public function aggregate($method, $column = '*', $default = 0) {
-    
+
     $fetch  = $this->fetch;
     $row    = $this->select($method . '(' . $column . ') as aggregation')->fetch('Obj')->first();
     $result =  $row ? $row->get('aggregation', $default) : 0;
@@ -629,7 +636,7 @@ class DatabaseQuery {
 
   /**
    * Used as an internal shortcut for firing a db query
-   * 
+   *
    * @param string $query
    * @param array $params
    * @return mixed
@@ -637,7 +644,7 @@ class DatabaseQuery {
   protected function query($query, $params = array()) {
 
     if($this->debug) return array(
-      'query'    => $query, 
+      'query'    => $query,
       'bindings' => $this->bindings(),
       'options'  => $params
     );
@@ -652,7 +659,7 @@ class DatabaseQuery {
 
   /**
    * Used as an internal shortcut for executing a db query
-   * 
+   *
    * @param string $query
    * @param array $params
    * @return mixed
@@ -660,7 +667,7 @@ class DatabaseQuery {
   protected function execute($query, $params = array()) {
 
     if($this->debug) return array(
-      'query'    => $query, 
+      'query'    => $query,
       'bindings' => $this->bindings(),
       'options'  => $params
     );
@@ -675,7 +682,7 @@ class DatabaseQuery {
 
   /**
    * Selects only one row from a table
-   * 
+   *
    * @return object
    */
   public function first() {
@@ -688,16 +695,16 @@ class DatabaseQuery {
 
   /**
    * Selects only one row from a table
-   * 
+   *
    * @return object
    */
   public function row() {
     return $this->first();
   }
-  
+
   /**
    * Selects only one row from a table
-   * 
+   *
    * @return object
    */
   public function one() {
@@ -706,8 +713,8 @@ class DatabaseQuery {
 
   /**
    * Automatically adds pagination to a query
-   * 
-   * @param int $page 
+   *
+   * @param int $page
    * @param int $limit The number of rows, which should be returned for each page
    * @param array $params Optional params for the pagination object
    * @return object Collection iterator with attached pagination object
@@ -734,15 +741,15 @@ class DatabaseQuery {
 
     // store all pagination vars in a separate object
     if($collection) $collection->paginate($pagination);
-    
-    // return the limited collection 
+
+    // return the limited collection
     return $collection;
 
   }
 
   /**
    * Returns all matching rows from a table
-   * 
+   *
    * @return mixed
    */
   public function all() {
@@ -756,11 +763,11 @@ class DatabaseQuery {
   /**
    * Returns only values from a single column
    *
-   * @param string $column 
+   * @param string $column
    * @return mixed
    */
   public function column($column) {
-    
+
     $results = $this->query($this->select($column)->build('select'), array(
       'iterator' => 'array',
       'fetch'    => 'array',
@@ -772,12 +779,12 @@ class DatabaseQuery {
 
     $iterator = $this->iterator;
     return new $iterator($results);
-        
+
   }
 
   /**
    * Find a single row by column and value
-   * 
+   *
    * @param string $column
    * @param mixed $value
    * @return mixed
@@ -788,7 +795,7 @@ class DatabaseQuery {
 
   /**
    * Find a single row by its primary key
-   * 
+   *
    * @param mixed $id
    * @return mixed
    */
@@ -800,7 +807,7 @@ class DatabaseQuery {
    * Fires an insert query
    *
    * @param array $values You can pass values here or set them with ->values() before
-   * @return mixed Returns the last inserted id on success or false. 
+   * @return mixed Returns the last inserted id on success or false.
    */
   public function insert($values = null) {
     $query = $this->execute($this->values($values)->build('insert'));
@@ -830,7 +837,7 @@ class DatabaseQuery {
 
   /**
    * Enables magic queries like findByUsername or findByEmail
-   * 
+   *
    * @param string $method
    * @param array $arguments
    * @return mixed

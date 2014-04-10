@@ -2,13 +2,13 @@
 
 /**
  * Router
- * 
- * The router makes it possible to react 
+ *
+ * The router makes it possible to react
  * on any incoming URL scheme
- * 
+ *
  * Partly inspired by Laravel's router
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -52,7 +52,7 @@ class Router {
 
   /**
    * Returns the found route
-   * 
+   *
    * @return mixed
    */
   public function route() {
@@ -61,7 +61,7 @@ class Router {
 
   /**
    * Returns the arguments array from the current route
-   * 
+   *
    * @return array
    */
   public function arguments() {
@@ -70,7 +70,7 @@ class Router {
 
   /**
    * Adds a new route
-   * 
+   *
    * @param object $route
    * @return object
    */
@@ -94,7 +94,7 @@ class Router {
 
     $route = new Obj(array_merge($defaults, $params, $optional));
 
-    // convert single methods or methods separated by | to arrays    
+    // convert single methods or methods separated by | to arrays
     if(is_string($route->method)) {
 
       if(strpos($route->method, '|') !== false) {
@@ -115,9 +115,9 @@ class Router {
 
   /**
    * Add a new router filter
-   * 
+   *
    * @param string $name A simple name for the filter, which can be used by routes later
-   * @param closure $function A filter function, which should be called before routes 
+   * @param closure $function A filter function, which should be called before routes
    */
   public function filter($name, $function) {
     $this->filters[$name] = $function;
@@ -125,7 +125,7 @@ class Router {
 
   /**
    * Return all registered filters
-   * 
+   *
    * @return array
    */
   public function filters() {
@@ -134,7 +134,7 @@ class Router {
 
   /**
    * Call all matching filters
-   * 
+   *
    * @param mixed $filters
    */
   protected function filterer($filters) {
@@ -142,12 +142,12 @@ class Router {
       if(array_key_exists($filter, $this->filters) and is_callable($this->filters[$filter])) {
         call_user_func($this->filters[$filter]);
       }
-    }    
+    }
   }
 
   /**
    * Returns all added routes
-   * 
+   *
    * @param string $method
    * @return array
    */
@@ -172,12 +172,12 @@ class Router {
     if(empty($path)) $path = '/';
 
     foreach($routes as $route) {
-      
+
       if($route->https and !$https) continue;
       if($route->ajax  and !$ajax)  continue;
 
       // handle exact matches
-      if($route->pattern == $path) {       
+      if($route->pattern == $path) {
         $this->route = $route;
         break;
       }
@@ -186,7 +186,7 @@ class Router {
       // would have been able to be matched by the search for literal matches
       // we just did before we started searching.
       if(strpos($route->pattern, '(') === false) continue;
-      
+
       $preg = '#^'. $this->wildcards($route->pattern) . '$#u';
 
       // If we get a match we'll return the route and slice off the first
@@ -196,8 +196,8 @@ class Router {
         $this->route = $route;
         $this->route->arguments = array_slice($parameters, 1);
         break;
-      }    
-    
+      }
+
     }
 
     if($this->route) {
@@ -216,7 +216,7 @@ class Router {
    * @return string
    */
   protected function wildcards($pattern) {
-      
+
     $search  = array_keys($this->optional);
     $replace = array_values($this->optional);
 
@@ -226,14 +226,14 @@ class Router {
     $pattern = str_replace($search, $replace, $pattern, $count);
 
     if($count > 0) $pattern .= str_repeat(')?', $count);
-    
+
     return strtr($pattern, $this->patterns);
-  
+
   }
 
   /**
    * Find a registered route by a field and value
-   * 
+   *
    * @param string $field
    * @param string $value
    * @return object

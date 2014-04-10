@@ -2,10 +2,10 @@
 
 /**
  * SQL
- * 
- * SQL Query builder 
- * 
- * @package   Kirby Toolkit 
+ *
+ * SQL Query builder
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -14,14 +14,14 @@
 class Sql {
 
   // list of literals which should not be escaped in queries
-  protected $literals = array('NOW()'); 
+  protected $literals = array('NOW()');
 
   // the parent db connection
   protected $db;
 
   /**
    * Constructor
-   * 
+   *
    * @param object $db
    */
   public function __construct($db) {
@@ -29,15 +29,15 @@ class Sql {
   }
 
   /**
-   * Builds a select clause 
-   * 
-   * @param array $params List of parameters for the select clause. Check out the defaults for more info. 
+   * Builds a select clause
+   *
+   * @param array $params List of parameters for the select clause. Check out the defaults for more info.
    * @return string
    */
   public function select($params = array()) {
 
     $defaults = array(
-      'table'    => '', 
+      'table'    => '',
       'columns'  => '*',
       'join'     => false,
       'distinct' => false,
@@ -56,7 +56,7 @@ class Sql {
 
     // select distinct values
     if($options['distinct']) $query[] = 'DISTINCT';
-    
+
     $query[] = empty($options['columns']) ? '*' : implode(', ', (array)$options['columns']);
     $query[] = 'FROM ' . $options['table'];
 
@@ -73,11 +73,11 @@ class Sql {
     if(!empty($options['group'])) {
       $query[] = 'GROUP BY ' . $options['group'];
     }
-  
+
     if(!empty($options['having'])) {
       $query[] = 'HAVING ' . $options['having'];
     }
-  
+
     if(!empty($options['order'])) {
       $query[] = 'ORDER BY ' . $options['order'];
     }
@@ -93,14 +93,14 @@ class Sql {
 
   /**
    * Builds an insert clause
-   * 
+   *
    * @param array $params List of parameters for the insert clause. See defaults for more info
    * @return string
    */
   public function insert($params = array()) {
 
     $defaults = array(
-      'table'  => '', 
+      'table'  => '',
       'values' => false,
     );
 
@@ -116,14 +116,14 @@ class Sql {
 
   /**
    * Builds an update clause
-   * 
+   *
    * @param array $params List of parameters for the update clause. See defaults for more info
    * @return string
    */
   public function update($params = array()) {
 
     $defaults = array(
-      'table'  => '', 
+      'table'  => '',
       'values' => false,
       'where'  => false,
     );
@@ -144,14 +144,14 @@ class Sql {
 
   /**
    * Builds a delete clause
-   * 
+   *
    * @param array $params List of parameters for the delete clause. See defaults for more info
    * @return string
    */
   public function delete($params = array()) {
 
     $defaults = array(
-      'table'  => '', 
+      'table'  => '',
       'where'  => false,
     );
 
@@ -170,10 +170,10 @@ class Sql {
 
   /**
    * Builds a safe list of values for insert, select or update queries
-   * 
+   *
    * @param mixed $values A value string or array of values
    * @param string $separator A separator which should be used to join values
-   * @param boolean $set If true builds a set list of values for update clauses 
+   * @param boolean $set If true builds a set list of values for update clauses
    * @return string
    */
   public function values($values, $separator = ', ', $set = true) {
@@ -197,10 +197,10 @@ class Sql {
       return implode($separator, $output);
 
     } else {
-      
+
       $fields = array();
       $output = array();
-      
+
       foreach($values AS $key => $value) {
         $fields[] = $key;
         if(in_array($value, $this->literals)) {
@@ -211,16 +211,16 @@ class Sql {
           $output[] = "'" . $this->db->escape($value) . "'";
         }
       }
-  
-      return '(' . implode($separator, $fields) . ') VALUES (' . implode($separator, $output) . ')'; 
-    
+
+      return '(' . implode($separator, $fields) . ') VALUES (' . implode($separator, $output) . ')';
+
     }
 
   }
 
   /**
    * Creates the sql for dropping a single table
-   * 
+   *
    * @param string $table
    * @return string
    */
@@ -230,7 +230,7 @@ class Sql {
 
   /**
    * Creates a table with a simple scheme array for columns
-   * 
+   *
    * @todo  add more options per column
    * @param string $table The table name
    * @param array $columns
@@ -253,7 +253,7 @@ class Sql {
         case 'id':
           $template['mysql']  = '"{column.name}" INT(11) UNSIGNED NOT NULL AUTO_INCREMENT';
           $template['sqlite'] = '"{column.name}" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE';
-          $keys[$name] = 'PRIMARY';  
+          $keys[$name] = 'PRIMARY';
           break;
         case 'varchar':
           $template['mysql']  = '"{column.name}" varchar(255) {column.null}';
@@ -284,7 +284,7 @@ class Sql {
 
       $output[] = trim(str::template($template[$type], array(
         'column.name' => $name,
-        'column.null' => a::get($column, 'null') === false ? 'NOT NULL' : 'NULL', 
+        'column.null' => a::get($column, 'null') === false ? 'NOT NULL' : 'NULL',
         'column.key'  => ($key and $key != 'INDEX') ? $key : false
       )));
 

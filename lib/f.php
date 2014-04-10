@@ -1,12 +1,12 @@
 <?php
 
 /**
- * 
+ *
  * File
- * 
+ *
  * Low level file handling utilities
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -14,194 +14,193 @@
  */
 class F {
 
-  static public $defaults = array(
-    'mimes' => array(
-      'hqx'   => 'application/mac-binhex40',
-      'cpt'   => 'application/mac-compactpro',
-      'csv'   => array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream'),
-      'bin'   => 'application/macbinary',
-      'dms'   => 'application/octet-stream',
-      'lha'   => 'application/octet-stream',
-      'lzh'   => 'application/octet-stream',
-      'exe'   => array('application/octet-stream', 'application/x-msdownload'),
-      'class' => 'application/octet-stream',
-      'psd'   => 'application/x-photoshop',
-      'so'    => 'application/octet-stream',
-      'sea'   => 'application/octet-stream',
-      'dll'   => 'application/octet-stream',
-      'oda'   => 'application/oda',
-      'pdf'   => array('application/pdf', 'application/x-download'),
-      'ai'    => 'application/postscript',
-      'eps'   => 'application/postscript',
-      'ps'    => 'application/postscript',
-      'smi'   => 'application/smil',
-      'smil'  => 'application/smil',
-      'mif'   => 'application/vnd.mif',
-      'xls'   => array('application/excel', 'application/vnd.ms-excel', 'application/msexcel'),
-      'ppt'   => array('application/powerpoint', 'application/vnd.ms-powerpoint'),
-      'wbxml' => 'application/wbxml',
-      'wmlc'  => 'application/wmlc',
-      'dcr'   => 'application/x-director',
-      'dir'   => 'application/x-director',
-      'dxr'   => 'application/x-director',
-      'dvi'   => 'application/x-dvi',
-      'gtar'  => 'application/x-gtar',
-      'gz'    => 'application/x-gzip',
-      'php'   => array('application/x-httpd-php', 'text/x-php'),
-      'php4'  => 'application/x-httpd-php',
-      'php3'  => 'application/x-httpd-php',
-      'phtml' => 'application/x-httpd-php',
-      'phps'  => 'application/x-httpd-php-source',
-      'js'    => 'application/x-javascript',
-      'swf'   => 'application/x-shockwave-flash',
-      'sit'   => 'application/x-stuffit',
-      'tar'   => 'application/x-tar',
-      'tgz'   => array('application/x-tar', 'application/x-gzip-compressed'),
-      'xhtml' => 'application/xhtml+xml',
-      'xht'   => 'application/xhtml+xml',
-      'zip'   => array('application/x-zip', 'application/zip', 'application/x-zip-compressed'),
-      'mid'   => 'audio/midi',
-      'midi'  => 'audio/midi',
-      'mpga'  => 'audio/mpeg',
-      'mp2'   => 'audio/mpeg',
-      'mp3'   => array('audio/mpeg', 'audio/mpg', 'audio/mpeg3', 'audio/mp3'),
-      'aif'   => 'audio/x-aiff',
-      'aiff'  => 'audio/x-aiff',
-      'aifc'  => 'audio/x-aiff',
-      'ram'   => 'audio/x-pn-realaudio',
-      'rm'    => 'audio/x-pn-realaudio',
-      'rpm'   => 'audio/x-pn-realaudio-plugin',
-      'ra'    => 'audio/x-realaudio',
-      'rv'    => 'video/vnd.rn-realvideo',
-      'wav'   => 'audio/x-wav',
-      'bmp'   => 'image/bmp',
-      'gif'   => 'image/gif',
-      'jpg'   => array('image/jpeg', 'image/pjpeg'),
-      'jpeg'  => array('image/jpeg', 'image/pjpeg'),
-      'jpe'   => array('image/jpeg', 'image/pjpeg'),
-      'png'   => 'image/png',
-      'tiff'  => 'image/tiff',
-      'tif'   => 'image/tiff',
-      'css'   => 'text/css',
-      'html'  => 'text/html',
-      'htm'   => 'text/html',
-      'shtml' => 'text/html',
-      'txt'   => 'text/plain',
-      'text'  => 'text/plain',
-      'log'   => array('text/plain', 'text/x-log'),
-      'rtx'   => 'text/richtext',
-      'rtf'   => 'text/rtf',
-      'xml'   => 'text/xml',
-      'xsl'   => 'text/xml',
-      'mpeg'  => 'video/mpeg',
-      'mpg'   => 'video/mpeg',
-      'mpe'   => 'video/mpeg',
-      'qt'    => 'video/quicktime',
-      'mov'   => 'video/quicktime',
-      'avi'   => 'video/x-msvideo',
-      'movie' => 'video/x-sgi-movie',
-      'doc'   => 'application/msword',
-      'docx'  => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'xlsx'  => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'word'  => array('application/msword', 'application/octet-stream'),
-      'xl'    => 'application/excel',
-      'eml'   => 'message/rfc822',
-      'json'  => array('application/json', 'text/json'),    
-    ), 
-    'types' => array(
+  static public $mimes = array(
+    'hqx'   => 'application/mac-binhex40',
+    'cpt'   => 'application/mac-compactpro',
+    'csv'   => array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream'),
+    'bin'   => 'application/macbinary',
+    'dms'   => 'application/octet-stream',
+    'lha'   => 'application/octet-stream',
+    'lzh'   => 'application/octet-stream',
+    'exe'   => array('application/octet-stream', 'application/x-msdownload'),
+    'class' => 'application/octet-stream',
+    'psd'   => 'application/x-photoshop',
+    'so'    => 'application/octet-stream',
+    'sea'   => 'application/octet-stream',
+    'dll'   => 'application/octet-stream',
+    'oda'   => 'application/oda',
+    'pdf'   => array('application/pdf', 'application/x-download'),
+    'ai'    => 'application/postscript',
+    'eps'   => 'application/postscript',
+    'ps'    => 'application/postscript',
+    'smi'   => 'application/smil',
+    'smil'  => 'application/smil',
+    'mif'   => 'application/vnd.mif',
+    'xls'   => array('application/excel', 'application/vnd.ms-excel', 'application/msexcel'),
+    'ppt'   => array('application/powerpoint', 'application/vnd.ms-powerpoint'),
+    'wbxml' => 'application/wbxml',
+    'wmlc'  => 'application/wmlc',
+    'dcr'   => 'application/x-director',
+    'dir'   => 'application/x-director',
+    'dxr'   => 'application/x-director',
+    'dvi'   => 'application/x-dvi',
+    'gtar'  => 'application/x-gtar',
+    'gz'    => 'application/x-gzip',
+    'php'   => array('application/x-httpd-php', 'text/x-php'),
+    'php4'  => 'application/x-httpd-php',
+    'php3'  => 'application/x-httpd-php',
+    'phtml' => 'application/x-httpd-php',
+    'phps'  => 'application/x-httpd-php-source',
+    'js'    => 'application/x-javascript',
+    'swf'   => 'application/x-shockwave-flash',
+    'sit'   => 'application/x-stuffit',
+    'tar'   => 'application/x-tar',
+    'tgz'   => array('application/x-tar', 'application/x-gzip-compressed'),
+    'xhtml' => 'application/xhtml+xml',
+    'xht'   => 'application/xhtml+xml',
+    'zip'   => array('application/x-zip', 'application/zip', 'application/x-zip-compressed'),
+    'mid'   => 'audio/midi',
+    'midi'  => 'audio/midi',
+    'mpga'  => 'audio/mpeg',
+    'mp2'   => 'audio/mpeg',
+    'mp3'   => array('audio/mpeg', 'audio/mpg', 'audio/mpeg3', 'audio/mp3'),
+    'aif'   => 'audio/x-aiff',
+    'aiff'  => 'audio/x-aiff',
+    'aifc'  => 'audio/x-aiff',
+    'ram'   => 'audio/x-pn-realaudio',
+    'rm'    => 'audio/x-pn-realaudio',
+    'rpm'   => 'audio/x-pn-realaudio-plugin',
+    'ra'    => 'audio/x-realaudio',
+    'rv'    => 'video/vnd.rn-realvideo',
+    'wav'   => 'audio/x-wav',
+    'bmp'   => 'image/bmp',
+    'gif'   => 'image/gif',
+    'ico'   => 'image/x-icon',
+    'jpg'   => array('image/jpeg', 'image/pjpeg'),
+    'jpeg'  => array('image/jpeg', 'image/pjpeg'),
+    'jpe'   => array('image/jpeg', 'image/pjpeg'),
+    'png'   => 'image/png',
+    'tiff'  => 'image/tiff',
+    'tif'   => 'image/tiff',
+    'css'   => 'text/css',
+    'html'  => 'text/html',
+    'htm'   => 'text/html',
+    'shtml' => 'text/html',
+    'txt'   => 'text/plain',
+    'text'  => 'text/plain',
+    'log'   => array('text/plain', 'text/x-log'),
+    'rtx'   => 'text/richtext',
+    'rtf'   => 'text/rtf',
+    'xml'   => 'text/xml',
+    'xsl'   => 'text/xml',
+    'mpeg'  => 'video/mpeg',
+    'mpg'   => 'video/mpeg',
+    'mpe'   => 'video/mpeg',
+    'qt'    => 'video/quicktime',
+    'mov'   => 'video/quicktime',
+    'avi'   => 'video/x-msvideo',
+    'movie' => 'video/x-sgi-movie',
+    'doc'   => 'application/msword',
+    'docx'  => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'xlsx'  => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'word'  => array('application/msword', 'application/octet-stream'),
+    'xl'    => 'application/excel',
+    'eml'   => 'message/rfc822',
+    'json'  => array('application/json', 'text/json'),
+  );
 
-      'image' => array(
-        'jpeg',
-        'jpg',
-        'jpe',
-        'gif',
-        'png',
-        'svg',
-        'ico',
-        'tif',
-        'tiff',
-        'bmp',
-        'psd',
-        'ai',
-        'eps', 
-        'ps'
-      ),
+  static public $types = array(
 
-      'document' => array(
-        'txt',
-        'text',
-        'mdown',
-        'md',
-        'markdown',
-        'pdf',
-        'doc',
-        'docx',
-        'word',
-        'xl',
-        'xls',
-        'xlsx',
-        'ppt',
-        'csv',
-        'rtf',
-        'rtx',
-        'log',
-      ),
-
-      'archive' => array(
-        'zip',
-        'tar',
-        'gz',
-        'gzip',
-        'tgz',
-      ),
-
-      'code' => array(
-        'js',
-        'css',
-        'scss',
-        'htm',
-        'html',
-        'shtml',
-        'xhtml',
-        'php',
-        'php3',
-        'php4',
-        'rb',
-        'xml',
-        'json',
-      ),
-
-      'video' => array(
-        'mov',
-        'movie',
-        'avi',
-        'ogg',
-        'ogv',
-        'webm',
-        'flv',
-        'swf',
-        'mp4',
-        'mv4',
-        'mpg', 
-        'mpe'
-      ),
-
-      'audio' => array(
-        'mp3',
-        'm4a',
-        'wav',
-        'aif',
-        'aiff', 
-        'midi',
-      ),
-    
+    'image' => array(
+      'jpeg',
+      'jpg',
+      'jpe',
+      'gif',
+      'png',
+      'svg',
+      'ico',
+      'tif',
+      'tiff',
+      'bmp',
+      'psd',
+      'ai',
+      'eps',
+      'ps'
     ),
-  
+
+    'document' => array(
+      'txt',
+      'text',
+      'mdown',
+      'md',
+      'markdown',
+      'pdf',
+      'doc',
+      'docx',
+      'word',
+      'xl',
+      'xls',
+      'xlsx',
+      'ppt',
+      'csv',
+      'rtf',
+      'rtx',
+      'log',
+    ),
+
+    'archive' => array(
+      'zip',
+      'tar',
+      'gz',
+      'gzip',
+      'tgz',
+    ),
+
+    'code' => array(
+      'js',
+      'css',
+      'scss',
+      'htm',
+      'html',
+      'shtml',
+      'xhtml',
+      'php',
+      'php3',
+      'php4',
+      'rb',
+      'xml',
+      'json',
+    ),
+
+    'video' => array(
+      'mov',
+      'movie',
+      'avi',
+      'ogg',
+      'ogv',
+      'webm',
+      'flv',
+      'swf',
+      'mp4',
+      'mv4',
+      'mpg',
+      'mpe'
+    ),
+
+    'audio' => array(
+      'mp3',
+      'm4a',
+      'wav',
+      'aif',
+      'aiff',
+      'midi',
+    ),
+
   );
 
   /**
    * Checks if a file exists
-   * 
+   *
    * @param string $file
    * @return boolean
    */
@@ -221,23 +220,23 @@ class F {
 
   /**
    * Creates a new file
-   * 
+   *
    * <code>
    *
    * f::write('test.txt', 'hello');
    * // creates a new text file with hello as content
-   * 
+   *
    * // create a new file
    * f::write('text.txt', array('test' => 'hello'));
-   * // creates a new file and encodes the array as json   
-   * 
+   * // creates a new file and encodes the array as json
+   *
    * </code>
-   * 
+   *
    * @param  string  $file The path for the new file
-   * @param  mixed   $content Either a string, an object or an array. Arrays and objects will be serialized. 
-   * @param  boolean $append true: append the content to an exisiting file if available. false: overwrite. 
-   * @return boolean 
-   */  
+   * @param  mixed   $content Either a string, an object or an array. Arrays and objects will be serialized.
+   * @param  boolean $append true: append the content to an exisiting file if available. false: overwrite.
+   * @return boolean
+   */
   static public function write($file, $content, $append = false) {
     if(is_array($content) or is_object($content)) $content = serialize($content);
     $mode = ($append) ? FILE_APPEND | LOCK_EX : LOCK_EX;
@@ -250,38 +249,38 @@ class F {
 
   /**
    * Appends new content to an existing file
-   * 
+   *
    * @param  string  $file The path for the file
-   * @param  mixed   $content Either a string or an array. Arrays will be converted to JSON. 
-   * @return boolean 
-   */  
+   * @param  mixed   $content Either a string or an array. Arrays will be converted to JSON.
+   * @return boolean
+   */
   static public function append($file, $content) {
     return static::write($file,$content,true);
   }
-  
+
   /**
    * Reads the content of a file
-   * 
+   *
    * <code>
    *
    * $content = f::read('test.txt');
    * // i.e. content is hello
-   * 
+   *
    * $content = f::read('text.txt', 'json');
    * // returns an array with the parsed content
-   * 
-   * </code>   
-   * 
+   *
+   * </code>
+   *
    * @param  string $file The path for the file
-   * @return mixed 
-   */  
+   * @return mixed
+   */
   static public function read($file) {
     return @file_get_contents($file);
   }
 
   /**
    * Returns the file content as base64 encoded string
-   * 
+   *
    * @param string $file The path for the file
    * @return string
    */
@@ -291,7 +290,7 @@ class F {
 
   /**
    * Returns the file as data uri
-   * 
+   *
    * @param string $file The path for the file
    * @return string
    */
@@ -302,19 +301,19 @@ class F {
 
   /**
    * Moves a file to a new location
-   * 
+   *
    * <code>
    *
    * $move = f::move('test.txt', 'super.txt');
-   * 
+   *
    * if($move) echo 'The file has been moved';
-   * 
+   *
    * </code>
-   * 
+   *
    * @param  string $old The current path for the file
    * @param  string $new The path to the new location
-   * @return boolean 
-   */  
+   * @return boolean
+   */
   static public function move($old, $new) {
     if(!file_exists($old) or file_exists($new)) return false;
     return @rename($old, $new);
@@ -334,17 +333,17 @@ class F {
 
   /**
    * Deletes a file
-   * 
+   *
    * <code>
    *
    * $remove = f::remove('test.txt');
    * if($remove) echo 'The file has been removed';
-   * 
-   * </code>   
-   * 
+   *
+   * </code>
+   *
    * @param  string  $file The path for the file
-   * @return boolean 
-   */  
+   * @return boolean
+   */
   static public function remove($file) {
     return file_exists($file) and is_file($file) and !empty($file) ? @unlink($file) : false;
   }
@@ -356,13 +355,13 @@ class F {
    *
    * $extension = f::extension('test.txt');
    * // extension is txt
-   * 
+   *
    * </code>
-   * 
+   *
    * @param  string  $file The filename or path
    * @param  string  $extension Set an optional extension to overwrite the current one
-   * @return string 
-   */  
+   * @return string
+   */
   static public function extension($file, $extension = false) {
 
     // overwrite the current extension
@@ -370,33 +369,33 @@ class F {
 
     // return the current extension
     return strtolower(pathinfo($file, PATHINFO_EXTENSION));
-  
+
   }
 
   /**
    * Returns all extensions for a certain file type
-   * 
+   *
    * @param string $type
    * @return array
    */
   static public function extensions($type = null) {
-    if(is_null($type)) return array_keys(static::$defaults['mimes']);
-    return isset(static::$defaults['types'][$type]) ? static::$defaults['types'][$type] : array();
+    if(is_null($type)) return array_keys(static::$mimes);
+    return isset(static::$types[$type]) ? static::$types[$type] : array();
   }
 
   /**
    * Extracts the filename from a file path
-   * 
+   *
    * <code>
    *
    * $filename = f::filename('/var/www/test.txt');
    * // filename is test.txt
-   * 
+   *
    * </code>
-   * 
+   *
    * @param  string  $file The path
-   * @return string 
-   */  
+   * @return string
+   */
   static public function filename($name) {
     return pathinfo($name, PATHINFO_BASENAME);
   }
@@ -407,14 +406,14 @@ class F {
    * <code>
    *
    * $name = f::name('/var/www/test.txt');
-   * 
+   *
    * // name is test
-   * 
-   * </code>  
-   * 
+   *
+   * </code>
+   *
    * @param  string  $file The path or filename
-   * @return string 
-   */  
+   * @return string
+   */
   static public function name($name) {
     return pathinfo($name, PATHINFO_FILENAME);
   }
@@ -425,52 +424,52 @@ class F {
    * <code>
    *
    * $dirname = f::dirname('/var/www/test.txt');
-   * // dirname is /var/www  
-   * 
+   * // dirname is /var/www
+   *
    * </code>
-   * 
+   *
    * @param  string  $file The path
-   * @return string 
-   */  
+   * @return string
+   */
   static public function dirname($file) {
     return dirname($file);
   }
 
   /**
    * Returns the size of a file.
-   * 
+   *
    * <code>
    *
    * $size = f::size('/var/www/test.txt');
    * // size is ie: 1231939
-   * 
-   * </code>   
-   * 
+   *
+   * </code>
+   *
    * @param  string  $file The path
    * @return mixed
-   */    
+   */
   static public function size($file) {
     return filesize($file);
   }
 
   /**
    * Converts an integer size into a human readable format
-   * 
+   *
    * <code>
    *
    * $niceSize = f::niceSize('/path/to/a/file.txt');
    * // nice size is i.e: 212 kb
-   * 
+   *
    * $niceSize = f::niceSize(1231939);
    * // nice size is: 1,2 mb
-   * 
-   * </code>   
-   * 
+   *
+   * </code>
+   *
    * @param  int $size The file size or a file path
    * @return string
-   */    
+   */
   static public function niceSize($size) {
-    
+
     // file mode
     if(!is_int($size) and file_exists($size)) {
       $size = static::size($size);
@@ -478,16 +477,16 @@ class F {
 
     // make sure it's an int
     $size = (int)$size;
-    
+
     // avoid errors for invalid sizes
     if($size <= 0) return '0 kb';
-    
+
     // available units
     $unit = array('b','kb','mb','gb','tb','pb', 'eb', 'zb', 'yb');
-    
+
     // the math magic
     return round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
-  
+
   }
 
   /**
@@ -503,7 +502,7 @@ class F {
 
   /**
    * Returns the mime type of a file
-   * 
+   *
    * @param string $file
    * @return string
    */
@@ -518,16 +517,16 @@ class F {
       $mime  = finfo_file($finfo, $file);
       finfo_close($finfo);
       return $mime;
-    } 
+    }
 
-    // for older versions with mime_content_type go for that. 
+    // for older versions with mime_content_type go for that.
     if(function_exists('mime_content_type') and $mime = @mime_content_type($file) !== false) {
       return $mime;
-    } 
+    }
 
     // guess the matching mime type by extension
     $ext  = pathinfo($file, PATHINFO_EXTENSION);
-    $info = isset(static::$defaults['mimes'][$ext]) ? static::$defaults['mimes'][$ext] : null;
+    $info = isset(static::$mimes[$ext]) ? static::$mimes[$ext] : null;
 
     // if there are more than one applicable mimes for the extension, return the first
     return is_array($info) ? array_shift($info) : $info;
@@ -536,16 +535,16 @@ class F {
 
   /**
    * Returns all detectable mime types
-   * 
+   *
    * @return array
    */
   static public function mimes() {
-    return static::$defaults['mimes'];
+    return static::$mimes;
   }
 
   /**
    * Categorize the file
-   * 
+   *
    * @param string $file Either the file path or extension
    * @return string
    */
@@ -570,10 +569,7 @@ class F {
     // sanitize extension
     $extension = strtolower($extension);
 
-    // get all categorized types
-    $types = static::$defaults['types'];
-
-    foreach($types as $type => $extensions) {
+    foreach(static::$types as $type => $extensions) {
       if(in_array($extension, $extensions)) return $type;
     }
 
@@ -587,18 +583,18 @@ class F {
    * @return array
    */
   static public function types() {
-    return static::$defaults['types'];
+    return static::$types;
   }
 
   /**
    * Checks if a file is of a certain type
-   * 
+   *
    * @param string $file Full path to the file
    * @param string $value An extension or mime type
    * @return boolean
    */
   static public function is($file, $value) {
-    
+
     if(in_array($value, static::extensions())) {
       // check for the extension
       return static::extension($file) == $value;
@@ -608,18 +604,18 @@ class F {
     }
 
     return false;
-    
+
   }
 
   /**
    * Converts a mime type to a file extension
-   * 
+   *
    * @param string $mime
    * @return string
    */
   static public function mimeToExtension($mime) {
-    foreach(static::$defaults['mimes'] as $key => $value) {
-      if(is_array($value) and in_array($mime, $value)) return $key; 
+    foreach(static::$mimes as $key => $value) {
+      if(is_array($value) and in_array($mime, $value)) return $key;
       if($value == $mime) return $key;
     }
     return null;
@@ -627,35 +623,35 @@ class F {
 
   /**
    * Returns the type for a given mime
-   * 
+   *
    * @param string $mime
    * @return string
    */
   static public function mimeToType($mime) {
     return static::extensionToType(static::mimeToExtension($mime));
   }
-    
+
   /**
    * Converts a file extension to a mime type
-   * 
+   *
    * @param string $extension
    * @return string
    */
   static public function extensionToMime($extension) {
-    $mime = isset(static::$defaults['mimes'][$extension]) ? static::$defaults['mimes'][$extension] : null;
+    $mime = isset(static::$mimes[$extension]) ? static::$mimes[$extension] : null;
     return is_array($mime) ? array_shift($mime) : $mime;
   }
 
   /**
    * Returns the file type for a passed extension
-   * 
+   *
    * @param string $extension
    * @return string
    */
   static public function extensionToType($extension) {
 
     // get all categorized types
-    foreach(static::$defaults['types'] as $type => $extensions) {
+    foreach(static::$types as $type => $extensions) {
       if(in_array($extension, $extensions)) return $type;
     }
 
@@ -665,17 +661,17 @@ class F {
 
   /**
    * Sanitize a filename to strip unwanted special characters
-   * 
+   *
    * <code>
    *
    * $safe = f::safeName('über genious.txt');
    * // safe will be ueber-genious.txt
-   * 
-   * </code>   
-   * 
+   *
+   * </code>
+   *
    * @param  string $string The file name
    * @return string
-   */    
+   */
   static public function safeName($string) {
     $name      = static::name($string);
     $extension = static::extension($string);
@@ -685,7 +681,7 @@ class F {
 
   /**
    * Checks if the file is writable
-   * 
+   *
    * @param string $file
    * @return boolean
    */
@@ -695,7 +691,7 @@ class F {
 
   /**
    * Checks if the file is readable
-   * 
+   *
    * @param string $file
    * @return boolean
    */
@@ -706,7 +702,7 @@ class F {
   /*
    * Automatically sends all needed headers for the file to be downloaded
    * and echos the file's content
-   * 
+   *
    * @param string $file The root to the file
    * @param string $name Optional filename for the download
    */
@@ -718,7 +714,7 @@ class F {
     header::download(array(
       'name'     => $name ? $name : f::filename($file),
       'size'     => f::size($file),
-      'mime'     => f::mime($file), 
+      'mime'     => f::mime($file),
       'modified' => f::modified($file)
     ));
 

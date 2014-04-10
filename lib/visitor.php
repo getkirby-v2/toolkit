@@ -2,10 +2,10 @@
 
 /**
  * Visitor
- * 
+ *
  * Gives some handy information about the current visitor
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -15,31 +15,31 @@ class Visitor {
 
   // banned ips
   static public $banned = array();
-    
+
   // cache for the detected language code
   static protected $acceptedLanguageCode = null;
 
   /**
    * Returns the ip address of the current visitor
-   * 
+   *
    * @return string
    */
   static public function ip() {
-    return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false;
+    return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
   }
 
   /**
    * Returns the user agent string of the current visitor
-   * 
+   *
    * @return string
    */
   static public function ua() {
-    return $_SERVER['HTTP_USER_AGENT'];
+    return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
   }
 
   /**
    * A more readable but longer alternative for ua()
-   * 
+   *
    * @return string
    */
   static public function userAgent() {
@@ -48,16 +48,16 @@ class Visitor {
 
   /**
    * Returns the user's accepted language
-   * 
+   *
    * @return string
    */
   static public function acceptedLanguage() {
-    return $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+    return isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : null;
   }
 
   /**
    * Returns the user's accepted language code
-   * 
+   *
    * @return string
    */
   static public function acceptedLanguageCode() {
@@ -69,7 +69,7 @@ class Visitor {
 
   /**
    * Returns the referrer if available
-   * 
+   *
    * @return string
    */
   static public function referrer() {
@@ -78,7 +78,7 @@ class Visitor {
 
   /**
    * Nobody can remember if it is written with on or two r
-   * 
+   *
    * @return string
    */
   static public function referer() {
@@ -87,7 +87,7 @@ class Visitor {
 
   /**
    * Checks if the ip of the current visitor is banned
-   * 
+   *
    * @return boolean
    */
   static public function banned() {
