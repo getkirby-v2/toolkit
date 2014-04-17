@@ -220,9 +220,11 @@ class Url {
 
     // build the full url
     $path = ltrim($path, '/');
-    $home = is_null($home) ? static::home() : $home;
+    $home = is_null($home) ? static::$home : $home;
 
-    return empty($path) ? $home : $home . '/' . $path;
+    if(empty($path)) return $home;
+
+    return $home == '/' ? '/' . $path : $home . '/' . $path;
 
   }
 
