@@ -29,7 +29,7 @@ class Url {
    */
   static public function current() {
     if(!is_null(static::$current)) return static::$current;
-    return static::$current = static::scheme() . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    return static::$current = static::scheme() . '://' . server::get('HTTP_HOST') . server::get('REQUEST_URI');
   }
 
   /**
