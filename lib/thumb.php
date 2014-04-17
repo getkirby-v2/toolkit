@@ -14,16 +14,18 @@ class Thumb extends Obj {
   static public $drivers = array();
 
   static public $defaults = array(
-    'filename' => '{safeName}-{hash}.{extension}',
-    'url'      => '/thumbs',
-    'root'     => '/thumbs',
-    'driver'   => 'im',
-    'quality'  => 100,
-    'blur'     => false,
-    'width'    => null,
-    'height'   => null,
-    'upscale'  => false,
-    'crop'     => false
+    'filename'  => '{safeName}-{hash}.{extension}',
+    'url'       => '/thumbs',
+    'root'      => '/thumbs',
+    'driver'    => 'im',
+    'memory'    => '128M',
+    'quality'   => 100,
+    'blur'      => false,
+    'width'     => null,
+    'height'    => null,
+    'upscale'   => false,
+    'crop'      => false,
+    'grayscale' => false
   );
 
   public $source      = null;
@@ -115,6 +117,7 @@ class Thumb extends Obj {
       ($this->options['upscale']) ? $this->options['upscale'] : 0,
       ($this->options['crop'])    ? $this->options['crop']    : 0,
        $this->options['blur'],
+       $this->options['grayscale'],
        $this->options['quality']
     ));
 
@@ -145,8 +148,8 @@ class Thumb extends Obj {
   public function isObsolete() {
 
     // try to use the original if resizing is not necessary
-    if($this->options['width']   <= $this->source->width()  and
-       $this->options['height']  <= $this->source->height() and
+    if($this->options['width']   >= $this->source->width()  and
+       $this->options['height']  >= $this->source->height() and
        $this->options['crop']    == false                   and
        $this->options['blur']    == false                   and
        $this->options['upscale'] == false) return true;
@@ -211,13 +214,23 @@ thumb::$drivers['im'] = function($thumb) {
   $command[] = isset($thumb->options['bin']) ? $thumb->options['bin'] : 'convert';
   $command[] = '"' . $thumb->source->root() . '"';
   $command[] = '-strip';
+
+  if($thumb->options['grayscale']) {
+    $command[] = '-colorspace gray';
+  }
+
   $command[] = '-resize';
-  $command[] = $thumb->options['width'] . 'x' . $thumb->options['height'] . '^';
-  $command[] = '-quality ' . $thumb->options['quality'];
 
   if($thumb->options['crop']) {
+    $command[] = $thumb->options['width'] . 'x' . $thumb->options['height'] . '^';
     $command[] = '-gravity Center -crop ' . $thumb->options['width'] . 'x' . $thumb->options['height'] . '+0+0';
+  } else {
+    $dimensions = clone $thumb->source->dimensions();
+    $dimensions->fitWidthAndHeight($thumb->options['width'], $thumb->options['height'], $thumb->options['upscale']);
+    $command[] = $dimensions->width() . 'x' . $dimensions->height() . '!';
   }
+
+  $command[] = '-quality ' . $thumb->options['quality'];
 
   if($thumb->options['blur']) {
     $command[] = '-blur 0x8';
@@ -226,5 +239,38 @@ thumb::$drivers['im'] = function($thumb) {
   $command[] = '"' . $thumb->destination->root . '"';
 
   exec(implode(' ', $command));
+
+};
+
+
+/**
+ * GDLib Driver
+ */
+thumb::$drivers['gd'] = function($thumb) {
+
+  try {
+    $img = new abeautifulsite\SimpleImage($thumb->root());
+    $img->quality = $thumb->options['quality'];
+
+    if($thumb->options['crop']) {
+      $img->thumbnail($thumb->options['width'], $thumb->options['height']);
+    } else {
+      $dimensions = clone $thumb->source->dimensions();
+      $dimensions->fitWidthAndHeight($thumb->options['width'], $thumb->options['height'], $thumb->options['upscale']);
+      $img->resize($dimensions->width(), $dimensions->height());
+    }
+
+    if($thumb->options['grayscale']) {
+      $img->desaturate();
+    }
+
+    if($thumb->options['blur']) {
+      $img->blur('gaussian', 10);
+    }
+
+    $img->save($thumb->destination->root);
+  } catch(Exception $e) {
+
+  }
 
 };

@@ -79,30 +79,30 @@ class Upload {
     $source = $this->source();
 
     if(is_null($source['name']) or is_null($source['tmp_name'])) {
-      throw new Exception('The file has not been found', static::ERROR_MISSING_FILE);
+      throw new Error('The file has not been found', static::ERROR_MISSING_FILE);
     }
 
     if($source['error'] !== 0) {
-      throw new Exception('The upload failed', static::ERROR_FAILED_UPLOAD);
+      throw new Error('The upload failed', static::ERROR_FAILED_UPLOAD);
     }
 
     if(file_exists($this->to()) and $this->options['overwrite'] === false) {
-      throw new Exception('The file exists and cannot be overwritten', static::ERROR_UNALLOWED_OVERWRITE);
+      throw new Error('The file exists and cannot be overwritten', static::ERROR_UNALLOWED_OVERWRITE);
     }
 
     if($source['size'] > $this->options['maxSize']) {
-      throw new Exception('The file is too big', static::ERROR_FILE_TOO_BIG);
+      throw new Error('The file is too big', static::ERROR_FILE_TOO_BIG);
     }
 
     if(is_callable($this->options['accept'])) {
       $accepted = call($this->options['accept'], new Media($source['tmp_name']));
       if($accepted === false) {
-        throw new Exception('The file is not accepted by the server', static::ERROR_UNACCEPTED);
+        throw new Error('The file is not accepted by the server', static::ERROR_UNACCEPTED);
       }
     }
 
     if(!@move_uploaded_file($source['tmp_name'], $this->to())) {
-      throw new Exception('The file could not be moved', static::ERROR_MOVE_FAILED);
+      throw new Error('The file could not be moved', static::ERROR_MOVE_FAILED);
     }
 
   }

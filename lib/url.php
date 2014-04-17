@@ -33,6 +33,15 @@ class Url {
   }
 
   /**
+   * Returns the url for the current directory
+   *
+   * @return string
+   */
+  static public function currentDir() {
+    return dirname(static::current());
+  }
+
+  /**
    */
   static public function host($url = null) {
     if(is_null($url)) $url = static::current();
@@ -196,6 +205,25 @@ class Url {
   static public function isAbsolute($url) {
     // don't convert absolute urls
     return (str::startsWith($url, 'http://') or str::startsWith($url, 'https://'));
+  }
+
+  /**
+   * Convert a relative path into an absolute URL
+   *
+   * @param string $path
+   * @param string $home
+   * @return string
+   */
+  static public function makeAbsolute($path, $home = null) {
+
+    if(static::isAbsolute($path)) return $path;
+
+    // build the full url
+    $path = ltrim($path, '/');
+    $home = is_null($home) ? static::home() : $home;
+
+    return empty($path) ? $home : $home . '/' . $path;
+
   }
 
   /**

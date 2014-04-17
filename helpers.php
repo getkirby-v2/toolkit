@@ -271,7 +271,7 @@ function path($key, $value = null) {
  */
 function email($params = array()) {
   $email = new Email($params);
-  $email->send();
+  return $email->send();
 }
 
 /**
@@ -279,4 +279,31 @@ function email($params = array()) {
  */
 function upload($to, $params = array()) {
   return new Upload($to, $params);
+}
+
+/**
+ * Checks for invalid data
+ *
+ * @param array $data
+ * @param array $rules
+ * @param array $messages
+ * @return mixed
+ */
+function invalid($data, $rules, $messages = array()) {
+  $errors = array();
+  foreach($rules as $field => $validations) {
+    foreach($validations as $method => $options) {
+      if(is_numeric($method)) $method = $options;
+      if($method == 'required') {
+        if(!isset($data[$field])) $errors[$field] = a::get($messages, $field, $field);
+      } else {
+        if(!is_array($options)) $options = array($options);
+        array_unshift($options, a::get($data, $field));
+        if(!call(array('v', $method), $options)) {
+          $errors[$field] = a::get($messages, $field, $field);
+        }
+      }
+    }
+  }
+  return array_unique($errors);
 }

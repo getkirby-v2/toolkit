@@ -1,14 +1,14 @@
-<?php 
+<?php
 
 /**
  * Dimensions
- * 
+ *
  * The dimension object is used to provide additional
- * methods for KirbyImage objects and possibly other 
- * objects with width and height to recalculate the size, 
- * get the ratio or just the width and height. 
- * 
- * @package   Kirby Toolkit 
+ * methods for KirbyImage objects and possibly other
+ * objects with width and height to recalculate the size,
+ * get the ratio or just the width and height.
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -35,7 +35,7 @@ class Dimensions {
 
   /**
    * Returns the width
-   * 
+   *
    * @return int
    */
   public function width() {
@@ -44,7 +44,7 @@ class Dimensions {
 
   /**
    * Returns the height
-   * 
+   *
    * @return int
    */
   public function height() {
@@ -53,15 +53,15 @@ class Dimensions {
 
   /**
    * Calculates and returns the ratio
-   * 
+   *
    * <code>
-   * 
+   *
    * $dimensions = new Dimensions(1200, 768);
    * echo $dimensions->ratio();
    * // output: 1.5625
    *
    * </code>
-   * 
+   *
    * @return float
    */
   public function ratio() {
@@ -69,22 +69,22 @@ class Dimensions {
   }
 
   /**
-   * Recalculates the width and height 
-   * to fit into the given box. 
-   * 
+   * Recalculates the width and height
+   * to fit into the given box.
+   *
    * <code>
-   * 
+   *
    * $dimensions = new Dimensions(1200, 768);
    * $dimensions->fit(500);
-   * 
+   *
    * echo $dimensions->width();
    * // output: 500
-   * 
+   *
    * echo $dimensions->height();
    * // output: 320
    *
    * </code>
-   * 
+   *
    * @param int $box the max width and/or height
    * @param boolean $force If true, the dimensions will be upscaled to fit the box if smaller
    * @return object returns this object with recalculated dimensions
@@ -101,10 +101,10 @@ class Dimensions {
 
     if($this->width > $this->height) {
       if($this->width > $box || $force == true) $this->width = $box;
-      $this->height = floor($this->width / $ratio);
+      $this->height = round($this->width / $ratio);
     } elseif($this->height > $this->width) {
       if($this->height > $box || $force == true) $this->height = $box;
-      $this->width = floor($this->height * $ratio);
+      $this->width = round($this->height * $ratio);
     } elseif($this->width > $box) {
       $this->width  = $box;
       $this->height = $box;
@@ -117,66 +117,70 @@ class Dimensions {
   /**
    * Recalculates the width and height
    * to fit the given width
-   * 
+   *
    * <code>
-   * 
+   *
    * $dimensions = new Dimensions(1200, 768);
    * $dimensions->fitWidth(500);
-   * 
+   *
    * echo $dimensions->width();
    * // output: 500
-   * 
+   *
    * echo $dimensions->height();
    * // output: 320
    *
    * </code>
-   * 
+   *
    * @param int $width the max width
    * @param boolean $force If true, the dimensions will be upscaled to fit the width if smaller
    * @return object returns this object with recalculated dimensions
    */
   public function fitWidth($fit, $force = false) {
 
+    if(!$fit) return $this;
+
     if($this->width <= $fit and !$force) return $this;
 
     $ratio = $this->ratio();
 
     $this->width  = $fit;
-    $this->height = floor($fit / $ratio);
-    
-    return $this;      
+    $this->height = round($fit / $ratio);
+
+    return $this;
 
   }
 
   /**
    * Recalculates the width and height
    * to fit the given height
-   * 
+   *
    * <code>
-   * 
+   *
    * $dimensions = new Dimensions(1200, 768);
    * $dimensions->fitHeight(500);
-   * 
+   *
    * echo $dimensions->width();
    * // output: 781
-   * 
+   *
    * echo $dimensions->height();
    * // output: 500
    *
    * </code>
-   *    
+   *
    * @param int $height the max height
    * @param boolean $force If true, the dimensions will be upscaled to fit the height if smaller
    * @return object returns this object with recalculated dimensions
    */
   public function fitHeight($fit, $force = false) {
 
+    if(!$fit) return $this;
+
     if($this->height <= $fit and !$force) return $this;
 
     $ratio = $this->ratio();
-    
-    $this->width  = floor($fit * $ratio);
-    $this->height = $fit; 
+
+    $this->width  = round($fit * $ratio);
+    $this->height = $fit;
 
     return $this;
 
@@ -184,7 +188,7 @@ class Dimensions {
 
   /**
    * Recalculates the dimensions by the width and height
-   * 
+   *
    * @param int $width the max height
    * @param int $height the max width
    * @return object
@@ -194,14 +198,14 @@ class Dimensions {
     if($this->width > $this->height) {
 
       $this->fitWidth($width, $force);
-      
+
       // do another check for the max height
       if($this->height > $height) $this->fitHeight($height);
 
     } else {
 
       $this->fitHeight($height, $force);
-      
+
       // do another check for the max width
       if($this->width > $width) $this->fitWidth($width);
 
@@ -213,7 +217,7 @@ class Dimensions {
 
   /**
    * Checks if the dimensions are portrait
-   * 
+   *
    * @return boolean
    */
   public function portrait() {
@@ -222,7 +226,7 @@ class Dimensions {
 
   /**
    * Checks if the dimensions are landscape
-   * 
+   *
    * @return boolean
    */
   public function landscape() {
@@ -231,7 +235,7 @@ class Dimensions {
 
   /**
    * Checks if the dimensions are square
-   * 
+   *
    * @return boolean
    */
   public function square() {
@@ -240,7 +244,7 @@ class Dimensions {
 
   /**
    * Echos the dimensions as width x height
-   * 
+   *
    * @return string
    */
   public function __toString() {

@@ -2,7 +2,7 @@
 
 namespace Cache\Driver;
 
-use Cache\Driver\Memcache;
+use Cache\Driver;
 
 /**
  * Memcache
@@ -13,7 +13,10 @@ use Cache\Driver\Memcache;
  * @copyright Bastian Allgeier
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
-class Memcached extends Memcache {
+class Memcached extends Driver {
+
+  // store for the memache connection
+  protected $connection = null;
 
   /**
    * Set all parameters which are needed for the memcache client
@@ -50,6 +53,35 @@ class Memcached extends Memcache {
    */
   public function set($key, $value, $minutes = null) {
     return $this->connection->set($key, $this->value($value, $minutes), $this->expiration($minutes));
+  }
+
+  /**
+   * Retrieve the CacheValue object from the cache.
+   *
+   * @param  string  $key
+   * @return object CacheValue
+   */
+  public function retrieve($key) {
+    return $this->connection->get($key);
+  }
+
+  /**
+   * Remove an item from the cache
+   *
+   * @param string $key
+   * @return boolean
+   */
+  public function remove($key) {
+    return $this->connection->delete($key);
+  }
+
+  /**
+   * Flush the entire cache directory
+   *
+   * @return boolean
+   */
+  public function flush() {
+    return $this->connection->flush();
   }
 
 }
