@@ -221,29 +221,6 @@ class Collection extends I {
   }
 
   /**
-   * Finds any amount of elements in the collection
-   * by their key
-   *
-   * @return mixed
-   */
-  public function find() {
-    $keys = func_get_args();
-    if(count($keys) == 0) {
-      throw new Exception('The find method expects at least one argument');
-    } else if(count($keys) == 1) {
-      return $this->get($keys[0]);
-    } else {
-      $result = new static();
-      foreach($keys as $k) {
-        if(isset($this->data[$k])) {
-          $result->set($k, $this->data[$k]);
-        }
-      }
-      return $result;
-    }
-  }
-
-  /**
    * Find a single item by a key and value pair
    *
    * @param string $key
