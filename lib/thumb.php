@@ -32,6 +32,7 @@ class Thumb extends Obj {
   public $result      = null;
   public $destination = null;
   public $options     = array();
+  public $error       = null;
 
   /**
    * Constructor
@@ -66,10 +67,14 @@ class Thumb extends Obj {
     if(!$this->isThere()) {
 
       // check for a valid image
-      if(!$this->source->exists() or $this->source->type() != 'image') throw new Exception('The given image is invalid');
+      if(!$this->source->exists() or $this->source->type() != 'image') {
+        throw new Exception('The given image is invalid');
+      }
 
       // check for a valid driver
-      if(!array_key_exists($this->options['driver'], static::$drivers)) throw new Exception('Invalid thumbnail driver');
+      if(!array_key_exists($this->options['driver'], static::$drivers)) {
+        throw new Exception('Invalid thumbnail driver');
+      }
 
       // create the thumbnail
       $this->create();
@@ -82,6 +87,15 @@ class Thumb extends Obj {
     // create the result object
     $this->result = new Media($this->destination->root, $this->destination->url);
 
+  }
+
+  /**
+   * Returns the exception if available
+   *
+   * @return Exception
+   */
+  public function error() {
+    return $this->error;
   }
 
   /**
@@ -270,7 +284,7 @@ thumb::$drivers['gd'] = function($thumb) {
 
     $img->save($thumb->destination->root);
   } catch(Exception $e) {
-
+    $thumb->error = $e;
   }
 
 };
