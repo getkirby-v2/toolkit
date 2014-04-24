@@ -25,7 +25,8 @@ class Thumb extends Obj {
     'height'    => null,
     'upscale'   => false,
     'crop'      => false,
-    'grayscale' => false
+    'grayscale' => false,
+    'overwrite' => false,
   );
 
   public $source      = null;
@@ -145,6 +146,8 @@ class Thumb extends Obj {
    */
   public function isThere() {
 
+    if($this->options['overwrite'] === true) return false;
+
     // if the thumb already exists and the source hasn't been updated
     // we don't need to generate a new thumbnail
     if(file_exists($this->destination->root) and f::modified($this->destination->root) >= $this->source->modified()) return true;
@@ -160,6 +163,8 @@ class Thumb extends Obj {
    * @return boolean
    */
   public function isObsolete() {
+
+    if($this->options['overwrite'] === true) return false;
 
     // try to use the original if resizing is not necessary
     if($this->options['width']   >= $this->source->width()  and
