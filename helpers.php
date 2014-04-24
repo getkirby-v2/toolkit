@@ -307,3 +307,15 @@ function invalid($data, $rules, $messages = array()) {
   }
   return array_unique($errors);
 }
+
+
+/**
+ * Shortcut for the language variable getter
+ *
+ * @param string $key
+ * @param mixed $default
+ * @return string
+ */
+function l($key, $default = null) {
+  return l::get($key, $default);
+}
