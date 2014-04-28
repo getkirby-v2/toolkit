@@ -13,6 +13,8 @@
  */
 class DB {
 
+  const ERROR_UNKNOWN_METHOD = 0;
+
   // query shortcuts
   static public $queries = array();
 
@@ -102,7 +104,7 @@ class DB {
     if(isset(static::$queries[$method])) {
       return call(static::$queries[$method], $arguments);
     } else if(!is_callable(array(static::$connection, $method))) {
-      throw new Exception('invalid static db method: ' . $method);
+      throw new Error('invalid static db method: ' . $method, static::ERROR_UNKNOWN_METHOD);
     } else {
       return call(array(static::$connection, $method), $arguments);
     }

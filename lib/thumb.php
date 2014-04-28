@@ -11,6 +11,9 @@
  */
 class Thumb extends Obj {
 
+  const ERROR_INVALID_IMAGE  = 0;
+  const ERROR_INVALID_DRIVER = 1;
+
   static public $drivers = array();
 
   static public $defaults = array(
@@ -69,12 +72,12 @@ class Thumb extends Obj {
 
       // check for a valid image
       if(!$this->source->exists() or $this->source->type() != 'image') {
-        throw new Exception('The given image is invalid');
+        throw new Error('The given image is invalid', static::ERROR_INVALID_IMAGE);
       }
 
       // check for a valid driver
       if(!array_key_exists($this->options['driver'], static::$drivers)) {
-        throw new Exception('Invalid thumbnail driver');
+        throw new Error('Invalid thumbnail driver', static::ERROR_INVALID_DRIVER);
       }
 
       // create the thumbnail
@@ -217,6 +220,13 @@ class Thumb extends Obj {
       'class'  => isset($this->options['class']) ? $this->options['class'] : null,
     ), $attr));
 
+  }
+
+  /**
+   * Makes it possible to echo the entire object
+   */
+  public function __toString() {
+    return $this->tag();
   }
 
 }
