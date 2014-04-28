@@ -21,6 +21,7 @@ load(array(
 
   // classes
   'a'                           => __DIR__ . DS . 'lib' . DS . 'a.php',
+  'bitmask'                     => __DIR__ . DS . 'lib' . DS . 'bitmask.php',
   'c'                           => __DIR__ . DS . 'lib' . DS . 'c.php',
   'cookie'                      => __DIR__ . DS . 'lib' . DS . 'cookie.php',
   'cache'                       => __DIR__ . DS . 'lib' . DS . 'cache.php',
@@ -43,6 +44,7 @@ load(array(
   'email'                       => __DIR__ . DS . 'lib' . DS . 'email.php',
   'embed'                       => __DIR__ . DS . 'lib' . DS . 'embed.php',
   'error'                       => __DIR__ . DS . 'lib' . DS . 'error.php',
+  'errorreporting'              => __DIR__ . DS . 'lib' . DS . 'errorreporting.php',
   'exif'                        => __DIR__ . DS . 'lib' . DS . 'exif.php',
   'exif\\camera'                => __DIR__ . DS . 'lib' . DS . 'exif' . DS . 'camera.php',
   'exif\\location'              => __DIR__ . DS . 'lib' . DS . 'exif' . DS . 'location.php',
@@ -66,6 +68,7 @@ load(array(
   'silo'                        => __DIR__ . DS . 'lib' . DS . 'silo.php',
   'sql'                         => __DIR__ . DS . 'lib' . DS . 'sql.php',
   'str'                         => __DIR__ . DS . 'lib' . DS . 'str.php',
+  'system'                      => __DIR__ . DS . 'lib' . DS . 'system.php',
   'thumb'                       => __DIR__ . DS . 'lib' . DS . 'thumb.php',
   'tpl'                         => __DIR__ . DS . 'lib' . DS . 'tpl.php',
   'upload'                      => __DIR__ . DS . 'lib' . DS . 'upload.php',

@@ -28,13 +28,15 @@ class Thumb extends Obj {
     'height'    => null,
     'upscale'   => false,
     'crop'      => false,
-    'grayscale' => false
+    'grayscale' => false,
+    'overwrite' => false,
   );
 
   public $source      = null;
   public $result      = null;
   public $destination = null;
   public $options     = array();
+  public $error       = null;
 
   /**
    * Constructor
@@ -92,6 +94,15 @@ class Thumb extends Obj {
   }
 
   /**
+   * Returns the exception if available
+   *
+   * @return Exception
+   */
+  public function error() {
+    return $this->error;
+  }
+
+  /**
    * Makes it possible to pass a string of params
    * which is shorter and more convenient than
    * passing a full array of keys and values:
@@ -138,6 +149,8 @@ class Thumb extends Obj {
    */
   public function isThere() {
 
+    if($this->options['overwrite'] === true) return false;
+
     // if the thumb already exists and the source hasn't been updated
     // we don't need to generate a new thumbnail
     if(file_exists($this->destination->root) and f::modified($this->destination->root) >= $this->source->modified()) return true;
@@ -153,6 +166,8 @@ class Thumb extends Obj {
    * @return boolean
    */
   public function isObsolete() {
+
+    if($this->options['overwrite'] === true) return false;
 
     // try to use the original if resizing is not necessary
     if($this->options['width']   >= $this->source->width()  and
@@ -284,7 +299,7 @@ thumb::$drivers['gd'] = function($thumb) {
 
     $img->save($thumb->destination->root);
   } catch(Exception $e) {
-
+    $thumb->error = $e;
   }
 
 };
