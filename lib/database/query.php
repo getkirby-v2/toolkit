@@ -5,7 +5,7 @@ namespace Database;
 use A;
 use Str;
 use Sql;
-use Exception;
+use Error;
 
 /**
  *
@@ -21,6 +21,8 @@ use Exception;
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
 class Query {
+
+  const ERROR_INVALID_QUERY_METHOD = 0;
 
   protected $db = null;
 
@@ -848,7 +850,7 @@ class Query {
       $column = str::lower($match[1]);
       return $this->findBy($column, $arguments[0]);
     } else {
-      throw new Exception('Invalid query method: ' . $method);
+      throw new Error('Invalid query method: ' . $method, static::ERROR_INVALID_QUERY_METHOD);
     }
 
   }

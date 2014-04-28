@@ -14,6 +14,8 @@
  */
 class Data {
 
+  const ERROR_INVALID_ADAPTER = 0;
+
   static public $adapters = array();
 
   static public function adapter($type) {
@@ -28,7 +30,7 @@ class Data {
       }
     }
 
-    throw new Exception('Invalid adapter type');
+    throw new Error('Invalid adapter type', static::ERROR_INVALID_ADAPTER);
 
   }
 
@@ -139,7 +141,7 @@ data::$adapters['php'] = array(
     return '<?php ' . PHP_EOL . PHP_EOL . 'return ' . var_export($array, true) . PHP_EOL . PHP_EOL . '?>';
   },
   'decode' => function($string) {
-    throw new Exception('Decoding PHP strings is not supported');
+    throw new Error('Decoding PHP strings is not supported');
   },
   'read' => function($file) {
     $array = require $file;

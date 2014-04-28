@@ -15,6 +15,14 @@
  */
 class Email extends Obj {
 
+  const ERROR_INVALID_RECIPIENT = 0;
+  const ERROR_INVALID_SENDER = 1;
+  const ERROR_INVALID_REPLY_TO = 2;
+  const ERROR_INVALID_SUBJECT = 3;
+  const ERROR_INVALID_BODY = 4;
+  const ERROR_INVALID_SERVICE = 5;
+  const ERROR_DISABLED = 6;
+
   static public $services = array();
   static public $disabled = false;
 
@@ -33,11 +41,11 @@ class Email extends Obj {
    * to make sure it can be sent at all
    */
   public function validate() {
-    if(!v::email($this->to))      throw new Exception('Invalid recipient');
-    if(!v::email($this->from))    throw new Exception('Invalid sender');
-    if(!v::email($this->replyTo)) throw new Exception('Invalid reply address');
-    if(!isset($this->subject))    throw new Exception('Missing subject');
-    if(!isset($this->body))       throw new Exception('Missing body');;
+    if(!v::email($this->to))      throw new Error('Invalid recipient', static::ERROR_INVALID_RECIPIENT);
+    if(!v::email($this->from))    throw new Error('Invalid sender', static::ERROR_INVALID_SENDER);
+    if(!v::email($this->replyTo)) throw new Error('Invalid reply address', static::ERROR_INVALID_REPLY_TO);
+    if(!isset($this->subject))    throw new Error('Missing subject', static::ERROR_INVALID_SUBJECT);
+    if(!isset($this->body))       throw new Error('Missing body', static::ERROR_INVALID_BODY);
   }
 
   /**
@@ -71,7 +79,7 @@ class Email extends Obj {
     try {
 
       // fail silently if sending emails is disabled
-      if(static::$disabled) throw new Exception('Sending emails is disabled');
+      if(static::$disabled) throw new Error('Sending emails is disabled', static::ERROR_DISABLED);
 
       // overwrite already set values
       if(is_array($params) and !empty($params)) {
@@ -94,7 +102,9 @@ class Email extends Obj {
       $this->validate();
 
       // check if the email service is available
-      if(!isset(static::$services[$this->service])) throw new Exception('The email service is not available: ' . $this->service);
+      if(!isset(static::$services[$this->service])) {
+        throw new Error('The email service is not available: ' . $this->service, static::ERROR_INVALID_SERVICE);
+      }
 
       // run the service
       call(static::$services[$this->service], $this);
@@ -143,8 +153,8 @@ email::$services['mail'] = function($email) {
  */
 email::$services['amazon'] = function($email) {
 
-  if(empty($email->options['key']))    throw new Exception('Missing Amazon API key');
-  if(empty($email->options['secret'])) throw new Exception('Missing Amazon API secret');
+  if(empty($email->options['key']))    throw new Error('Missing Amazon API key');
+  if(empty($email->options['secret'])) throw new Error('Missing Amazon API secret');
 
   $setup = array(
     'Action'                           => 'SendEmail',
@@ -184,7 +194,7 @@ email::$services['amazon'] = function($email) {
   ));
 
   if(!in_array($this->response->code(), array(200, 201, 202, 204))) {
-    throw new Exception('The mail could not be sent!', $this->response->code());
+    throw new Error('The mail could not be sent!', $this->response->code());
   }
 
 };
@@ -194,8 +204,8 @@ email::$services['amazon'] = function($email) {
  */
 email::$services['mailgun'] = function($email) {
 
-  if(empty($email->options['key']))    throw new Exception('Missing Mailgun API key');
-  if(empty($email->options['domain'])) throw new Exception('Missing Mailgun API domain');
+  if(empty($email->options['key']))    throw new Error('Missing Mailgun API key');
+  if(empty($email->options['domain'])) throw new Error('Missing Mailgun API domain');
 
   $url  = 'https://api.mailgun.net/v2/' . $email->options['domain'] . '/messages';
   $auth = base64_encode('api:' . $email->options['key']);
@@ -218,7 +228,7 @@ email::$services['mailgun'] = function($email) {
   ));
 
   if($this->response->code() != 200) {
-    throw new Exception('The mail could not be sent!');
+    throw new Error('The mail could not be sent!');
   }
 
 };
@@ -228,7 +238,7 @@ email::$services['mailgun'] = function($email) {
  */
 email::$services['postmark'] = function($email) {
 
-  if(empty($email->options['key'])) throw Exception('Invalid Postmark API Key');
+  if(empty($email->options['key'])) throw new Error('Invalid Postmark API Key');
 
   // reset the api key if we are in test mode
   if($email->options['test']) $email->options['key'] = 'POSTMARK_API_TEST';
@@ -257,7 +267,7 @@ email::$services['postmark'] = function($email) {
   ));
 
   if($email->response->code() != 200) {
-    throw new Exception('The mail could not be sent');
+    throw new Error('The mail could not be sent');
   }
 
 };

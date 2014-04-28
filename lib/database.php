@@ -387,8 +387,8 @@ class Database {
  * MySQL database connector
  */
 database::$connectors['mysql'] = function($params) {
-  if(!isset($params['host']))     throw new Exception('The mysql connection requires a "host" parameter');
-  if(!isset($params['database'])) throw new Exception('The mysql connection requires a "database" parameter');
+  if(!isset($params['host']))     throw new Error('The mysql connection requires a "host" parameter');
+  if(!isset($params['database'])) throw new Error('The mysql connection requires a "database" parameter');
   return 'mysql:host=' . $params['host'] . ';dbname=' . $params['database'] . ';charset=' . a::get($params, 'charset', 'utf8');
 };
 
@@ -397,6 +397,6 @@ database::$connectors['mysql'] = function($params) {
  * SQLite database connector
  */
 database::$connectors['sqlite'] = function($params) {
-  if(!isset($params['database'])) throw new Exception('The sqlite connection requires a "database" parameter');
+  if(!isset($params['database'])) throw new Error('The sqlite connection requires a "database" parameter');
   return 'sqlite:' . $params['database'];
 };

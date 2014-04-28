@@ -24,9 +24,7 @@ abstract class Driver {
    * @param array $params
    * @return void
    */
-  public function __construct($params = array()) {
-
-  }
+  public function __construct($params = array()) {}
 
   /**
    * Write an item to the cache for a given number of minutes.

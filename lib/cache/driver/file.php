@@ -3,7 +3,7 @@
 namespace Cache\Driver;
 
 use Cache\Driver;
-use Exception;
+use Error;
 use F;
 use Dir;
 
@@ -17,6 +17,8 @@ use Dir;
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
 class File extends Driver {
+
+  const ERROR_MISSING_CACHE_DIRECTORY = 0;
 
   /**
    * Set all parameters which are needed for the file cache
@@ -39,7 +41,9 @@ class File extends Driver {
     $this->options = array_merge($defaults, $params);
 
     // check for a valid cache directory
-    if(!is_dir($this->options['root'])) throw new Exception('The cache directory does not exist');
+    if(!is_dir($this->options['root'])) {
+      throw new Error('The cache directory does not exist', static::ERROR_MISSING_CACHE_DIRECTORY);
+    }
 
   }
 
