@@ -55,17 +55,19 @@ class Upload {
 
   public function to() {
 
-    $source    = $this->source();
-    $name      = f::name($source['name']);
-    $extension = f::extension($source['name']);
-    $safeName  = f::safeName($name);
+    $source        = $this->source();
+    $name          = f::name($source['name']);
+    $extension     = f::extension($source['name']);
+    $safeName      = f::safeName($name);
+    $safeExtension = str_replace('jpeg', 'jpg', str::lower($extension));
 
     return str::template($this->options['to'], array(
-      'name'         => $name,
-      'filename'     => $source['name'],
-      'safeName'     => $safeName,
-      'safeFilename' => $safeName . '.' . $extension,
-      'extension'    => $extension,
+      'name'          => $name,
+      'filename'      => $source['name'],
+      'safeName'      => $safeName,
+      'safeFilename'  => $safeName . '.' . $safeExtension,
+      'extension'     => $extension,
+      'safeExtension' => $safeExtension
     ));
 
   }

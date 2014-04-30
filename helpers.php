@@ -244,23 +244,25 @@ function yaml($string) {
  * @param array An array of additional params for the thumb
  * @return object Thumb
  */
-function thumb($image, $params = array()) {
-  return new Thumb($image, $params);
+function thumb($image, $params = array(), $obj = true) {
+  $class = new Thumb($image, $params);
+  return $obj ? $class : $class->url();
 }
 
 /**
- * Getter and setter for global path variables
+ * Getter and setter for global roots
  *
  * @param string $key
  * @param string $value
  * @return string
  */
-function path($key, $value = null) {
+function root($key, $value = null) {
 
-  static $paths = array();
+  static $roots = array();
 
-  if(is_null($value)) return $paths[$key];
-  return $paths[$key] = $value;
+  if(is_null($key))   return $roots;
+  if(is_null($value)) return $roots[$key];
+  return $roots[$key] = $value;
 
 }
 
