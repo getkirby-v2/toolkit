@@ -420,8 +420,8 @@ class Media {
 
     if($this->type() == 'image') {
       $size   = (array)getimagesize($this->root);
-      $width  = $size[0];
-      $height = $size[1];
+      $width  = a::get($size, 0, 0);
+      $height = a::get($size, 1, 0);
     } else {
       $width  = 0;
       $height = 0;
