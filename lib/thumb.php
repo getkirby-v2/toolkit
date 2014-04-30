@@ -286,7 +286,7 @@ thumb::$drivers['gd'] = function($thumb) {
     } else {
       $dimensions = clone $thumb->source->dimensions();
       $dimensions->fitWidthAndHeight($thumb->options['width'], $thumb->options['height'], $thumb->options['upscale']);
-      $img->resize($dimensions->width(), $dimensions->height());
+      @$img->resize($dimensions->width(), $dimensions->height());
     }
 
     if($thumb->options['grayscale']) {
@@ -297,7 +297,7 @@ thumb::$drivers['gd'] = function($thumb) {
       $img->blur('gaussian', 10);
     }
 
-    $img->save($thumb->destination->root);
+    @$img->save($thumb->destination->root);
   } catch(Exception $e) {
     $thumb->error = $e;
   }
