@@ -244,8 +244,9 @@ function yaml($string) {
  * @param array An array of additional params for the thumb
  * @return object Thumb
  */
-function thumb($image, $params = array(), $object = true) {
-  return $object ? new Thumb($image, $params) : new Thumb($image, $params)->url();
+function thumb($image, $params = array(), $obj = true) {
+  $class = new Thumb($image, $params);
+  return $obj ? $class : $class->url();
 }
 
 /**
