@@ -243,7 +243,8 @@ class R {
    * @return boolean
    */
   static public function has($key) {
-    return isset(static::data()[$key]);
+    $data = static::data();
+    return isset($data[$key]);
   }
 
   /**
