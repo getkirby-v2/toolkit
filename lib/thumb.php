@@ -94,6 +94,15 @@ class Thumb extends Obj {
   }
 
   /**
+   * Returns the source media object
+   *
+   * @return Media
+   */
+  public function source() {
+    return $this->source;
+  }
+
+  /**
    * Returns the exception if available
    *
    * @return Exception
