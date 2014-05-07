@@ -261,7 +261,7 @@ class Collection extends I {
 
         foreach($collection->data as $key => $item) {
           if($split) {
-            $values = explode($split, (string)$this->extractValue($item, $field));
+            $values = str::split((string)$this->extractValue($item, $field), $split);
             if(in_array($value, $values)) unset($collection->$key);
           } else if($this->extractValue($item, $field) == $value) {
             unset($collection->$key);
@@ -274,7 +274,7 @@ class Collection extends I {
 
         foreach($collection->data as $key => $item) {
           if($split) {
-            $values = explode($split, (string)$this->extractValue($item, $field));
+            $values = str::split((string)$this->extractValue($item, $field), $split);
             foreach($values as $val) {
               if(strpos($val, $value) === false) {
                 unset($collection->$key);
@@ -334,7 +334,7 @@ class Collection extends I {
         foreach($collection->data as $key => $item) {
 
           if($split) {
-            $values = explode($split, (string)$this->extractValue($item, $field));
+            $values = str::split((string)$this->extractValue($item, $field), $split);
             if(!in_array($value, $values)) unset($collection->$key);
           } else if($this->extractValue($item, $field) != $value) {
             unset($collection->$key);
