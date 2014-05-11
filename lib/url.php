@@ -49,6 +49,16 @@ class Url {
   }
 
   /**
+   * Returns the port for the given url
+   *
+   * @return mixed
+   */
+  static public function port($url = null) {
+    if(is_null($url)) $url = static::current();
+    return parse_url($url, PHP_URL_PORT);
+  }
+
+  /**
    * Returns only the cleaned path of the url
    */
   static public function path($url = null) {
@@ -116,6 +126,7 @@ class Url {
     $defaults = array(
       'scheme'    => static::scheme($url),
       'host'      => static::host($url),
+      'port'      => static::port($url),
       'fragments' => static::fragments($url),
       'params'    => static::params($url),
       'query'     => static::query($url),
@@ -123,7 +134,7 @@ class Url {
     );
 
     $parts  = array_merge($defaults, $parts);
-    $result = array($parts['scheme'] . '://' . $parts['host']);
+    $result = array($parts['scheme'] . '://' . $parts['host'] . r(!empty($parts['port']), ':' . $parts['port']));
 
     if(!empty($parts['fragments'])) $result[] = implode('/', $parts['fragments']);
     if(!empty($parts['params']))    $result[] = static::paramsToString($parts['params']);
