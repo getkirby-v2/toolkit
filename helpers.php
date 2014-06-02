@@ -160,6 +160,16 @@ function widont($string = '') {
 }
 
 /**
+ * Convert a text to multiline text
+ *
+ * @param string $text
+ * @return string
+ */
+function multiline($text) {
+  return nl2br(html($text));
+}
+
+/**
  * Returns the memory usage in a readable format
  *
  * @return string
