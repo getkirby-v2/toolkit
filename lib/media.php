@@ -380,6 +380,15 @@ class Media {
     return f::load($this->root, $data);
   }
 
+  /**
+   * Read and send the file with the correct headers
+   *
+   * @param string $file
+   */
+  public function show() {
+    f::show($this->root);
+  }
+
   /*
    * Automatically sends all needed headers for the file to be downloaded
    * and echos the file's content
