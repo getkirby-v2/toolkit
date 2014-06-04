@@ -127,7 +127,7 @@ function attr($name, $value = null) {
  * @param string $text unencoded text
  * @return string
  */
-function html($text, $keepTags = true) {
+function html($text, $keepTags = false) {
   return html::encode($text, $keepTags);
 }
 
@@ -136,7 +136,7 @@ function html($text, $keepTags = true) {
  *
  * @see html()
  */
-function h($text, $keepTags = true) {
+function h($text, $keepTags = false) {
   return html::encode($text, $keepTags);
 }
 
