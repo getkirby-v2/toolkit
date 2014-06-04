@@ -18,6 +18,7 @@ class Remote {
   static public $defaults = array(
     'method'   => 'GET',
     'data'     => array(),
+    'file'     => null,
     'timeout'  => 10,
     'headers'  => array(),
     'encoding' => 'utf-8',
@@ -92,8 +93,8 @@ class Remote {
         break;
       case 'put':
 
-        $params[CURLOPT_PUT]        = true;
-        $params[CURLOPT_POSTFIELDS] = $this->postfields($this->options['data']);
+        $params[CURLOPT_CUSTOMREQUEST] = 'PUT';
+        $params[CURLOPT_POSTFIELDS]    = $this->postfields($this->options['data']);
 
         // put a file
         if($this->options['file']) {
