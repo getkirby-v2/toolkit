@@ -3,9 +3,10 @@
 namespace Database;
 
 use A;
+use Error;
+use Pagination;
 use Str;
 use Sql;
-use Error;
 
 /**
  *
@@ -340,7 +341,7 @@ class Query {
 
         } else if(is_callable($args[0])) {
 
-          $query  = new static;
+          $query  = new static($this->db, $this->table);
           $result = call_user_func($args[0], $query);
           $where  = '(' . $query->where . ')';
 
