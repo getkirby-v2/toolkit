@@ -136,7 +136,7 @@ function html($text, $keepTags = true) {
  *
  * @see html()
  */
-function h($text, $keepTags = true) {
+function h($text, $keepTags = false) {
   return html::encode($text, $keepTags);
 }
 

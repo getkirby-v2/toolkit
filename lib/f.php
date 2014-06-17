@@ -699,6 +699,24 @@ class F {
     return is_readable($file);
   }
 
+  /**
+   * Read and send the file with the correct headers
+   *
+   * @param string $file
+   */
+  static public function show($file) {
+
+    // stop the download if the file does not exist or is not readable
+    if(!is_file($file) or !is_readable($file)) return false;
+
+    // send the browser headers
+    header::type(f::mime($file));
+
+    // send the file
+    die(f::read($file));
+
+  }
+
   /*
    * Automatically sends all needed headers for the file to be downloaded
    * and echos the file's content
