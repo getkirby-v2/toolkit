@@ -305,7 +305,7 @@ class Collection extends I {
     $helper     = array();
 
     foreach($collection->data as $key => $row) {
-      $helper[$key] = (string)$row->$field();
+      $helper[$key] = str::lower($row->$field());
     }
 
     // natural sorting
