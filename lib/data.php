@@ -91,7 +91,7 @@ data::$adapters['kd'] = array(
   'extension' => array('md', 'txt'),
   'encode' => function($data) {
 
-    $divider = PHP_EOL . '----' . PHP_EOL;
+    $divider = "\n----\n";
     $result  = null;
     $break   = null;
     $keys    = array();
@@ -111,7 +111,7 @@ data::$adapters['kd'] = array(
     // remove BOM
     $string = str_replace(BOM, '', $string);
     // explode all fields by the line separator
-    $fields = explode(PHP_EOL . '----', $string);
+    $fields = explode("\n----", $string);
     // start the data array
     $data   = array();
 
