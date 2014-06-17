@@ -13,6 +13,9 @@ if(!defined('SORT_NATURAL')) define('SORT_NATURAL', 'natural');
  */
 class Collection extends I {
 
+  static public $filters = array();
+
+
   protected $pagination;
 
   /**
@@ -245,104 +248,22 @@ class Collection extends I {
     $field      = @$args[0];
     $value      = @$args[1];
     $split      = @$args[2];
-    $operators  = array('!=', '==', '*=', '>', '<', '>=', '<=');
     $collection = clone $this;
 
-    if(is_string($value) and in_array($value, $operators)) {
+    if(is_string($value) and array_key_exists($value, static::$filters)) {
       $operator = $value;
       $value    = @$args[2];
       $split    = @$args[3];
     }
 
-    switch($operator) {
+    if(array_key_exists($operator, static::$filters)) {
 
-      // ignore matching elements
-      case '!=':
-
-        foreach($collection->data as $key => $item) {
-          if($split) {
-            $values = str::split((string)$this->extractValue($item, $field), $split);
-            if(in_array($value, $values)) unset($collection->$key);
-          } else if($this->extractValue($item, $field) == $value) {
-            unset($collection->$key);
-          }
-        }
-        break;
-
-      // search
-      case '*=':
-
-        foreach($collection->data as $key => $item) {
-          if($split) {
-            $values = str::split((string)$this->extractValue($item, $field), $split);
-            foreach($values as $val) {
-              if(strpos($val, $value) === false) {
-                unset($collection->$key);
-                break;
-              }
-            }
-          } else if(strpos($this->extractValue($item, $field), $value) === false) {
-            unset($collection->$key);
-          }
-        }
-
-        break;
-
-      // greater than
-      case '>':
-
-        foreach($collection->data as $key => $item) {
-          if($this->extractValue($item, $field) > $value) continue;
-          unset($collection->$key);
-        }
-
-        break;
-
-      // less than
-      case '<':
-
-        foreach($collection->data as $key => $item) {
-          if($this->extractValue($item, $field) < $value) continue;
-          unset($collection->$key);
-        }
-
-        break;
-
-      // greater than and equal to
-      case '>=':
-
-        foreach($collection->data as $key => $item) {
-          if($this->extractValue($item, $field) >= $value) continue;
-          unset($collection->$key);
-        }
-
-        break;
-
-      // less than and equal to
-      case '<=':
-
-        foreach($collection->data as $key => $item) {
-          if($this->extractValue($item, $field) <= $value) continue;
-          unset($collection->$key);
-        }
-
-        break;
-
-      // take all matching elements
-      default:
-
-        foreach($collection->data as $key => $item) {
-
-          if($split) {
-            $values = str::split((string)$this->extractValue($item, $field), $split);
-            if(!in_array($value, $values)) unset($collection->$key);
-          } else if($this->extractValue($item, $field) != $value) {
-            unset($collection->$key);
-          }
-
-        }
-
-        break;
+      $collection = call_user_func_array(static::$filters[$operator], array(
+        $collection,
+        $field,
+        $value,
+        $split
+      ));
 
     }
 
@@ -358,7 +279,7 @@ class Collection extends I {
    * @param string $field
    * @return mixed
    */
-  protected function extractValue($item, $field) {
+  static public function extractValue($item, $field) {
     if(is_array($item) and isset($item[$field])) {
       return $item[$field];
     } else if(is_object($item)) {
@@ -538,3 +459,115 @@ class Collection extends I {
   }
 
 }
+
+
+/**
+ * Add all available collection filters
+ * Those can be extended by creating your own:
+ * collection::$filters['your operator'] = function($collection, $field, $value, $split = false) {
+ *   // your filter code
+ * };
+ */
+
+// take all matching elements
+collection::$filters['=='] = function($collection, $field, $value, $split = false) {
+
+  foreach($collection->data as $key => $item) {
+
+    if($split) {
+      $values = str::split((string)collection::extractValue($item, $field), $split);
+      if(!in_array($value, $values)) unset($collection->$key);
+    } else if(collection::extractValue($item, $field) != $value) {
+      unset($collection->$key);
+    }
+
+  }
+
+  return $collection;
+
+};
+
+// take all elements that won't match
+collection::$filters['!='] = function($collection, $field, $value, $split = false) {
+
+  foreach($collection->data as $key => $item) {
+    if($split) {
+      $values = str::split((string)collection::extractValue($item, $field), $split);
+      if(in_array($value, $values)) unset($collection->$key);
+    } else if(collection::extractValue($item, $field) == $value) {
+      unset($collection->$key);
+    }
+  }
+
+  return $collection;
+
+};
+
+// take all elements that partly match
+collection::$filters['*='] = function($collection, $field, $value, $split = false) {
+
+  foreach($collection->data as $key => $item) {
+    if($split) {
+      $values = str::split((string)collection::extractValue($item, $field), $split);
+      foreach($values as $val) {
+        if(strpos($val, $value) === false) {
+          unset($collection->$key);
+          break;
+        }
+      }
+    } else if(strpos(collection::extractValue($item, $field), $value) === false) {
+      unset($collection->$key);
+    }
+  }
+
+  return $collection;
+
+};
+
+// greater than
+collection::$filters['>'] = function($collection, $field, $value, $split = false) {
+
+  foreach($collection->data as $key => $item) {
+    if(collection::extractValue($item, $field) > $value) continue;
+    unset($collection->$key);
+  }
+
+  return $collection;
+
+};
+
+// greater and equals
+collection::$filters['>='] = function($collection, $field, $value, $split = false) {
+
+  foreach($collection->data as $key => $item) {
+    if(collection::extractValue($item, $field) >= $value) continue;
+    unset($collection->$key);
+  }
+
+  return $collection;
+
+};
+
+// less than
+collection::$filters['<'] = function($collection, $field, $value, $split = false) {
+
+  foreach($collection->data as $key => $item) {
+    if(collection::extractValue($item, $field) < $value) continue;
+    unset($collection->$key);
+  }
+
+  return $collection;
+
+};
+
+// less and equals
+collection::$filters['<='] = function($collection, $field, $value, $split = false) {
+
+  foreach($collection->data as $key => $item) {
+    if(collection::extractValue($item, $field) <= $value) continue;
+    unset($collection->$key);
+  }
+
+  return $collection;
+
+};
