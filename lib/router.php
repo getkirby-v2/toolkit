@@ -163,13 +163,18 @@ class Router {
    */
   public function run($path = null) {
 
+    // default path if nothing is set
+    if(is_null($path)) {
+      return implode('/', (array)url::fragments(detect::path()));
+    }
+
+    // empty urls should never happen
+    if(empty($path)) $path = '/';
+
     $method = r::method();
     $ajax   = r::ajax();
     $https  = r::ssl();
     $routes = a::get($this->routes, $method, array());
-
-    // empty urls should never happen
-    if(empty($path)) $path = '/';
 
     foreach($routes as $route) {
 
