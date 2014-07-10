@@ -89,7 +89,7 @@ class Router {
       'ajax'      => false,
       'filter'    => null,
       'method'    => 'GET',
-      'arguments' => null,
+      'arguments' => array(),
     );
 
     $route = new Obj(array_merge($defaults, $params, $optional));
