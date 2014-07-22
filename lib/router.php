@@ -165,7 +165,7 @@ class Router {
 
     // default path if nothing is set
     if(is_null($path)) {
-      return implode('/', (array)url::fragments(detect::path()));
+      $path = implode('/', (array)url::fragments(detect::path()));
     }
 
     // empty urls should never happen
@@ -199,7 +199,7 @@ class Router {
       // full-text match of the pattern.
       if(preg_match($preg, $path, $parameters)) {
         $this->route = $route;
-        $this->route->arguments = array_slice($parameters, 1);
+        $this->route->arguments = array_merge(array_slice($parameters, 1), $this->route->arguments);
         break;
       }
 
