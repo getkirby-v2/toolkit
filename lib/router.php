@@ -199,7 +199,7 @@ class Router {
       // full-text match of the pattern.
       if(preg_match($preg, $path, $parameters)) {
         $this->route = $route;
-        $this->route->arguments = array_slice($parameters, 1);
+        $this->route->arguments = array_merge(array_slice($parameters, 1), $this->route->arguments);
         break;
       }
 
