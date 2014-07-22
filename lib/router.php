@@ -165,7 +165,7 @@ class Router {
 
     // default path if nothing is set
     if(is_null($path)) {
-      return implode('/', (array)url::fragments(detect::path()));
+      $path = implode('/', (array)url::fragments(detect::path()));
     }
 
     // empty urls should never happen
