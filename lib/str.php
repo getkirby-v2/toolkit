@@ -440,14 +440,14 @@ class Str {
     $string = static::lower($string);
     $string = static::ascii($string);
 
-    // replace spaces with simple dashes
-    $string = preg_replace('![^a-z0-9]!i','-', $string);
+    // replace spaces with URL-safe separator
+    $string = preg_replace('![^a-z0-9]!i', $separator, $string);
     // remove double dashes
     $string = preg_replace('![-]{2,}!','-', $string);
     // trim trailing and leading dashes
     $string = trim($string, '-');
-    // replace slashes with dashes
-    $string = str_replace('/', '-', $string);
+    // replace slashes with URL-safe separator
+    $string = str_replace('/', $separator, $string);
 
     return $string;
 
