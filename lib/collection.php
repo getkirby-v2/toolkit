@@ -232,7 +232,7 @@ class Collection extends I {
    */
   public function findBy($key, $value) {
     foreach($this->data as $item) {
-      if($this->extractValue($item, $key) == $value) return $item;
+      if(collection::extractValue($item, $key) == $value) return $item;
     }
   }
 
@@ -380,7 +380,7 @@ class Collection extends I {
    */
   public function pluck($field) {
     return array_values(array_map(function($item) use($field) {
-      return $this->extractValue($item, $field);
+      return collection::extractValue($item, $field);
     }, $this->data));
   }
 
@@ -397,7 +397,7 @@ class Collection extends I {
     foreach($this->data as $key => $item) {
 
       // get the value to group by
-      $value = $this->extractValue($item, $field);
+      $value = collection::extractValue($item, $field);
 
       // make sure that there's always a proper value to group by
       if(!$value) throw new Exception('Invalid grouping value for key: ' . $key);
