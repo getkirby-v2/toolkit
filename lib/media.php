@@ -495,6 +495,16 @@ class Media {
   }
 
   /**
+   * Returns the orientation as string
+   * landscape | portrait | square
+   *
+   * @return string
+   */
+  public function orientation() {
+    return $this->dimensions()->orientation();
+  }
+
+  /**
    * Returns a full link to this file
    * Perfect for debugging in connection with echo
    *

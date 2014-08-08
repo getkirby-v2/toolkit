@@ -2,8 +2,8 @@
 
 /**
  * Pagination
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -15,19 +15,19 @@ class Pagination {
   static public $defaults = array(
     'variable' => 'page',
     'method'   => 'param',
-    'page'     => false, 
-    'uri'      => false,
+    'page'     => false,
+    'url'      => null,
   );
-  
+
   // options
   protected $options = array();
-  
+
   // the current page
   protected $page = null;
-      
+
   // total count of items
   protected $count = 0;
-  
+
   // the number of displayed rows
   protected $limit = 0;
 
@@ -36,7 +36,7 @@ class Pagination {
 
   // the offset for the slice function
   protected $offset = 0;
-  
+
   // the range start for ranged pagination
   protected $rangeStart = 0;
 
@@ -45,7 +45,7 @@ class Pagination {
 
   /**
    * Constructor
-   * 
+   *
    * @param object $data The collection with all data (KirbyFiles or KirbyPages)
    * @param int $limit The number of items per page
    * @param array $params Additional parameters to control the pagination object
@@ -56,28 +56,28 @@ class Pagination {
     if($count instanceof Collection) {
       $count = $count->count();
     }
-      
+
     $this->options = array_merge(static::$defaults, $params);
     $this->count   = $count;
     $this->limit   = $limit;
     $this->pages   = ceil($this->count / $this->limit);
-    $this->offset  = ($this->page()-1) * $this->limit;  
-    
+    $this->offset  = ($this->page()-1) * $this->limit;
+
   }
-  
+
   /**
    * Returns the current page number
-   * 
-   * @return int 
+   *
+   * @return int
    */
   public function page() {
 
     if(!is_null($this->page)) return $this->page;
 
     if($this->options['page']) {
-      $this->page = $this->options['page']; 
+      $this->page = $this->options['page'];
     } else {
-      $this->page = ($this->options['method'] == 'query') ? get($this->options['variable']) : param($this->options['variable']);  
+      $this->page = ($this->options['method'] == 'query') ? get($this->options['variable']) : param($this->options['variable']);
     }
 
     // make sure the page is an int
@@ -91,13 +91,13 @@ class Pagination {
 
     // return the sanitized page number
     return $this->page;
-  
+
   }
-  
+
   /**
    * Returns the total number of pages
-   * 
-   * @return int 
+   *
+   * @return int
    */
   public function countPages() {
     return $this->pages;
@@ -105,7 +105,7 @@ class Pagination {
 
   /**
    * Alternative for countPages()
-   * 
+   *
    * @return int
    */
   public function pages() {
@@ -114,10 +114,10 @@ class Pagination {
 
   /**
    * Returns the current offset
-   * This is used for the slice() method together with 
+   * This is used for the slice() method together with
    * the limit to get the correct items from collections
-   * 
-   * @return int 
+   *
+   * @return int
    */
   public function offset() {
     return $this->offset;
@@ -125,10 +125,10 @@ class Pagination {
 
   /**
    * Returns the chosen limit
-   * This is used for the slice() method together with 
+   * This is used for the slice() method together with
    * the offset to get the correct items from collections
-   * 
-   * @return int 
+   *
+   * @return int
    */
   public function limit() {
     return $this->limit;
@@ -137,7 +137,7 @@ class Pagination {
   /**
    * Checks if multiple pages are needed
    * or if the collection can be displayed on a single page
-   * 
+   *
    * @return boolean
    */
   public function hasPages() {
@@ -146,7 +146,7 @@ class Pagination {
 
   /**
    * Returns the total number of items in the collection
-   * 
+   *
    * @return int
    */
   public function countItems() {
@@ -155,24 +155,24 @@ class Pagination {
 
   /**
    * Alternative for countItems()
-   * 
+   *
    * @return int
    */
   public function items() {
-    return $this->count; 
+    return $this->count;
   }
 
   /**
    * Returns a page url for any given page number
-   * 
+   *
    * @param int $page The page number
    * @return string The url
    */
   public function pageURL($page) {
-    
+
     if($this->options['method'] == 'query') {
 
-      $query = url::query();
+      $query = url::query($this->options['url']);
 
       if($page == 1) {
         unset($query[$this->options['variable']]);
@@ -180,11 +180,11 @@ class Pagination {
         $query[$this->options['variable']] = $page;
       }
 
-      return url::build(array('query' => $query));
+      return url::build(array('query' => $query), $this->options['url']);
 
     } else {
 
-      $params = url::params();
+      $params = url::params($this->options['url']);
 
       if($page == 1) {
         unset($params[$this->options['variable']]);
@@ -192,15 +192,15 @@ class Pagination {
         $params[$this->options['variable']] = $page;
       }
 
-      return url::build(array('params' => $params));
+      return url::build(array('params' => $params), $this->options['url']);
 
-    } 
+    }
 
   }
 
   /**
    * Returns the number of the first page
-   * 
+   *
    * @return int
    */
   public function firstPage() {
@@ -209,7 +209,7 @@ class Pagination {
 
   /**
    * Checks if the current page is the first page
-   * 
+   *
    * @return boolean
    */
   public function isFirstPage() {
@@ -218,7 +218,7 @@ class Pagination {
 
   /**
    * Returns the url for the first page
-   * 
+   *
    * @return string
    */
   public function firstPageURL() {
@@ -227,7 +227,7 @@ class Pagination {
 
   /**
    * Returns the number of the last page
-   * 
+   *
    * @return int
    */
   public function lastPage() {
@@ -236,7 +236,7 @@ class Pagination {
 
   /**
    * Checks if the current page is the last page
-   * 
+   *
    * @return boolean
    */
   public function isLastPage() {
@@ -245,25 +245,25 @@ class Pagination {
 
   /**
    * Returns the url for the last page
-   * 
+   *
    * @return string
    */
   public function lastPageURL() {
     return $this->pageURL($this->lastPage());
   }
-  
+
   /**
    * Returns the number of the previous page
-   * 
+   *
    * @return int
    */
   public function prevPage() {
     return $this->hasPrevPage() ? $this->page-1 : $this->page;
   }
-  
+
   /**
    * Returns the url for the previous page
-   * 
+   *
    * @return string
    */
   public function prevPageURL() {
@@ -272,7 +272,7 @@ class Pagination {
 
   /**
    * Checks if there's a previous page
-   * 
+   *
    * @return boolean
    */
   public function hasPrevPage() {
@@ -281,7 +281,7 @@ class Pagination {
 
   /**
    * Returns the number of the next page
-   * 
+   *
    * @return int
    */
   public function nextPage() {
@@ -290,7 +290,7 @@ class Pagination {
 
   /**
    * Returns the url for the next page
-   * 
+   *
    * @return string
    */
   public function nextPageURL() {
@@ -299,7 +299,7 @@ class Pagination {
 
   /**
    * Checks if there's a next page
-   * 
+   *
    * @return boolean
    */
   public function hasNextPage() {
@@ -310,7 +310,7 @@ class Pagination {
    * Returns the index number of the first item on the current page
    * Can be used to display something like
    * "Currently showing 1 - 10 of 123 items"
-   * 
+   *
    * @return int
    */
   public function numStart() {
@@ -321,7 +321,7 @@ class Pagination {
    * Returns the index number of the last item on the current page
    * Can be used to display something like
    * "Currently showing 1 - 10 of 123 items"
-   * 
+   *
    * @return int
    */
   public function numEnd() {
@@ -332,7 +332,7 @@ class Pagination {
 
   /**
    * Creates a range of page numbers for Google-like pagination
-   * 
+   *
    * @return array
    */
   public function range($range=5) {
@@ -342,36 +342,36 @@ class Pagination {
       $this->rangeEnd   = $this->countPages();
       return range($this->rangeStart, $this->rangeEnd);
     }
-    
-    $this->rangeStart = $this->page - floor($range/2);  
-    $this->rangeEnd   = $this->page + floor($range/2);  
-  
-    if($this->rangeStart <= 0) {  
-      $this->rangeEnd += abs($this->rangeStart)+1;  
-      $this->rangeStart = 1;  
-    }  
 
-    if($this->rangeEnd > $this->countPages()) {  
-      $this->rangeStart -= $this->rangeEnd-$this->countPages();  
-      $this->rangeEnd = $this->countPages();  
-    }  
+    $this->rangeStart = $this->page - floor($range/2);
+    $this->rangeEnd   = $this->page + floor($range/2);
 
-    return range($this->rangeStart,$this->rangeEnd);  
+    if($this->rangeStart <= 0) {
+      $this->rangeEnd += abs($this->rangeStart)+1;
+      $this->rangeStart = 1;
+    }
+
+    if($this->rangeEnd > $this->countPages()) {
+      $this->rangeStart -= $this->rangeEnd-$this->countPages();
+      $this->rangeEnd = $this->countPages();
+    }
+
+    return range($this->rangeStart,$this->rangeEnd);
 
   }
 
   /**
    * Returns the first page of the created range
-   * 
+   *
    * @return int
    */
   public function rangeStart() {
-    return $this->rangeStart;  
+    return $this->rangeStart;
   }
-  
+
   /**
    * Returns the last page of the created range
-   * 
+   *
    * @return int
    */
   public function rangeEnd() {
@@ -380,7 +380,7 @@ class Pagination {
 
   /**
    * Returns the most important pagination data into a readable array
-   * 
+   *
    * @return array
    */
   public function toArray() {

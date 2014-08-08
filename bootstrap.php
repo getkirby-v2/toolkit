@@ -22,6 +22,7 @@ load(array(
   // classes
   'a'                           => __DIR__ . DS . 'lib' . DS . 'a.php',
   'bitmask'                     => __DIR__ . DS . 'lib' . DS . 'bitmask.php',
+  'brick'                       => __DIR__ . DS . 'lib' . DS . 'brick.php',
   'c'                           => __DIR__ . DS . 'lib' . DS . 'c.php',
   'cookie'                      => __DIR__ . DS . 'lib' . DS . 'cookie.php',
   'cache'                       => __DIR__ . DS . 'lib' . DS . 'cache.php',

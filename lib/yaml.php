@@ -2,10 +2,10 @@
 
 /**
  * YAML
- * 
+ *
  * The Kirby YAML parser and creator Class
- * 
- * @package   Kirby Toolkit 
+ *
+ * @package   Kirby Toolkit
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
  * @copyright Bastian Allgeier
@@ -15,17 +15,17 @@ class Yaml {
 
   /**
    * Creates a new yaml string from an array
-   * 
+   *
    * @param array $array
    * @return string
    */
   static public function encode($array) {
-    return ltrim(spyc::yamldump($array), "---\n");
+    return preg_replace('!^---\n!', '', spyc::yamldump($array));
   }
 
   /**
    * Creates a new yaml file from an array
-   * 
+   *
    * @param string $file
    * @param array $array
    * @return boolean
@@ -36,7 +36,7 @@ class Yaml {
 
   /**
    * Parses a yaml string and returns the array
-   * 
+   *
    * @param string $yaml
    * @return array
    */
@@ -46,7 +46,7 @@ class Yaml {
 
   /**
    * Reads and parses a yaml file and returns the array
-   * 
+   *
    * @param string $file
    * @return array
    */

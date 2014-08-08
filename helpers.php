@@ -266,7 +266,7 @@ function thumb($image, $params = array(), $obj = true) {
  * @param string $value
  * @return string
  */
-function root($key, $value = null) {
+function root($key = null, $value = null) {
 
   static $roots = array();
 

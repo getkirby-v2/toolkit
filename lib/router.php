@@ -89,7 +89,7 @@ class Router {
       'ajax'      => false,
       'filter'    => null,
       'method'    => 'GET',
-      'arguments' => array(),
+      'arguments' => null,
     );
 
     $route = new Obj(array_merge($defaults, $params, $optional));
@@ -163,18 +163,13 @@ class Router {
    */
   public function run($path = null) {
 
-    // default path if nothing is set
-    if(is_null($path)) {
-      $path = implode('/', (array)url::fragments(detect::path()));
-    }
-
-    // empty urls should never happen
-    if(empty($path)) $path = '/';
-
     $method = r::method();
     $ajax   = r::ajax();
     $https  = r::ssl();
     $routes = a::get($this->routes, $method, array());
+
+    // empty urls should never happen
+    if(empty($path)) $path = '/';
 
     foreach($routes as $route) {
 
@@ -199,7 +194,7 @@ class Router {
       // full-text match of the pattern.
       if(preg_match($preg, $path, $parameters)) {
         $this->route = $route;
-        $this->route->arguments = array_merge(array_slice($parameters, 1), $this->route->arguments);
+        $this->route->arguments = array_slice($parameters, 1);
         break;
       }
 

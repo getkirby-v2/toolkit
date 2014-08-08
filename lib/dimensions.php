@@ -216,6 +216,17 @@ class Dimensions {
   }
 
   /**
+   * Returns a string representation of the orientation
+   *
+   * @return string
+   */
+  public function orientation() {
+    if($this->portrait())  return 'portrait';
+    if($this->landscape()) return 'landscape';
+    if($this->square())    return 'square';
+  }
+
+  /**
    * Checks if the dimensions are portrait
    *
    * @return boolean

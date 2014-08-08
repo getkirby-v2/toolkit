@@ -2,9 +2,9 @@
 
 /**
  * Response
- * 
+ *
  * Represents any response coming from a controller's action and takes care of sending an appropriate header
- *  
+ *
  * @package   Kirby App
  * @author    Bastian Allgeier <bastian@getkirby.com>
  * @link      http://getkirby.com
@@ -15,7 +15,7 @@ class Response {
 
   // the response content
   protected $content;
-  
+
   // the format type
   protected $format;
 
@@ -37,14 +37,20 @@ class Response {
 
     // convert arrays to json
     if(is_array($this->content) and $this->format == 'json') {
-      $this->content = json_encode($this->content);
+
+      if(defined('JSON_PRETTY_PRINT') and get('pretty')) {
+        $this->content = json_encode($this->content, JSON_PRETTY_PRINT);
+      } else {
+        $this->content = json_encode($this->content);
+      }
+
     }
 
   }
 
   /**
    * Sends the correct header for the response
-   * 
+   *
    * @param boolean $send If set to false, the header will be returned
    * @return mixed
    */
@@ -62,7 +68,7 @@ class Response {
 
   /**
    * Returns the content of this response
-   * 
+   *
    * @return string
    */
   public function content() {
@@ -71,7 +77,7 @@ class Response {
 
   /**
    * Returns the content format
-   * 
+   *
    * @return string
    */
   public function format() {
@@ -79,27 +85,27 @@ class Response {
   }
 
   /**
-   * Returns a success response 
+   * Returns a success response
    *
    * @param string $message
    * @param mixed $data
-   * @param mixed $code 
+   * @param mixed $code
    * @return object
    */
   static public function success($message = 'Everything went fine', $data = array(), $code = 200) {
     return new static(array(
       'status'  => 'success',
       'code'    => $code,
-      'message' => $message, 
+      'message' => $message,
       'data'    => $data
     ), 'json', $code);
   }
 
   /**
-   * Returns an error response   
-   * 
+   * Returns an error response
+   *
    * @param mixed $message Either a message string or an error or errors object
-   * @param mixed $code 
+   * @param mixed $code
    * @param mixed $data
    * @return object
    */
@@ -107,14 +113,14 @@ class Response {
     return new static(array(
       'status'  => 'error',
       'code'    => $code,
-      'message' => $message, 
+      'message' => $message,
       'data'    => $data
     ), 'json', $code);
   }
 
   /**
    * Converts an array to json and returns it properly
-   * 
+   *
    * @param array $data
    * @return object
    */
@@ -125,7 +131,7 @@ class Response {
   /**
    * Echos the content
    * and sends the appropriate header
-   * 
+   *
    * @return string
    */
   public function __toString() {
