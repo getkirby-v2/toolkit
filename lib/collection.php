@@ -379,8 +379,9 @@ class Collection extends I {
    * @return array
    */
   public function pluck($field) {
-    return array_values(array_map(function($item) use($field) {
-      return $this->extractValue($item, $field);
+    $collection = $this;
+    return array_values(array_map(function($item) use($collection, $field) {
+      return $collection->extractValue($item, $field);
     }, $this->data));
   }
 
