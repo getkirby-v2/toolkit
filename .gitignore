@@ -1,3 +1,4 @@
 /test
 /examples
+/vendor
 phpunit.xml
