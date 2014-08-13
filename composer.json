@@ -1,0 +1,27 @@
+{
+  "name": "kirby/toolkit",
+  "description": "The Kirby 2 toolkit is a set of handy classes and helpers which make your life with PHP easier.",
+  "keywords": ["toolkit"],
+  "homepage": "http://toolkit.getkirby.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Bastian Allgeier",
+      "email": "bastian@getkirby.com",
+      "homepage": "http://bastianallgeier.com"
+    }
+  ],
+  "support": {
+    "email": "support@getkirby.com",
+    "issues": "https://github.com/getkirby/toolkit/issues",
+    "forum": "http://forum.getkirby.com",
+    "source": "https://github.com/getkirby/toolkit"
+  },
+  "replace": {
+    "abeautifulsite/simpleimage": "2.5.3",
+    "mustangostang/spyc": "0.5.1"
+  },
+  "autoload": {
+    "files": ["bootstrap.php"]
+  }
+}
