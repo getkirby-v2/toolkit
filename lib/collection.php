@@ -380,7 +380,7 @@ class Collection extends I {
    */
   public function pluck($field) {
     return array_values(array_map(function($item) use($field) {
-      return static::extractValue($item, $field);
+      return collection::extractValue($item, $field);
     }, $this->data));
   }
 
