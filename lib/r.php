@@ -313,7 +313,7 @@ class R {
    * @return boolean
    */
   static public function ajax() {
-    return isset($_SERVER['HTTP_X_REQUESTED_WITH']) and strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+    return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) and strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
   }
 
   /**
@@ -323,7 +323,7 @@ class R {
    */
   static public function scheme() {
     $https = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false;
-    return $https and strtolower($https) != 'off' ? 'https' : 'http';
+    return ($https and strtolower($https) != 'off') ? 'https' : 'http';
   }
 
   /**
