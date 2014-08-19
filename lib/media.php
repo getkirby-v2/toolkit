@@ -321,7 +321,7 @@ class Media {
    *
    * @return string
    */
-  public function uri() {
+  public function dataUri() {
     return 'data:' . $this->mime() . ';base64,' . $this->base64();
   }
 
