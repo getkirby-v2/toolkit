@@ -49,8 +49,7 @@ class Thumb extends Obj {
     $this->source  = $this->result = is_a($source, 'Media') ? $source : new Media($source);
     $this->options = array_merge(static::$defaults, $this->params($params));
 
-    $this->destination = new Obj();
-    $this->destination->filename = str::template($this->options['filename'], array(
+    $filename = str::template($this->options['filename'], array(
       'extension'    => $this->source->extension(),
       'name'         => $this->source->name(),
       'filename'     => $this->source->filename(),
@@ -61,8 +60,7 @@ class Thumb extends Obj {
       'hash'         => md5($this->source->root() . $this->settingsIdentifier()),
     ));
 
-    $this->destination->url  = $this->options['url'] . '/' . $this->destination->filename;
-    $this->destination->root = $this->options['root'] . DS . $this->destination->filename;
+    $this->destination = new Media($this->options['root'] . DS . $filename), $this->options['url'] . '/' . $filename);
 
     // don't create the thumbnail if it's not necessary
     if($this->isObsolete()) return;
@@ -84,12 +82,12 @@ class Thumb extends Obj {
       $this->create();
 
       // check if creating the thumbnail failed
-      if(!file_exists($this->destination->root)) return;
+      if(!$this->destination->exists()) return;
 
     }
 
     // create the result object
-    $this->result = new Media($this->destination->root, $this->destination->url);
+    $this->result = $this->destination;
 
   }
 
@@ -162,7 +160,7 @@ class Thumb extends Obj {
 
     // if the thumb already exists and the source hasn't been updated
     // we don't need to generate a new thumbnail
-    if(file_exists($this->destination->root) and f::modified($this->destination->root) >= $this->source->modified()) return true;
+    if($this->destination->exists() and $this->destination->modified() >= $this->source->modified()) return true;
 
     return false;
 
