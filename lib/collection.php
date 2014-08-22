@@ -300,6 +300,8 @@ class Collection extends I {
     $collection = clone $this;
     $data       = $collection->data;
 
+    if(empty($data)) return $collection;
+
     foreach($args as $n => $field) {
       if(is_string($field)) {
         if(strtolower($field) === 'desc') {
