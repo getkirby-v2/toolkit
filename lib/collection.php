@@ -290,40 +290,36 @@ class Collection extends I {
   }
 
   /**
-   * Sorts the collection by a certain field
+   * Sorts the collection by any number of fields
    *
-   * @param   string  $field The name of the column
-   * @param   string  $direction desc (descending) or asc (ascending)
-   * @param   const   $method A PHP sort method flag
    * @return  Collection
    */
-  public function sortBy($field, $direction = 'desc', $method = SORT_REGULAR) {
+  public function sortBy() {
 
+    $args       = func_get_args();
     $collection = clone $this;
-    $direction  = (strtolower($direction) == 'desc') ? SORT_DESC : SORT_ASC;
     $data       = $collection->data;
-    $helper     = array();
 
-    foreach($collection->data as $key => $row) {
-      $helper[$key] = str::lower($row->$field());
+    foreach($args as $n => $field) {
+      if(is_string($field)) {
+        if(strtolower($field) === 'desc') {
+          $args[$n] = SORT_DESC;
+        } else if(strtolower($field) === 'asc') {
+          $args[$n] = SORT_ASC;
+        } else {
+          $tmp = array();
+          foreach($data as $key => $row) {
+            $tmp[$key] = is_array($row) ? str::lower($row[$field]) : str::lower($row->$field());
+            $args[$n]  = $tmp;
+          }
+        }
+      }
     }
 
-    // natural sorting
-    if($method === SORT_NATURAL) {
-      natsort($helper);
-      if($direction === SORT_DESC) $helper = array_reverse($helper);
-    } else if($direction === SORT_DESC) {
-      arsort($helper, $method);
-    } else {
-      asort($helper, $method);
-    }
+    $args[] = &$data;
+    call_user_func_array('array_multisort', $args);
 
-    // empty the collection data
-    $collection->data = array();
-
-    foreach($helper as $key => $val) {
-      $collection->data[$key] = $data[$key];
-    }
+    $collection->data = $data;
 
     return $collection;
 
