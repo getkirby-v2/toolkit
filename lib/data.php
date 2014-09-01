@@ -96,8 +96,8 @@ data::$adapters['kd'] = array(
     $result  = array();
     foreach($data AS $key => $value) {
       $key = str::ucfirst(str::slug($key));
-      if(empty($key)) continue;
-      $result[$key] = $key . ": \n\n" . trim(str_replace($divider, $safediv, $value));
+      if(empty($key) or is_null($value)) continue;
+      $result[$key] = $key . ': ' . trim(str_replace($divider, $safediv, $value));
     }
     return implode($divider, $result);
 
