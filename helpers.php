@@ -331,3 +331,7 @@ function invalid($data, $rules, $messages = array()) {
 function l($key, $default = null) {
   return l::get($key, $default);
 }
+
+function brick($tag, $html = false, $attr = array()) {
+  return new Brick($tag, $html, $attr);
+}
