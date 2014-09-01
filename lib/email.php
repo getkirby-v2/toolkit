@@ -143,7 +143,7 @@ email::$services['mail'] = function($email) {
   ini_restore('sendmail_from');
 
   if(!$send) {
-    throw Exception('The email could not be sent');
+    throw new Error('The email could not be sent');
   }
 
 };
