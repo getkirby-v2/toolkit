@@ -99,7 +99,7 @@ class Embed {
     $url = $url . '.js' . r(!is_null($file), '?file=' . $file);
 
     // load the gist
-    return html::tag('script', '', array('src' => $url, 'type' => 'javascript'));
+    return html::tag('script', '', array('src' => $url));
 
   }
 
