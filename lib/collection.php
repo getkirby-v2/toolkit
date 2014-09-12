@@ -308,15 +308,9 @@ class Collection extends I {
       $helper[$key] = str::lower($row->$field());
     }
 
-    // natural sorting
-    if($method === SORT_NATURAL) {
-      natsort($helper);
-      if($direction === SORT_DESC) $helper = array_reverse($helper);
-    } else if($direction === SORT_DESC) {
-      arsort($helper, $method);
-    } else {
-      asort($helper, $method);
-    }
+    // filter by field values and resort to sorting by filename 
+    // amongst equal values or if no values were found.
+    array_multisort(array_values($helper), $direction, $method, array_keys($helper), $direction, $method, $helper);
 
     // empty the collection data
     $collection->data = array();
