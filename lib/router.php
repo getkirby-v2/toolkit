@@ -26,6 +26,7 @@ class Router {
   protected $routes = array(
     'GET'    => array(),
     'POST'   => array(),
+    'HEAD'   => array(),
     'PUT'    => array(),
     'PATCH'  => array(),
     'DELETE' => array()
@@ -99,6 +100,8 @@ class Router {
 
       if(strpos($route->method, '|') !== false) {
         $route->method = str::split($route->method, '|');
+      } else if($route->method == 'ALL') {
+        $route->method = array_keys($this->routes);
       } else {
         $route->method = array($route->method);
       }
