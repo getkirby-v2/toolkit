@@ -115,6 +115,11 @@ class Html {
    */
   static public function tag($name, $content = null, $attr = array()) {
 
+    if(is_array($content)) {
+      $attr    = $content;
+      $content = null;
+    }
+
     $html = '<' . $name;
     $attr = static::attr($attr);
 

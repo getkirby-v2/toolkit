@@ -10,9 +10,16 @@ class Brick {
   public $events = array();
 
   public function __construct($tag, $html = false, $attr = array()) {
+
+    if(is_array($html)) {
+      $attr = $html;
+      $html = false;
+    }
+
     $this->tag($tag);
     $this->html($html);
     $this->attr($attr);
+
   }
 
   public function __set($attr, $value) {
