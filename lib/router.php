@@ -172,7 +172,7 @@ class Router {
     $routes = a::get($this->routes, $method, array());
 
     // detect path if not set manually
-    if($path === null) $path = implode('/', url::fragments(detect::path()));
+    if($path === null) $path = implode('/', (array)url::fragments(detect::path()));
 
     // empty urls should never happen
     if(empty($path)) $path = '/';
