@@ -90,7 +90,7 @@ class Router {
       'ajax'      => false,
       'filter'    => null,
       'method'    => 'GET',
-      'arguments' => null,
+      'arguments' => array(),
     );
 
     $route = new Obj(array_merge($defaults, $params, $optional));
@@ -170,6 +170,9 @@ class Router {
     $ajax   = r::ajax();
     $https  = r::ssl();
     $routes = a::get($this->routes, $method, array());
+
+    // detect path if not set manually
+    if($path === null) $path = implode('/', url::fragments(detect::path()));
 
     // empty urls should never happen
     if(empty($path)) $path = '/';
