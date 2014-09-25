@@ -52,6 +52,15 @@ class Router {
   protected $filters = array();
 
   /**
+   * Constructor
+   *
+   * @param array $routes
+   */
+  public function __construct($routes = array()) {
+    $this->register($routes);
+  }
+
+  /**
    * Returns the found route
    *
    * @return mixed
