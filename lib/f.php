@@ -108,6 +108,9 @@ class F {
     'xl'    => 'application/excel',
     'eml'   => 'message/rfc822',
     'json'  => array('application/json', 'text/json'),
+    'odt'   => 'application/vnd.oasis.opendocument.text',
+    'odc'   => 'application/vnd.oasis.opendocument.chart',
+    'odp'   => 'application/vnd.oasis.opendocument.presentation',
   );
 
   static public $types = array(
@@ -147,6 +150,9 @@ class F {
       'rtf',
       'rtx',
       'log',
+      'odt',
+      'odp',
+      'odc',
     ),
 
     'archive' => array(
