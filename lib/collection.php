@@ -298,30 +298,34 @@ class Collection extends I {
 
     $args       = func_get_args();
     $collection = clone $this;
-    $data       = $collection->data;
+    $array      = $collection->data;
+    $params     = array();
 
-    if(empty($data)) return $collection;
+    if(empty($array)) return $collection;
 
-    foreach($args as $n => $field) {
-      if(is_string($field)) {
-        if(strtolower($field) === 'desc') {
-          $args[$n] = SORT_DESC;
-        } else if(strtolower($field) === 'asc') {
-          $args[$n] = SORT_ASC;
+    foreach($args as $i => $param) {
+      if(is_string($param)) {
+        if(strtolower($param) === 'desc') {
+          ${"param_$i"} = SORT_DESC;
+        } else if(strtolower($param) === 'asc') {
+          ${"param_$i"} = SORT_ASC;
         } else {
-          $tmp = array();
-          foreach($data as $key => $row) {
-            $tmp[$key] = is_array($row) ? str::lower($row[$field]) : str::lower($row->$field());
-            $args[$n]  = $tmp;
+          ${"param_$i"} = array();
+          foreach($array as $index => $row) {
+            ${"param_$i"}[$index] = is_array($row) ? str::lower($row[$param]) : str::lower($row->$param());
           }
         }
+      } else {
+        ${"param_$i"} = $params[$i];
       }
+      $params[] = &${"param_$i"};
     }
 
-    $args[] = &$data;
-    call_user_func_array('array_multisort', $args);
+    $params[] = &$array;
 
-    $collection->data = $data;
+    call_user_func_array('array_multisort', $params);
+
+    $collection->data = $array;
 
     return $collection;
 
