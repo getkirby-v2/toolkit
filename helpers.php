@@ -260,23 +260,6 @@ function thumb($image, $params = array(), $obj = true) {
 }
 
 /**
- * Getter and setter for global roots
- *
- * @param string $key
- * @param string $value
- * @return string
- */
-function root($key = null, $value = null) {
-
-  static $roots = array();
-
-  if(is_null($key))   return $roots;
-  if(is_null($value)) return $roots[$key];
-  return $roots[$key] = $value;
-
-}
-
-/**
  * Simple email sender helper
  *
  * @param array $params
