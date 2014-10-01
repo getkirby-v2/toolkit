@@ -265,8 +265,7 @@ function thumb($image, $params = array(), $obj = true) {
  * @param array $params
  */
 function email($params = array()) {
-  $email = new Email($params);
-  return $email->send();
+  return new Email($params);
 }
 
 /**
