@@ -114,9 +114,10 @@ class Brick {
   public function addClass($class) {
 
     $classNames = $this->classNames();
+    $classIndex = array_map('strtolower', $classNames);
 
-    foreach(str::split(str::lower($class), ' ') as $c) {
-      if(!in_array($c, $classNames)) {
+    foreach(str::split($class, ' ') as $c) {
+      if(!in_array(strtolower($c), $classIndex)) {
         $classNames[] = $c;
       }
     }
@@ -131,12 +132,10 @@ class Brick {
 
     $classNames = $this->classNames();
 
-    foreach(str::split(str::lower($class), ' ') as $c) {
-
+    foreach(str::split($class, ' ') as $c) {
       $classNames = array_filter($classNames, function($e) use($c) {
-        return ($e !== $c);
+        return (strtolower($e) !== strtolower($c));
       });
-
     }
 
     $this->attr['class'] = $classNames;
