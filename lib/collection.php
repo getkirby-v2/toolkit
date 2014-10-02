@@ -316,7 +316,7 @@ class Collection extends I {
           }
         }
       } else {
-        ${"param_$i"} = $params[$i];
+        ${"param_$i"} = $args[$i];
       }
       $params[] = &${"param_$i"};
     }
