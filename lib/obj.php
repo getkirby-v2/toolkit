@@ -20,7 +20,7 @@ class Obj extends stdClass {
   }
 
   public function __call($method, $arguments) {
-    return $this->$method;
+    return isset($this->$method) ? $this->$method : null;
   }
 
   public function set($key, $value) {
