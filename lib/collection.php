@@ -387,7 +387,7 @@ class Collection extends I {
     foreach($this->data as $item) {
       $row = $this->extractValue($item, $field);
 
-      if(!is_null($split)) {
+      if($split) {
         $result = array_merge($result, str::split($row, $split));
       } else {
         $result[] = $row;
