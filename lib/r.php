@@ -278,7 +278,7 @@ class R {
    * @param string $default Pass an optional URL to use as default referer if no referer is being found
    * @return string
    */
-  static public function referrer($default = nullg) {
+  static public function referrer($default = null) {
     return static::referer($default);
   }
 
