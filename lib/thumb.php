@@ -291,7 +291,7 @@ thumb::$drivers['gd'] = function($thumb) {
     $img->quality = $thumb->options['quality'];
 
     if($thumb->options['crop']) {
-      $img->thumbnail($thumb->options['width'], $thumb->options['height']);
+      @$img->thumbnail($thumb->options['width'], $thumb->options['height']);
     } else {
       $dimensions = clone $thumb->source->dimensions();
       $dimensions->fitWidthAndHeight($thumb->options['width'], $thumb->options['height'], $thumb->options['upscale']);
