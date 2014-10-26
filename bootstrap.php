@@ -72,6 +72,7 @@ load(array(
   'system'                      => __DIR__ . DS . 'lib' . DS . 'system.php',
   'thumb'                       => __DIR__ . DS . 'lib' . DS . 'thumb.php',
   'tpl'                         => __DIR__ . DS . 'lib' . DS . 'tpl.php',
+  'toolkit'                     => __DIR__ . DS . 'lib' . DS . 'toolkit.php',
   'upload'                      => __DIR__ . DS . 'lib' . DS . 'upload.php',
   'url'                         => __DIR__ . DS . 'lib' . DS . 'url.php',
   'v'                           => __DIR__ . DS . 'lib' . DS . 'v.php',

@@ -50,7 +50,7 @@ class V {
  */
 v::$validators = array(
   'accepted' => function($value) {
-    return v::in($value, array(1, true, 'yes', '1', 'on'));
+    return v::in($value, array(1, true, 'yes', 'true', '1', 'on'));
   },
   'alpha' => function($value) {
     return v::match($value, '/^([a-z])+$/i');
