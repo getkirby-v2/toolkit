@@ -171,8 +171,8 @@ class Exif {
     if(!is_array($this->data)) return false;
 
     // store the timestamp when the picture has been taken
-    if(isset($this->data['DateTime'])) {
-      $this->timestamp = strtotime($this->data['DateTime']);
+    if(isset($this->data['DateTimeOriginal'])) {
+      $this->timestamp = strtotime($this->data['DateTimeOriginal']);
     } else {
       $this->timestamp = a::get($this->data, 'FileDateTime', $this->media->modified());
     }
