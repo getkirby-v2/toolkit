@@ -9,11 +9,11 @@ class Brick {
   public $html   = null;
   public $events = array();
 
-  public function __construct($tag, $html = false, $attr = array()) {
+  public function __construct($tag, $html = null, $attr = array()) {
 
     if(is_array($html)) {
       $attr = $html;
-      $html = false;
+      $html = null;
     }
 
     $this->tag($tag);
