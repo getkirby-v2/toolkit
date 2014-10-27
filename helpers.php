@@ -314,6 +314,6 @@ function l($key, $default = null) {
   return l::get($key, $default);
 }
 
-function brick($tag, $html = false, $attr = array()) {
+function brick($tag, $html = null, $attr = array()) {
   return new Brick($tag, $html, $attr);
 }
