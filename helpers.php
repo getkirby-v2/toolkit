@@ -314,6 +314,14 @@ function l($key, $default = null) {
   return l::get($key, $default);
 }
 
+
+/**
+ * Shortcut for creating an HTML element
+ *
+ * @param string $tag
+ * @param mixed $html
+ * @return object Brick
+ */
 function brick($tag, $html = null, $attr = array()) {
   return new Brick($tag, $html, $attr);
 }
