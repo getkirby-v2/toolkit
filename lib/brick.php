@@ -155,7 +155,9 @@ class Brick {
   }
 
   public function html($html = null) {
-    if(is_null($html)) return $this->html;
+    if(is_null($html)) {
+      return $this->html = $this->isVoid() ? null : $this->html;
+    }
     $this->html = $html;
     return $this;
   }
@@ -170,6 +172,31 @@ class Brick {
     if(is_callable($html)) $html = $html();
     $this->html = $this->html . $html;
     return $this;
+  }
+
+  public function isVoid() {
+
+    $void = array(
+      'area', 
+      'base', 
+      'br', 
+      'col', 
+      'command', 
+      'embed', 
+      'hr', 
+      'img', 
+      'input',
+      'keygen', 
+      'link', 
+      'meta', 
+      'param', 
+      'source', 
+      'track', 
+      'wbr',
+    );
+
+    return in_array(strtolower($this->tag()), $void);
+
   }
 
   public function toString() {
