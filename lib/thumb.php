@@ -225,7 +225,9 @@ class Thumb extends Obj {
     if(!$this->result->url()) return false;
 
     return html::img($this->result->url(), array_merge(array(
-      'alt'    => isset($this->options['alt'])   ? $this->options['alt']   : $this->result->name(),
+      'alt'    => isset($this->options['alt'])   ? $this->options['alt']   : $this->source->name(),
+      'width'  => $this->result->width()/2,
+      'height' => $this->result->height()/2,
       'class'  => isset($this->options['class']) ? $this->options['class'] : null,
     ), $attr));
 
