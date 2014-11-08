@@ -46,6 +46,7 @@ load(array(
   'embed'                       => __DIR__ . DS . 'lib' . DS . 'embed.php',
   'error'                       => __DIR__ . DS . 'lib' . DS . 'error.php',
   'errorreporting'              => __DIR__ . DS . 'lib' . DS . 'errorreporting.php',
+  'escape'                      => __DIR__ . DS . 'lib' . DS . 'escape.php',
   'exif'                        => __DIR__ . DS . 'lib' . DS . 'exif.php',
   'exif\\camera'                => __DIR__ . DS . 'lib' . DS . 'exif' . DS . 'camera.php',
   'exif\\location'              => __DIR__ . DS . 'lib' . DS . 'exif' . DS . 'location.php',
