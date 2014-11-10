@@ -96,7 +96,7 @@ data::$adapters['kd'] = array(
       $key = str::ucfirst(str::slug($key));
       if(empty($key) or is_null($value)) continue;
       // escape accidental dividers within a field
-      $value = preg_replace('!\n----(.*?\R)!', "\n ----$1", $value);
+      $value = preg_replace('!\n----(.*?\R*)!', "\n ----$1", $value);
 
       // multi-line content
       if(preg_match('!\R!', $value, $matches)) {
@@ -115,7 +115,7 @@ data::$adapters['kd'] = array(
     // remove BOM
     $string = str_replace(BOM, '', $string);
     // explode all fields by the line separator
-    $fields = explode("\n----", $string);
+    $fields = preg_split('!\n----\s*\n*!i', $string);
     // start the data array
     $data   = array();
 
