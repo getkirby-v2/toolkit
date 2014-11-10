@@ -26,7 +26,7 @@ class Escape {
    * @param  string  $string
    * @return boolean
    */
-  static function noNeedToEscape($string) {
+  static public function noNeedToEscape($string) {
     return $string === '' || ctype_digit($string);
   }
   
@@ -36,7 +36,7 @@ class Escape {
    * @param  string $char
    * @return string
    */
-  function convertEncoding($char) {
+  static public function convertEncoding($char) {
     return str::convert($char, 'UTF-16BE', 'UTF-8');
   }
   
@@ -46,7 +46,7 @@ class Escape {
    * @param  string $char
    * @return boolean
    */
-  static function charIsUndefined($char) {
+  static public function charIsUndefined($char) {
     $ascii = ord($char);
     return ($ascii <= 0x1f && $char != "\t" && $char != "\n" && $char != "\r")
       || ($ascii >= 0x7f && $ascii <= 0x9f);
@@ -69,9 +69,9 @@ class Escape {
    * @param  string $string
    * @return string
    */
-  static function html($string) {
+  static public function html($string) {
     $flags = ENT_QUOTES;
-    if (defined('ENT_SUBSTITUTE')) {
+    if(defined('ENT_SUBSTITUTE')) {
       $flags |= ENT_SUBSTITUTE;
     }
     return htmlspecialchars($string, $flags, 'UTF-8');
@@ -95,11 +95,9 @@ class Escape {
    * @param  string $string
    * @return string
    */
-  static function attr($string) {
-    if (self::noNeedToEscape($string)) {
-      return $string;
-    }
-    return preg_replace_callback('/[^a-z0-9,\.\-_]/iSu', 'self::escapeAttrChar', $string);
+  static public function attr($string) {
+    if(static::noNeedToEscape($string)) return $string;
+    return preg_replace_callback('/[^a-z0-9,\.\-_]/iSu', 'static::escapeAttrChar', $string);
   }
   
   /**
@@ -115,11 +113,9 @@ class Escape {
    * @param  string $string
    * @return string
    */
-  static function js($string) {
-    if (self::noNeedToEscape($string)) {
-      return $string;
-    }
-    return preg_replace_callback('/[^a-z0-9,\._]/iSu', 'self::escapeJSChar', $string);
+  static public function js($string) {
+    if(static::noNeedToEscape($string)) return $string;
+    return preg_replace_callback('/[^a-z0-9,\._]/iSu', 'static::escapeJSChar', $string);
   }
   
   /**
@@ -138,11 +134,9 @@ class Escape {
    * @param  string $string
    * @return string
    */
-  static function css($string) {
-    if (self::noNeedToEscape($string)) {
-      return $string;
-    }
-    return preg_replace_callback('/[^a-z0-9]/iSu', 'self::escapeCSSChar', $string);
+  static public function css($string) {
+    if(static::noNeedToEscape($string)) return $string;
+    return preg_replace_callback('/[^a-z0-9]/iSu', 'static::escapeCSSChar', $string);
   }
   
   /**
@@ -156,7 +150,7 @@ class Escape {
    * @param string  $string
    * @return string
    */
-  static function url($string) {
+  static public function url($string) {
     return rawurlencode($string);
   }
   
@@ -172,10 +166,10 @@ class Escape {
    *               upper hex entity if a named entity does not exist or
    *               entity with the &#xHH; format if ASCII value is less than 256.
    */
-  static function escapeAttrChar($matches) {
+  static protected function escapeAttrChar($matches) {
     $char = $matches[0];
     
-    if (self::charIsUndefined($char)) {
+    if(static::charIsUndefined($char)) {
       return '&#xFFFD;';
     }
     
@@ -188,11 +182,11 @@ class Escape {
       62 => '&gt;'    // >
     );
     
-    if (isset($namedEntities[$dec])) {
+    if(isset($namedEntities[$dec])) {
       return $namedEntities[$dec];
     }
     
-    if ($dec > 255) {
+    if($dec > 255) {
       return sprintf('&#x%04X;', $dec);
     }
     
@@ -208,12 +202,12 @@ class Escape {
    * @param  array  $matches
    * @return string
    */
-  static function escapeJSChar($matches) {
+  static protected function escapeJSChar($matches) {
     $char = $matches[0];
-    if (str::length($char) == 1) {
+    if(str::length($char) == 1) {
       return sprintf('\\x%02X', ord($char));
     }
-    $char = self::convertEncoding($char);
+    $char = static::convertEncoding($char);
     return sprintf('\\u%04s', str::upper(bin2hex($char)));
   }
   
@@ -226,12 +220,12 @@ class Escape {
    * @param  array  $matches
    * @return string
    */
-  static function escapeCSSChar($matches) {
+  static protected function escapeCSSChar($matches) {
     $char = $matches[0];
-    if (str::length($char) == 1) {
+    if(str::length($char) == 1) {
       $ord = ord($char);
     } else {
-      $char = self::convertEncoding($char);
+      $char = static::convertEncoding($char);
       $ord  = hexdec(bin2hex($char));
     }
     return sprintf('\\%X ', $ord);
