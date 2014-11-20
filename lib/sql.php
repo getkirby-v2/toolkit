@@ -282,15 +282,15 @@ class Sql {
       }
 
       $defaultValue = null;
-      if (isset($column['default'])) {
-        $defaultValue = is_integer($column['default']) ? $column['default'] : "'{$column['default']}'";
+      if(isset($column['default'])) {
+        $defaultValue = is_integer($column['default']) ? $column['default'] : '"' . $column['default'] . '"';
       }
 
       $output[] = trim(str::template($template[$type], array(
         'column.name'    => $name,
         'column.null'    => r(a::get($column, 'null') === false, 'NOT NULL', 'NULL'),
         'column.key'     => r($key and $key != 'INDEX', $key, false),
-        'column.default' => r(!is_null($defaultValue), 'DEFAULT ' . $defaultValue, ''),
+        'column.default' => r(!is_null($defaultValue), 'DEFAULT ' . $defaultValue),
       )));
 
     }
