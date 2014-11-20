@@ -215,7 +215,7 @@ class Url {
    */
   static public function isAbsolute($url) {
     // don't convert absolute urls
-    return (str::startsWith($url, 'http://') or str::startsWith($url, 'https://'));
+    return (str::startsWith($url, 'http://') or str::startsWith($url, 'https://') or str::startsWith($url, '//'));
   }
 
   /**
