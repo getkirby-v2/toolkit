@@ -215,7 +215,7 @@ class Router {
 
     }
 
-    if($this->route && ($this->filterer($this->route->filter) !== false)) {
+    if($this->route and $this->filterer($this->route->filter) !== false) {
       return $this->route;
     } else {
       return null;
