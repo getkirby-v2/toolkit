@@ -152,6 +152,7 @@ class Html {
     }
 
     if(empty($value) and $value !== '0') return false;
+    if(is_bool($value)) return ($value === true)? $name : '';
     return $name . '="' . $value . '"';
   }
 
