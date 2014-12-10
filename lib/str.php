@@ -348,7 +348,13 @@ class Str {
    * @return string
    */
   static public function widont($string = '') {
-    return preg_replace('|([^\s])\s+([^\s]+)\s*$|', '$1&nbsp;$2', $string);
+    return preg_replace_callback('|([^\s])\s+([^\s]+)\s*$|', function($matches) {
+      if(str::contains($matches[2], '-')) {
+        return $matches[1] . ' ' . str_replace('-', '&#8209;', $matches[2]);
+      } else {
+        return $matches[1] . '&nbsp;' . $matches[2];
+      }
+    }, $string);
   }
 
   /**
@@ -434,14 +440,14 @@ class Str {
    * @param  string  $separator To be used instead of space and other non-word characters.
    * @return string  The safe string
    */
-  static public function slug($string, $separator = '-') {
+  static public function slug($string, $separator = '-', $allowed = 'a-z0-9') {
 
     $string = trim($string);
     $string = static::lower($string);
     $string = static::ascii($string);
 
     // replace spaces with simple dashes
-    $string = preg_replace('![^a-z0-9]!i','-', $string);
+    $string = preg_replace('![^' . $allowed . ']!i','-', $string);
     // remove double dashes
     $string = preg_replace('![-]{2,}!','-', $string);
     // trim trailing and leading dashes

@@ -256,36 +256,41 @@ class Sql {
           $keys[$name] = 'PRIMARY';
           break;
         case 'varchar':
-          $template['mysql']  = '"{column.name}" varchar(255) {column.null}';
-          $template['sqlite'] = '"{column.name}" TEXT {column.null} {column.key}';
+          $template['mysql']  = '"{column.name}" varchar(255) {column.null} {column.default}';
+          $template['sqlite'] = '"{column.name}" TEXT {column.null} {column.key} {column.default}';
           break;
         case 'text':
           $template['mysql']  = '"{column.name}" TEXT';
-          $template['sqlite'] = '"{column.name}" TEXT {column.null} {column.key}';
+          $template['sqlite'] = '"{column.name}" TEXT {column.null} {column.key} {column.default}';
           break;
         case 'int':
-          $template['mysql']  = '"{column.name}" INT(11) UNSIGNED {column.null}';
-          $template['sqlite'] = '"{column.name}" INTEGER {column.null} {column.key}';
+          $template['mysql']  = '"{column.name}" INT(11) UNSIGNED {column.null} {column.default}';
+          $template['sqlite'] = '"{column.name}" INTEGER {column.null} {column.key} {column.default}';
           break;
         case 'timestamp':
-          $template['mysql']  = '"{column.name}" INT(11) UNSIGNED {column.null}';
-          $template['sqlite'] = '"{column.name}" INTEGER {column.null} {column.key}';
+          $template['mysql']  = '"{column.name}" INT(11) UNSIGNED {column.null} {column.default}';
+          $template['sqlite'] = '"{column.name}" INTEGER {column.null} {column.key} {column.default}';
           break;
         default:
           throw new Exception('Unsupported column type: ' . $column['type']);
       }
 
+      $key = false;
       if(isset($column['key'])) {
         $key = strtoupper($column['key']);
         $keys[$name] = $key;
-      } else {
-        $key = false;
+      }
+
+      $defaultValue = null;
+      if(isset($column['default'])) {
+        $defaultValue = is_integer($column['default']) ? $column['default'] : '"' . $column['default'] . '"';
       }
 
       $output[] = trim(str::template($template[$type], array(
-        'column.name' => $name,
-        'column.null' => a::get($column, 'null') === false ? 'NOT NULL' : 'NULL',
-        'column.key'  => ($key and $key != 'INDEX') ? $key : false
+        'column.name'    => $name,
+        'column.null'    => r(a::get($column, 'null') === false, 'NOT NULL', 'NULL'),
+        'column.key'     => r($key and $key != 'INDEX', $key, false),
+        'column.default' => r(!is_null($defaultValue), 'DEFAULT ' . $defaultValue),
       )));
 
     }

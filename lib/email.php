@@ -188,13 +188,13 @@ email::$services['amazon'] = function($email) {
   $headers[] = 'X-Amzn-Authorization: '. $auth;
   $headers[] = 'Content-Type: application/x-www-form-urlencoded';
 
-  $this->response = remote::post($url, array(
+  $email->response = remote::post($url, array(
     'data'    => $query,
     'headers' => $headers
   ));
 
-  if(!in_array($this->response->code(), array(200, 201, 202, 204))) {
-    throw new Error('The mail could not be sent!', $this->response->code());
+  if(!in_array($email->response->code(), array(200, 201, 202, 204))) {
+    throw new Error('The mail could not be sent!', $email->response->code());
   }
 
 };
@@ -222,12 +222,12 @@ email::$services['mailgun'] = function($email) {
     'text'     => $email->body
   );
 
-  $this->response = remote::post($url, array(
+  $email->response = remote::post($url, array(
     'data'    => $data,
     'headers' => $headers
   ));
 
-  if($this->response->code() != 200) {
+  if($email->response->code() != 200) {
     throw new Error('The mail could not be sent!');
   }
 
