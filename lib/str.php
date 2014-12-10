@@ -348,7 +348,13 @@ class Str {
    * @return string
    */
   static public function widont($string = '') {
-    return preg_replace('|([^\s])\s+([^\s]+)\s*$|', '$1&nbsp;$2', $string);
+    return preg_replace_callback('|([^\s])\s+([^\s]+)\s*$|', function($matches) {
+      if(str::contains($matches[2], '-')) {
+        return $matches[1] . ' ' . str_replace('-', '&#8209;', $matches[2]);
+      } else {
+        return $matches[1] . '&nbsp;' . $matches[2];
+      }
+    }, $string);
   }
 
   /**
