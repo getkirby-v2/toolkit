@@ -34,7 +34,25 @@ class Server {
    */  
   static public function get($key = false, $default = null) {
     if(empty($key)) return $_SERVER;
-    return a::get($_SERVER, str::upper($key), $default);
+    $key   = str::upper($key);
+    $value = a::get($_SERVER, $key, $default);
+    return static::sanitize($key, $value);
+  }
+
+  static public function sanitize($key, $value) {
+
+    switch($key) {
+      case 'SERVER_NAME':
+      case 'HTTP_HOST':
+        $value = strip_tags($value);
+        $value = preg_replace('![^\w.-]+!iu', '', $value);
+        $value = trim($value, '-');
+        $value = htmlspecialchars($value);
+        break;
+    }
+
+    return $value;
+
   }
 
 }
