@@ -434,14 +434,14 @@ class Str {
    * @param  string  $separator To be used instead of space and other non-word characters.
    * @return string  The safe string
    */
-  static public function slug($string, $separator = '-') {
+  static public function slug($string, $separator = '-', $allowed = 'a-z0-9') {
 
     $string = trim($string);
     $string = static::lower($string);
     $string = static::ascii($string);
 
     // replace spaces with simple dashes
-    $string = preg_replace('![^a-z0-9]!i','-', $string);
+    $string = preg_replace('![^' . $allowed . ']!i','-', $string);
     // remove double dashes
     $string = preg_replace('![-]{2,}!','-', $string);
     // trim trailing and leading dashes

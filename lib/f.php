@@ -683,7 +683,7 @@ class F {
     $name      = static::name($string);
     $extension = static::extension($string);
     $end       = !empty($extension) ? '.' . str::slug($extension) : '';
-    return str::slug($name) . $end;
+    return str::slug($name, '-', 'a-z0-9@._-') . $end;
   }
 
   /**
