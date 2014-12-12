@@ -247,5 +247,5 @@ db::$queries['avg'] = function($table, $column, $where = null) {
  * @return mixed
  */
 db::$queries['sum'] = function($table, $column, $where = null) {
-  return static::table($table)->where($where)->sum($column);
+  return db::table($table)->where($where)->sum($column);
 };
