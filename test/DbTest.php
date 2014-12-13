@@ -6,9 +6,9 @@ class DbTest extends PHPUnit_Framework_TestCase {
 
   public static $database = null;
 
-  public static function setUpBeforeClass() {
+  public function setUp() {
     
-    self::$database = TEST_ROOT_TMP . DS . 'database.sqlite';
+    self::$database = ':memory:';
 
     db::connect(array(
       'database' => self::$database,
@@ -146,7 +146,7 @@ class DbTest extends PHPUnit_Framework_TestCase {
   
     $result = db::select('users');
 
-    $this->assertEquals(4, $result->count());
+    $this->assertEquals(3, $result->count());
 
     $result = db::select('users', '*', array('username' => 'paul'));
 
@@ -161,7 +161,7 @@ class DbTest extends PHPUnit_Framework_TestCase {
 
   public function testColumn() {
     $result = db::column('users', 'username');
-    $this->assertEquals(array('george', 'john', 'paul', 'ringo'), $result->toArray());
+    $this->assertEquals(array('george', 'john', 'paul'), $result->toArray());
   }
 
   public function testInsert() {
@@ -169,8 +169,8 @@ class DbTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testUpdate() {
-    db::update('users', array('email' => 'ringo@gmail.com'), array('username' => 'ringo'));
-    $this->assertEquals('ringo@gmail.com', db::row('users', '*', array('username' => 'ringo'))->email());
+    db::update('users', array('email' => 'john@gmail.com'), array('username' => 'john'));
+    $this->assertEquals('john@gmail.com', db::row('users', '*', array('username' => 'john'))->email());
   }
 
   public function testDelete() {
