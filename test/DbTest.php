@@ -161,7 +161,7 @@ class DbTest extends PHPUnit_Framework_TestCase {
 
   public function testColumn() {
     $result = db::column('users', 'username');
-    $this->assertEquals(array('george', 'john', 'paul'), $result->toArray());
+    $this->assertEquals(array('john', 'paul', 'george'), $result->toArray());
   }
 
   public function testInsert() {
