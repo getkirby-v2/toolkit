@@ -286,6 +286,7 @@ class Url {
   static public function base($url = null) {
     if(is_null($url)) {
       $port = server::get('SERVER_PORT');
+      $port = in_array($port, array(80, 443)) ? null : $port;
       return static::scheme() . '://' . server::get('SERVER_NAME') . r($port, ':' . $port);
     } else {
       $port = static::port($url);
