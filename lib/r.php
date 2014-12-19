@@ -322,8 +322,7 @@ class R {
    * @return string
    */
   static public function scheme() {
-    $https = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false;
-    return ($https and strtolower($https) != 'off') ? 'https' : 'http';
+    return url::scheme();
   }
 
   /**

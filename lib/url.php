@@ -18,8 +18,20 @@ class Url {
   static public $current = null;
 
   static public function scheme($url = null) {
-    if(is_null($url)) return 'http' . ((empty($_SERVER['HTTPS']) or $_SERVER['HTTPS'] == 'off') ? '' : 's' );
+    if(is_null($url)) {      
+      if(
+        (isset($_SERVER['HTTPS']) and strtolower($_SERVER['HTTPS']) != 'off') or
+        server::get('SERVER_PORT')            == '443' or 
+        server::get('HTTP_X_FORWARDED_PORT')  == '443' or 
+        server::get('HTTP_X_FORWARDED_PROTO') == 'https'
+      ) {
+        return 'https';
+      } else {
+        return 'http';
+      }
+    }
     return parse_url($url, PHP_URL_SCHEME);
+
   }
 
   /**
