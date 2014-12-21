@@ -203,8 +203,8 @@ class Sql {
 
       foreach($values AS $key => $value) {
         $fields[] = $key;
-        if(in_array($value, $this->literals)) {
-          $output[] = $value;
+        if(in_array($value, $this->literals, true)) {
+          $output[] = ($value === null)? 'null' : $value;
         } elseif(is_array($value)) {
           $output[] = "'" . $this->db->escape(json_encode($value)) . "'";
         } else {
