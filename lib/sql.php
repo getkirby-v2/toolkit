@@ -14,7 +14,7 @@
 class Sql {
 
   // list of literals which should not be escaped in queries
-  protected $literals = array('NOW()');
+  protected $literals = array('NOW()', null);
 
   // the parent db connection
   protected $db;
@@ -186,7 +186,7 @@ class Sql {
 
       foreach($values AS $key => $value) {
         if(in_array($value, $this->literals)) {
-          $output[] = $key . ' = ' . $value;
+          $output[] = $key . ' = ' . (($value === null)? 'null' : $value);
         } elseif(is_array($value)) {
           $output[] = $key . " = '" . json_encode($value) . "'";
         } else {
