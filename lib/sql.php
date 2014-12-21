@@ -185,7 +185,7 @@ class Sql {
       $output = array();
 
       foreach($values AS $key => $value) {
-        if(in_array($value, $this->literals)) {
+        if(in_array($value, $this->literals, true)) {
           $output[] = $key . ' = ' . (($value === null)? 'null' : $value);
         } elseif(is_array($value)) {
           $output[] = $key . " = '" . json_encode($value) . "'";
