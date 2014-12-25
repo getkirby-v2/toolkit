@@ -128,6 +128,15 @@ class Detect {
   }
 
   /**
+   * Check if the WinCache extension is installed
+   * 
+   * @return boolean
+   */
+  static public function wincache() {
+    return class_exists('wincache_ucache_get');
+  }
+
+  /**
    * Check if the Memcache extension is installed
    * 
    * @return boolean

@@ -32,6 +32,7 @@ load(array(
   'cache\\driver\\memcached'    => __DIR__ . DS . 'lib' . DS . 'cache' . DS . 'driver' . DS . 'memcached.php',
   'cache\\driver\\mock'         => __DIR__ . DS . 'lib' . DS . 'cache' . DS . 'driver' . DS . 'mock.php',
   'cache\\driver\\session'      => __DIR__ . DS . 'lib' . DS . 'cache' . DS . 'driver' . DS . 'session.php',
+  'cache\\driver\\wincache'     => __DIR__ . DS . 'lib' . DS . 'cache' . DS . 'driver' . DS . 'wincache.php',
   'cache\\value'                => __DIR__ . DS . 'lib' . DS . 'cache' . DS . 'value.php',
   'collection'                  => __DIR__ . DS . 'lib' . DS . 'collection.php',
   'crypt'                       => __DIR__ . DS . 'lib' . DS . 'crypt.php',
