@@ -87,6 +87,7 @@ class F {
     'html'  => 'text/html',
     'htm'   => 'text/html',
     'shtml' => 'text/html',
+    'code'  => 'text/html',
     'txt'   => 'text/plain',
     'text'  => 'text/plain',
     'log'   => array('text/plain', 'text/x-log'),
