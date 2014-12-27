@@ -42,10 +42,10 @@ class Media {
    */
   public function __construct($root, $url = null) {
     $this->url       = $url;
-    $this->root      = realpath($root);
     $this->filename  = basename($root);
     $this->name      = pathinfo($root, PATHINFO_FILENAME);
     $this->extension = strtolower(pathinfo($root, PATHINFO_EXTENSION));
+    $this->root      = realpath($root) ? realpath($root) : realpath(pathinfo($root, PATHINFO_DIRNAME)) . DS . pathinfo($root, PATHINFO_BASENAME) ;
   }
 
   /**
