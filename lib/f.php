@@ -164,6 +164,7 @@ class F {
     ),
 
     'code' => array(
+      'code',
       'js',
       'css',
       'scss',
