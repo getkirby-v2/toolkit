@@ -30,6 +30,7 @@ class Thumb extends Obj {
     'crop'      => false,
     'grayscale' => false,
     'overwrite' => false,
+    'auto_orient' => false,
   );
 
   public $source      = null;
@@ -145,7 +146,8 @@ class Thumb extends Obj {
       ($this->options['crop'])    ? $this->options['crop']    : 0,
        $this->options['blur'],
        $this->options['grayscale'],
-       $this->options['quality']
+       $this->options['quality'],
+       $this->options['auto_orient']
     ));
 
   }
@@ -304,6 +306,10 @@ thumb::$drivers['gd'] = function($thumb) {
 
     if($thumb->options['blur']) {
       $img->blur('gaussian', 10);
+    }
+
+    if($thumb->options['auto_orient']) {
+      $img->auto_orient();
     }
 
     @$img->save($thumb->destination->root);
