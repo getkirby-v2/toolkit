@@ -152,7 +152,7 @@ class Router {
   protected function filterer($filters) {
     foreach((array)$filters as $filter) {
       if(array_key_exists($filter, $this->filters) and is_callable($this->filters[$filter])) {
-        return call_user_func($this->filters[$filter]);
+        call_user_func($this->filters[$filter]);
       }
     }
   }
@@ -215,7 +215,8 @@ class Router {
 
     }
 
-    if($this->route and $this->filterer($this->route->filter) !== false) {
+    if($this->route) {
+      $this->filterer($this->route->filter);
       return $this->route;
     } else {
       return null;

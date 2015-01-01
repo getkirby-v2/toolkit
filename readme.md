@@ -25,6 +25,6 @@ PHP 5.3+
 ## Author
 
 Bastian Allgeier   
-<bastian@getkirby.com>  
+<bastian@getkirb.com>  
 <http://getkirby.com>  
 <http://twitter.com/getkirby>

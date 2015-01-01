@@ -91,23 +91,15 @@ data::$adapters['kd'] = array(
   'extension' => array('md', 'txt'),
   'encode' => function($data) {
 
-    $result = array();
+    $divider = "\n\n----\n\n";
+    $safediv = "\n\n---\n\n";
+    $result  = array();
     foreach($data AS $key => $value) {
       $key = str::ucfirst(str::slug($key));
       if(empty($key) or is_null($value)) continue;
-      // escape accidental dividers within a field
-      $value = preg_replace('!\n----(.*?\R*)!', "\n ----$1", $value);
-
-      // multi-line content
-      if(preg_match('!\R!', $value, $matches)) {
-        $result[$key] = $key . ": \n\n" . trim($value);
-      // single-line content
-      } else {
-        $result[$key] = $key . ': ' . trim($value);        
-      }
-
+      $result[$key] = $key . ': ' . trim(str_replace($divider, $safediv, $value));
     }
-    return implode("\n\n----\n\n", $result);
+    return implode($divider, $result);
 
   },
   'decode' => function($string) {
@@ -115,7 +107,7 @@ data::$adapters['kd'] = array(
     // remove BOM
     $string = str_replace(BOM, '', $string);
     // explode all fields by the line separator
-    $fields = preg_split('!\n----\s*\n*!', $string);
+    $fields = explode("\n----", $string);
     // start the data array
     $data   = array();
 
