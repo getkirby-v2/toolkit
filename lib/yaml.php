@@ -41,7 +41,7 @@ class Yaml {
    * @return array
    */
   static public function decode($yaml) {
-    return spyc::yamlload(trim($yaml));
+    return spyc::yamlload($yaml);
   }
 
   /**

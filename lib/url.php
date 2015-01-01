@@ -29,7 +29,7 @@ class Url {
    */
   static public function current() {
     if(!is_null(static::$current)) return static::$current;
-    return static::$current = static::scheme() . '://' . server::get('HTTP_HOST') . server::get('REQUEST_URI');
+    return static::$current = static::base() . server::get('REQUEST_URI');
   }
 
   /**
@@ -215,7 +215,7 @@ class Url {
    */
   static public function isAbsolute($url) {
     // don't convert absolute urls
-    return (str::startsWith($url, 'http://') or str::startsWith($url, 'https://'));
+    return (str::startsWith($url, 'http://') or str::startsWith($url, 'https://') or str::startsWith($url, '//'));
   }
 
   /**
@@ -284,8 +284,13 @@ class Url {
    * @return string
    */
   static public function base($url = null) {
-    if(is_null($url)) $url = static::current();
-    return static::scheme($url) . '://' . static::host($url);
+    if(is_null($url)) {
+      $port = server::get('SERVER_PORT');
+      return static::scheme() . '://' . server::get('SERVER_NAME') . r($port, ':' . $port);
+    } else {
+      $port = static::port($url);
+      return static::scheme($url) . '://' . static::host($url) . r($port, ':' . $port);      
+    }
   }
 
   /**

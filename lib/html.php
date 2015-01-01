@@ -151,8 +151,14 @@ class Html {
       return implode(' ', $attributes);
     }
 
-    if(empty($value) and $value !== '0') return false;
-    return $name . '="' . $value . '"';
+    if(empty($value) and $value !== '0') {
+      return false;
+    } else if(is_bool($value)) {
+      return $value === true ? $name : '';
+    } else {
+      return $name . '="' . $value . '"';      
+    }
+
   }
 
   /**
