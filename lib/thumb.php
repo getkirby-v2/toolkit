@@ -24,6 +24,7 @@ class Thumb extends Obj {
     'memory'    => '128M',
     'quality'   => 100,
     'blur'      => false,
+    'blurpx'    => 10,
     'width'     => null,
     'height'    => null,
     'upscale'   => false,
@@ -303,7 +304,7 @@ thumb::$drivers['gd'] = function($thumb) {
     }
 
     if($thumb->options['blur']) {
-      $img->blur('gaussian', 10);
+      $img->blur('gaussian', $thumb->options['blurpx']);
     }
 
     @$img->save($thumb->destination->root);
