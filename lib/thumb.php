@@ -17,19 +17,21 @@ class Thumb extends Obj {
   static public $drivers = array();
 
   static public $defaults = array(
-    'filename'  => '{safeName}-{hash}.{extension}',
-    'url'       => '/thumbs',
-    'root'      => '/thumbs',
-    'driver'    => 'im',
-    'memory'    => '128M',
-    'quality'   => 100,
-    'blur'      => false,
-    'width'     => null,
-    'height'    => null,
-    'upscale'   => false,
-    'crop'      => false,
-    'grayscale' => false,
-    'overwrite' => false,
+    'filename'   => '{safeName}-{hash}.{extension}',
+    'url'        => '/thumbs',
+    'root'       => '/thumbs',
+    'driver'     => 'im',
+    'memory'     => '128M',
+    'quality'    => 100,
+    'blur'       => false,
+    'blurpx'     => 10,
+    'width'      => null,
+    'height'     => null,
+    'upscale'    => false,
+    'crop'       => false,
+    'grayscale'  => false,
+    'overwrite'  => false,
+    'autoOrient' => false,
   );
 
   public $source      = null;
@@ -257,6 +259,10 @@ thumb::$drivers['im'] = function($thumb) {
     $command[] = '-colorspace gray';
   }
 
+  if($thumb->options['autoOrient']) {
+    $command[] = '-auto-orient';
+  }
+
   $command[] = '-resize';
 
   if($thumb->options['crop']) {
@@ -271,7 +277,7 @@ thumb::$drivers['im'] = function($thumb) {
   $command[] = '-quality ' . $thumb->options['quality'];
 
   if($thumb->options['blur']) {
-    $command[] = '-blur 0x8';
+    $command[] = '-blur 0x' . $thumb->options['blurpx'];
   }
 
   $command[] = '"' . $thumb->destination->root . '"';
@@ -303,8 +309,12 @@ thumb::$drivers['gd'] = function($thumb) {
     }
 
     if($thumb->options['blur']) {
-      $img->blur('gaussian', 10);
+      $img->blur('gaussian', $thumb->options['blurpx']);
     }
+
+    if($thumb->options['autoOrient']) {
+      $img->auto_orient();
+    }    
 
     @$img->save($thumb->destination->root);
   } catch(Exception $e) {
