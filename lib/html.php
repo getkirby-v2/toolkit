@@ -183,7 +183,7 @@ class Html {
       return implode(' ', $attributes);
     }
 
-    if(empty($value) and $value !== '0') {
+    if(empty($value) and $value !== '0' and $value !== 0) {
       return false;
     } else if(is_bool($value)) {
       return $value === true ? strtolower($name) : '';
