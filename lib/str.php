@@ -298,6 +298,16 @@ class Str {
   }
 
   /**
+   * Checks if the given string is a URL
+   * 
+   * @param string $string
+   * @return boolean
+   */
+  static public function isURL($string) {
+    return filter_var($string, FILTER_VALIDATE_URL);
+  }
+
+  /**
    * Shortens a string and adds an ellipsis if the string is too long
    *
    * <code>
