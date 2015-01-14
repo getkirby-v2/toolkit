@@ -175,28 +175,7 @@ class Brick {
   }
 
   public function isVoid() {
-
-    $void = array(
-      'area', 
-      'base', 
-      'br', 
-      'col', 
-      'command', 
-      'embed', 
-      'hr', 
-      'img', 
-      'input',
-      'keygen', 
-      'link', 
-      'meta', 
-      'param', 
-      'source', 
-      'track', 
-      'wbr',
-    );
-
-    return in_array(strtolower($this->tag()), $void);
-
+    return html::isVoid($this->tag());
   }
 
   public function toString() {
