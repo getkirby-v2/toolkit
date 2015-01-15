@@ -23,6 +23,7 @@ class Upload {
   public $options = array();
   public $error   = null;
   public $file    = null;
+  public $to      = null;
 
   public function __construct($to, $params = array()) {
 
@@ -55,17 +56,23 @@ class Upload {
 
   public function to() {
 
+    if(!is_null($this->to)) return $this->to;
+
     $source        = $this->source();
     $name          = f::name($source['name']);
     $extension     = f::extension($source['name']);
     $safeName      = f::safeName($name);
     $safeExtension = str_replace('jpeg', 'jpg', str::lower($extension));
 
-    return str::template($this->options['to'], array(
+    if(empty($safeExtension)) {
+      $safeExtension = f::mimeToExtension(f::mime($source['tmp_name']));
+    }
+
+    return $this->to = str::template($this->options['to'], array(
       'name'          => $name,
       'filename'      => $source['name'],
       'safeName'      => $safeName,
-      'safeFilename'  => $safeName . '.' . $safeExtension,
+      'safeFilename'  => $safeName . r(!empty($safeExtension), '.' . $safeExtension),
       'extension'     => $extension,
       'safeExtension' => $safeExtension
     ));

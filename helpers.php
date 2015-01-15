@@ -217,24 +217,32 @@ function gravatar($email, $size = 256, $default = 'mm') {
 }
 
 /**
- * Checks / returns a csfr token
+ * Checks / returns a csrf token
  *
  * @param string $check Pass a token here to compare it to the one in the session
  * @return mixed Either the token or a boolean check result
  */
-function csfr($check = null) {
+function csrf($check = null) {
 
   // make sure a session is started
   s::start();
 
   if(is_null($check)) {
     $token = str::random(64);
-    s::set('csfr', $token);
+    s::set('csrf', $token);
     return $token;
   }
 
-  return ($check === s::get('csfr')) ? true : false;
+  return ($check === s::get('csrf')) ? true : false;
 
+}
+
+/**
+ * Facepalm typo alias
+ * @see csrf()
+ */
+function csfr($check = null) {
+  return csrf($check);
 }
 
 /**

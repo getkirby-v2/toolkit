@@ -134,7 +134,7 @@ class Dir {
    * @return mixed
    */
   static public function niceSize($dir) {
-    return static::size($dir);
+    return f::niceSize(static::size($dir));
   }
 
   /**

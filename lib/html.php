@@ -54,6 +54,37 @@ class Html {
   );
 
   /**
+   * Checks if a tag is self-closing
+   * 
+   * @param string $tag
+   * @return param
+   */
+  static public function isVoid($tag) {
+
+    $void = array(
+      'area', 
+      'base', 
+      'br', 
+      'col', 
+      'command', 
+      'embed', 
+      'hr', 
+      'img', 
+      'input',
+      'keygen', 
+      'link', 
+      'meta', 
+      'param', 
+      'source', 
+      'track', 
+      'wbr',
+    );
+
+    return in_array(strtolower($tag), $void);
+
+  }
+
+  /**
    * Returns the full array with all HTML entities
    *
    * @return array
@@ -124,10 +155,11 @@ class Html {
     $attr = static::attr($attr);
 
     if(!empty($attr)) $html .= ' ' . $attr;
-    if(!is_null($content)) {
-      $html .= '>' . $content . '</' . $name . '>';
+
+    if(static::isVoid($name)) {
+      $html .= '>';
     } else {
-      $html .= ' />';
+      $html .= '>' . $content . '</' . $name . '>';
     }
 
     return $html;
@@ -151,12 +183,12 @@ class Html {
       return implode(' ', $attributes);
     }
 
-    if(empty($value) and $value !== '0') {
+    if(empty($value) and $value !== '0' and $value !== 0) {
       return false;
     } else if(is_bool($value)) {
-      return $value === true ? $name : '';
+      return $value === true ? strtolower($name) : '';
     } else {
-      return $name . '="' . $value . '"';      
+      return strtolower($name) . '="' . $value . '"';      
     }
 
   }

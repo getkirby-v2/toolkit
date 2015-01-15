@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package		SimpleImage class
  * @version		2.5.3
@@ -87,6 +88,11 @@ class SimpleImage {
 	 *
 	 */
 	function auto_orient() {
+		
+		// stop if there's no exif data
+		if(!isset($this->original_info['exif']['Orientation'])) {
+			return $this;
+		}
 		
 		switch ($this->original_info['exif']['Orientation']) {
 			case 1:

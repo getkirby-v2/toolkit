@@ -241,7 +241,7 @@ email::$services['postmark'] = function($email) {
   if(empty($email->options['key'])) throw new Error('Invalid Postmark API Key');
 
   // reset the api key if we are in test mode
-  if($email->options['test']) $email->options['key'] = 'POSTMARK_API_TEST';
+  if(a::get($email->options, 'test')) $email->options['key'] = 'POSTMARK_API_TEST';
 
   // the url for postmarks api
   $url = 'https://api.postmarkapp.com/email';

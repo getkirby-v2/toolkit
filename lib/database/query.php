@@ -771,7 +771,7 @@ class Query {
    */
   public function column($column) {
 
-    $results = $this->query($this->select($column)->build('select'), array(
+    $results = $this->query($this->select($column)->order($this->primaryKeyName . ' ASC')->build('select'), array(
       'iterator' => 'array',
       'fetch'    => 'array',
     ));
