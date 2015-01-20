@@ -13,8 +13,6 @@ class Pagination {
 
   // configuration
   static public $defaults = array(
-    'variable'      => 'page',
-    'method'        => 'param',
     'omitFirstPage' => true,
     'page'          => false,
     'url'           => null,
@@ -59,10 +57,13 @@ class Pagination {
     }
 
     $this->options = array_merge(static::$defaults, $params);
-    $this->count   = $count;
-    $this->limit   = $limit;
-    $this->pages   = ceil($this->count / $this->limit);
-    $this->offset  = ($this->page()-1) * $this->limit;
+    $this->options['variable'] = c::get('pagination.variable', 'page');
+    $this->options['method']   = (c::get('pagination.method') == 'query') ? 'query' : 'params';
+
+    $this->count  = $count;
+    $this->limit  = $limit;
+    $this->pages  = ceil($this->count / $this->limit);
+    $this->offset = ($this->page()-1) * $this->limit;
 
   }
 
