@@ -368,7 +368,7 @@ class Database {
    */
   public function dropTable($table) {
     $sql = new SQL($this);
-    return $this->execute($sql->dropTable());
+    return $this->execute($sql->dropTable($table));
   }
 
   /**
