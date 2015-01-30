@@ -33,6 +33,15 @@ class Url {
     return parse_url($url, PHP_URL_SCHEME);
 
   }
+  
+  /**
+   * Returns if the current url has a query string
+   * 
+   * @return boolean
+   */
+  static public function hasQuery($url) {
+    return (bool)strpos('?', $url);
+  }
 
   /**
    * Returns the current url with all bells and whistles
