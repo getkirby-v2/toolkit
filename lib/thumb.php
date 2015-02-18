@@ -23,7 +23,7 @@ class Thumb extends Obj {
     'root'        => '/thumbs',
     'driver'      => 'im',
     'memory'      => '128M',
-    'quality'     => 100,
+    'quality'     => 90,
     'blur'        => false,
     'blurpx'      => 10,
     'width'       => null,
