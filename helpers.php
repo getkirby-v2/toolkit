@@ -311,7 +311,9 @@ function invalid($data, $rules, $messages = array()) {
     foreach($validations as $method => $options) {
       if(is_numeric($method)) $method = $options;
       if($method == 'required') {
-        if(!isset($data[$field])) $errors[$field] = a::get($messages, $field, $field);
+        if(!isset($data[$field]) or (empty($data[$field]) and $data[$field] !== 0)) {
+          $errors[$field] = a::get($messages, $field, $field);
+        }
       } else if(!empty($data[$field]) or $data[$field] === 0) {
         if(!is_array($options)) $options = array($options);
         array_unshift($options, a::get($data, $field));
