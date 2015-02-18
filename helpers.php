@@ -312,7 +312,7 @@ function invalid($data, $rules, $messages = array()) {
       if(is_numeric($method)) $method = $options;
       if($method == 'required') {
         if(!isset($data[$field])) $errors[$field] = a::get($messages, $field, $field);
-      } else {
+      } else if(!empty($data[$field]) or $data[$field] === 0) {
         if(!is_array($options)) $options = array($options);
         array_unshift($options, a::get($data, $field));
         if(!call(array('v', $method), $options)) {
