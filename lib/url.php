@@ -125,6 +125,14 @@ class Url {
   }
 
   /**
+   * Checks if the url contains a query string
+   */
+  static public function hasQuery($url = null) {
+    if(is_null($url)) $url = static::current();
+    return str::contains($url, '?');
+  }
+
+  /**
    */
   static public function hash($url = null) {
     if(is_null($url)) $url = static::current();
