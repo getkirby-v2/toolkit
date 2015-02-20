@@ -283,7 +283,7 @@ class Sql {
 
       $defaultValue = null;
       if(isset($column['default'])) {
-        $defaultValue = is_integer($column['default']) ? $column['default'] : '"' . $column['default'] . '"';
+        $defaultValue = is_integer($column['default']) ? $column['default'] : "'" . $column['default'] . "'";
       }
 
       $output[] = trim(str::template($template[$type], array(
