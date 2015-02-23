@@ -225,7 +225,7 @@ class Sql {
    * @return string
    */
   public function dropTable($table) {
-    return 'DROP TABLE "' . $table . '"';
+    return 'DROP TABLE `' . $table . '`';
   }
 
   /**
