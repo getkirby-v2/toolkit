@@ -20,7 +20,7 @@ class Url {
   static public function scheme($url = null) {
     if(is_null($url)) {      
       if(
-        (isset($_SERVER['HTTPS']) and strtolower($_SERVER['HTTPS']) != 'off') or
+        (isset($_SERVER['HTTPS']) and !empty($_SERVER['HTTPS']) and strtolower($_SERVER['HTTPS']) != 'off') or
         server::get('SERVER_PORT')            == '443' or 
         server::get('HTTP_X_FORWARDED_PORT')  == '443' or 
         server::get('HTTP_X_FORWARDED_PROTO') == 'https'
