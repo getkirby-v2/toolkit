@@ -89,6 +89,8 @@ class FTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('archive', f::type('zip'));
     $this->assertEquals('code', f::type('css'));
     $this->assertEquals('code', f::type('content.php'));
+    $this->assertEquals('code', f::type('py'));
+    $this->assertEquals('code', f::type('java'));
 
   }
 

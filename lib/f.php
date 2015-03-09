@@ -176,6 +176,8 @@ class F {
       'rb',
       'xml',
       'json',
+      'java',
+      'py'
     ),
 
     'video' => array(
@@ -558,7 +560,7 @@ class F {
 
     $length = strlen($file);
 
-    if($length > 2 and $length < 4) {
+    if($length >= 2 and $length <= 4) {
       // use the file name as extension
       $extension = $file;
     } else {
