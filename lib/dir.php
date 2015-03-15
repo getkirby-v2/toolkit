@@ -15,7 +15,7 @@ class Dir {
 
   static public $defaults = array(
     'permissions' => 0755,
-    'ignore'      => array('.', '..', '.DS_Store', '.gitignore', '.git', '.svn', '.htaccess')
+    'ignore'      => array('.', '..', '.DS_Store', '.gitignore', '.git', '.svn', '.htaccess', 'Thumb.db', '@eaDir')
   );
 
   /**
