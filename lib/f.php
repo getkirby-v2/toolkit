@@ -152,7 +152,7 @@ class F {
       'xltx',
       'ppt',
       'pptx',
-      'potx'
+      'potx',
       'csv',
       'rtf',
       'rtx',
