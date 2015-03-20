@@ -274,8 +274,8 @@ class Media {
    *
    * @return int
    */
-  public function modified($format = null) {
-    return f::modified($this->root, $format);
+  public function modified($format = null, $handler = 'date') {
+    return f::modified($this->root, $format, $handler);
   }
 
   /**

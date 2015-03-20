@@ -510,10 +510,11 @@ class F {
    *
    * @param string $file
    * @param string $format
+   * @param string $handler date or strftime
    * @return int
    */
-  static public function modified($file, $format = null) {
-    return !is_null($format) ? date($format, filemtime($file)) : filemtime($file);
+  static public function modified($file, $format = null, $handler = 'date') {
+    return !is_null($format) ? $handler($format, filemtime($file)) : filemtime($file);
   }
 
   /**
