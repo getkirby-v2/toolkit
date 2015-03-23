@@ -25,7 +25,7 @@ class Visitor {
    * @return string
    */
   static public function ip() {
-    return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+    return getenv('REMOTE_ADDR');
   }
 
   /**
