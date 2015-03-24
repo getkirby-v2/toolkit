@@ -40,6 +40,11 @@ class Thumb extends Obj {
   public $options     = array();
   public $error       = null;
 
+ /**
+  * @var string
+  */
+  protected $hash = null;
+
   /**
    * Constructor
    *
@@ -60,7 +65,7 @@ class Thumb extends Obj {
       'safeFilename' => f::safeName($this->source->name()) . '.' . $this->extension(),
       'width'        => $this->options['width'],
       'height'       => $this->options['height'],
-      'hash'         => md5($this->source->root() . $this->settingsIdentifier()),
+      'hash'         => $this->getHash(),
     ));
 
     $this->destination->url  = $this->options['url'] . '/' . $this->destination->filename;
@@ -94,6 +99,28 @@ class Thumb extends Obj {
     $this->result = new Media($this->destination->root, $this->destination->url);
 
   }
+
+
+  /**
+   * thumbnail hash calculation (consistent between different linux environments)
+   * @return string
+   */
+   public function getHash()
+   {
+     if (null === $this->hash) {
+        $projectDir = Kirby::instance()->roots->index;
+        $relativePath = $this->source->root();
+        $position = strpos($relativePath, $projectDir);
+
+        if ($position === 0) {
+            $relativePath = substr($relativePath, strlen($projectDir));
+            $relativePath = trim($relativePath, DIRECTORY_SEPARATOR);
+        }
+        $this->hash = md5($relativePath . $this->settingsIdentifier());
+     }
+     return $this->hash;
+   }
+
 
   /**
    * Returns the source media object
