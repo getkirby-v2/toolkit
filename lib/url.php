@@ -154,7 +154,7 @@ class Url {
     );
 
     $parts  = array_merge($defaults, $parts);
-    $result = array($parts['scheme'] . '://' . $parts['host'] . r(!empty($parts['port']), ':' . $parts['port']));
+    $result = array(r(!empty($parts['scheme']), $parts['scheme'] . '://') . $parts['host'] . r(!empty($parts['port']), ':' . $parts['port']));
 
     if(!empty($parts['fragments'])) $result[] = implode('/', $parts['fragments']);
     if(!empty($parts['params']))    $result[] = static::paramsToString($parts['params']);
@@ -309,8 +309,10 @@ class Url {
       $port = in_array($port, array(80, 443)) ? null : $port;
       return static::scheme() . '://' . server::get('SERVER_NAME') . r($port, ':' . $port);
     } else {
-      $port = static::port($url);
-      return static::scheme($url) . '://' . static::host($url) . r($port, ':' . $port);      
+      $port   = static::port($url);
+      $scheme = static::scheme($url);
+      $host   = static::host($url) . r($port, ':' . $port);
+      return r($scheme, $scheme . '://') . $host;      
     }
   }
 
