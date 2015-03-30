@@ -216,10 +216,11 @@ email::$services['mailgun'] = function($email) {
   );
 
   $data = array(
-    'from'     => $email->from,
-    'to'       => $email->to,
-    'subject'  => $email->subject,
-    'text'     => $email->body
+    'from'       => $email->from,
+    'to'         => $email->to,
+    'subject'    => $email->subject,
+    'text'       => $email->body,
+    'h:Reply-To' => $email->replyTo,
   );
 
   $email->response = remote::post($url, array(
