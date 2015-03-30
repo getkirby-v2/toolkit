@@ -254,6 +254,21 @@ class Dimensions {
   }
 
   /**
+   * Converts the dimensions object 
+   * to a plain PHP array
+   * 
+   * @return array
+   */
+  public function toArray() {
+    return array(
+      'width'       => $this->width(),
+      'height'      => $this->height(),
+      'ratio'       => $this->ratio(),
+      'orientation' => $this->orientation(),
+    );
+  }
+
+  /**
    * Echos the dimensions as width x height
    *
    * @return string

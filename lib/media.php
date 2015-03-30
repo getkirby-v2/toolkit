@@ -505,6 +505,52 @@ class Media {
   }
 
   /**
+   * Converts the media object to a 
+   * plain PHP array
+   * 
+   * @param closure $callback 
+   * @return array
+   */
+  public function toArray($callback = null) {
+
+    $data = array(
+      'root'       => $this->root(),
+      'url'        => $this->url(),
+      'hash'       => $this->hash(),
+      'dir'        => $this->dir(),
+      'filename'   => $this->filename(),
+      'name'       => $this->name(),
+      'safeName'   => $this->safeName(),
+      'extension'  => $this->extension(),
+      'size'       => $this->size(),
+      'niceSize'   => $this->niceSize(),
+      'modified'   => $this->modified(),
+      'mime'       => $this->mime(),
+      'type'       => $this->type(),
+      'dimensions' => $this->dimensions()->toArray()
+    );
+
+
+    if(is_null($callback)) {
+      return $data;
+    } else {
+      return array_map($callback, $data);
+    }
+
+  }
+
+  /**
+   * Converts the entire file array into 
+   * a json string
+   * 
+   * @param closure $callback Filter callback
+   * @return string
+   */
+  public function toJson($callback = null) {
+    return json_encode($this->toArray($callback));
+  }
+
+  /**
    * Returns a full link to this file
    * Perfect for debugging in connection with echo
    *
