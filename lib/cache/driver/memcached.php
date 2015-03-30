@@ -29,7 +29,8 @@ class Memcached extends Driver {
 
     $defaults = array(
       'host'    => 'localhost',
-      'port'    => 11211
+      'port'    => 11211, 
+      'prefix'  => null,
     );
 
     $this->options    = array_merge($defaults, (array)$params);
@@ -52,7 +53,18 @@ class Memcached extends Driver {
    * @return void
    */
   public function set($key, $value, $minutes = null) {
-    return $this->connection->set($key, $this->value($value, $minutes), $this->expiration($minutes));
+    return $this->connection->set($this->key($key), $this->value($value, $minutes), $this->expiration($minutes));
+  }
+
+  /**
+   * Returns the full keyname 
+   * including the prefix (if set)
+   * 
+   * @param string $key
+   * @return string 
+   */
+  public function key($key) {
+    return $this->options['prefix'] . $key;
   }
 
   /**
@@ -62,7 +74,7 @@ class Memcached extends Driver {
    * @return object CacheValue
    */
   public function retrieve($key) {
-    return $this->connection->get($key);
+    return $this->connection->get($this->key($key));
   }
 
   /**
@@ -72,7 +84,37 @@ class Memcached extends Driver {
    * @return boolean
    */
   public function remove($key) {
-    return $this->connection->delete($key);
+    return $this->connection->delete($this->key($key));
+  }
+
+  /**
+   * Checks when an item in the cache expires
+   *
+   * @param string $key
+   * @return int
+   */
+  public function expires($key) {
+    return parent::expires($this->key($key));
+  }
+
+  /**
+   * Checks if an item in the cache is expired
+   *
+   * @param string $key
+   * @return int
+   */
+  public function expired($key) {
+    return parent::expired($this->key($key));
+  }
+
+  /**
+   * Checks when the cache has been created
+   *
+   * @param string $key
+   * @return int
+   */
+  public function created($key) {
+    return parent::created($this->key($key));
   }
 
   /**
