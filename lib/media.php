@@ -427,7 +427,7 @@ class Media {
 
     if(isset($this->cache['dimensions'])) return $this->cache['dimensions'];
 
-    if($this->type() == 'image') {
+    if(in_array($this->mime(), array('image/jpeg', 'image/png', 'image/gif'))) {
       $size   = (array)getimagesize($this->root);
       $width  = a::get($size, 0, 0);
       $height = a::get($size, 1, 0);
