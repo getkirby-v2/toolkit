@@ -23,6 +23,7 @@ class Header {
     '_302' => 'Found',
     '_303' => 'See Other',
     '_304' => 'Not Modified',
+    '_307' => 'Temporary Redirect',
     //...
     '_400' => 'Bad Request',
     '_401' => 'Unauthorized',
