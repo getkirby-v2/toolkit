@@ -157,7 +157,7 @@ class Html {
     if(!empty($attr)) $html .= ' ' . $attr;
 
     if(static::isVoid($name)) {
-      $html .= '>';
+      $html .= '/>';
     } else {
       $html .= '>' . $content . '</' . $name . '>';
     }
