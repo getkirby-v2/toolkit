@@ -42,6 +42,7 @@ class Server {
   static public function sanitize($key, $value) {
 
     switch($key) {
+      case 'SERVER_ADDR':
       case 'SERVER_NAME':
       case 'HTTP_HOST':
         $value = strip_tags($value);
