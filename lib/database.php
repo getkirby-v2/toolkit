@@ -366,9 +366,9 @@ class Database {
    * @param string $table
    * @return boolean
    */
-  static public function dropTable($table) {
+  public function dropTable($table) {
     $sql = new SQL($this);
-    return $this->execute($sql->dropTable());
+    return $this->execute($sql->dropTable($table));
   }
 
   /**
