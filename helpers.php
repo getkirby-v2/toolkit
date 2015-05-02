@@ -67,6 +67,7 @@ function param($key = null, $default = null) {
  * @param boolean $condition
  * @param string $value The string to be returned if the condition is true
  * @param string $alternative An alternative string which should be returned when the condition is false
+ * @return null
  */
 function r($condition, $value, $alternative = null) {
   return $condition ? $value : $alternative;
@@ -87,6 +88,9 @@ function e($condition, $value, $alternative = null) {
  * Alternative for e()
  *
  * @see e()
+ * @param $condition
+ * @param $value
+ * @param null $alternative
  */
 function ecco($condition, $value, $alternative = null) {
   e($condition, $value, $alternative);
@@ -125,6 +129,7 @@ function attr($name, $value = null) {
  * Creates safe html by encoding special characters
  *
  * @param string $text unencoded text
+ * @param bool $keepTags
  * @return string
  */
 function html($text, $keepTags = true) {
@@ -135,6 +140,9 @@ function html($text, $keepTags = true) {
  * Shortcut for html()
  *
  * @see html()
+ * @param $text
+ * @param bool $keepTags
+ * @return string
  */
 function h($text, $keepTags = true) {
   return html::encode($text, $keepTags);
@@ -142,6 +150,9 @@ function h($text, $keepTags = true) {
 
 /**
  * Shortcut for xml::encode()
+ * 
+ * @param $text
+ * @return string
  */
 function xml($text) {
   return xml::encode($text);
@@ -261,9 +272,9 @@ function call($function, $arguments = array()) {
 
 /**
  * Parses yaml structured text
- *
- * @param string $text
- * @return string parsed text
+ * 
+ * @param $string
+ * @return array
  */
 function yaml($string) {
   return yaml::decode($string);
@@ -285,6 +296,7 @@ function thumb($image, $params = array(), $obj = true) {
  * Simple email sender helper
  *
  * @param array $params
+ * @return Email
  */
 function email($params = array()) {
   return new Email($params);
@@ -292,6 +304,10 @@ function email($params = array()) {
 
 /**
  * Shortcut for the upload class
+ * 
+ * @param $to
+ * @param array $params
+ * @return Upload
  */
 function upload($to, $params = array()) {
   return new Upload($to, $params);
@@ -338,6 +354,12 @@ function l($key, $default = null) {
   return l::get($key, $default);
 }
 
+/**
+ * @param $tag
+ * @param bool $html
+ * @param array $attr
+ * @return Brick
+ */
 function brick($tag, $html = false, $attr = array()) {
   return new Brick($tag, $html, $attr);
 }
