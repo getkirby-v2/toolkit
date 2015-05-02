@@ -376,7 +376,7 @@ class Media {
    *
    * @param array $data Optional variables, which will be made available to the file
    */
-  static public function load($data = array()) {
+  public function load($data = array()) {
     return f::load($this->root, $data);
   }
 
