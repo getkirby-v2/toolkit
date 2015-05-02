@@ -632,7 +632,7 @@ class Query {
 
     $fetch  = $this->fetch;
     $row    = $this->select($method . '(' . $column . ') as aggregation')->fetch('Obj')->first();
-    $result =  $row ? $row->get('aggregation', $default) : 0;
+    $result =  $row ? $row->get('aggregation') : $default;
     $this->fetch($fetch);
     return $result;
   }
