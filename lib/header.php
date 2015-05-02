@@ -26,6 +26,7 @@ class Header {
     '_302' => 'Found',
     '_303' => 'See Other',
     '_304' => 'Not Modified',
+    '_307' => 'Temporary Redirect', 
     
     // client error
     '_400' => 'Bad Request',
