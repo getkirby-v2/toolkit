@@ -347,6 +347,20 @@ class Url {
 
   }
 
+  /**
+   * Returns the URL for document root no 
+   * matter what the path is. 
+   * 
+   * @return string
+   */
+  static public function index() {
+    if(r::cli()) {
+      return '/';
+    } else {
+      return static::base() . preg_replace('!\/index\.php$!i', '', server::get('SCRIPT_NAME'));
+    }
+  }
+
 }
 
 // basic home url setup
