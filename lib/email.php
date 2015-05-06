@@ -29,11 +29,7 @@ class Email extends Obj {
   public $error = null;
 
   public function __set($key, $value) {
-    if(in_array($key, array('to', 'from', 'replyTo'))) {
-      $this->$key = $this->extractAddress($value);
-    } else {
-      $this->$key = $value;
-    }
+    $this->$key = $value;
   }
 
   /**
