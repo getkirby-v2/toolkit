@@ -455,7 +455,16 @@ class Collection extends I {
   }
 
   public function get($key, $default = null) {
-    return isset($this->data[$key]) ? $this->data[$key] : $default;
+    if(isset($this->data[$key])) {
+      return $this->data[$key];
+    } else {
+      $lowerkeys = array_change_key_case($this->data, CASE_LOWER);
+      if(isset($lowerkeys[strtolower($key)])) {
+        return $lowerkeys[$key];
+      } else {
+        return $default;        
+      }
+    }
   }
 
   public function __get($key) {
