@@ -305,9 +305,13 @@ class Url {
    */
   static public function base($url = null) {
     if(is_null($url)) {
-      $port = server::get('SERVER_PORT');
-      $port = in_array($port, array(80, 443)) ? null : $port;
-      return static::scheme() . '://' . server::get('SERVER_NAME', server::get('SERVER_ADDR')) . r($port, ':' . $port);
+      $host = server::get('HTTP_HOST');
+      if(empty($host)) {
+        $port = server::get('SERVER_PORT');
+        $port = in_array($port, array(80, 443)) ? null : $port;
+        $host = server::get('SERVER_NAME', server::get('SERVER_ADDR')) . r($port, ':' . $port);
+      }
+      return static::scheme() . '://' . $host;
     } else {
       $port   = static::port($url);
       $scheme = static::scheme($url);
