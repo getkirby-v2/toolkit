@@ -227,5 +227,15 @@ class Detect {
     return $size;    
 
   }
+
+  /**
+   * Dirty browser sniffing for an ios device
+   * 
+   * @return boolean
+   */
+  static public function ios() {
+    $ua = visitor::ua();
+    return (str::contains($ua, 'iPod') or str::contains($ua, 'iPhone') or str::contains($ua, 'iPad'));
+  }
   
 }

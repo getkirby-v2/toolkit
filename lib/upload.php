@@ -51,7 +51,20 @@ class Upload {
   }
 
   public function source() {
-    return isset($_FILES[$this->options['input']]) ? $_FILES[$this->options['input']] : null;
+
+    $source = isset($_FILES[$this->options['input']]) ? $_FILES[$this->options['input']] : null;
+
+    // prevent duplicate ios uploads
+    // ios automatically uploads all images as image.jpg, 
+    // which will lead to overwritten duplicates. 
+    // this dirty hack will simply add a uniqid between the 
+    // name and the extension to avoid duplicates
+    if($source and f::name($source['name']) == 'image' and detect::ios()) {
+      $source['name'] = 'image-' . uniqid() . ltrim('.' . f::extension($source['name']), '.');
+    }
+
+    return $source;
+
   }
 
   public function to() {

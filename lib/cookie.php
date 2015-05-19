@@ -32,9 +32,10 @@ class Cookie {
    * @param  string  $path The path on the server to set the cookie for
    * @param  string  $domain the domain 
    * @param  boolean $secure only sets the cookie over https
+   * @param  boolean $httpOnly avoids the cookie to be accessed via javascript
    * @return boolean true: the cookie has been created, false: cookie creation failed
    */
-  static public function set($key, $value, $expires = 0, $path = '/', $domain = null, $secure = false) {
+  static public function set($key, $value, $expires = 0, $path = '/', $domain = null, $secure = false, $httpOnly = false) {
   
     // convert minutes to seconds    
     if($expires > 0) $expires = time() + ($expires * 60);
@@ -49,7 +50,7 @@ class Cookie {
     $_COOKIE[$key] = $value;
     
     // store the cookie
-    return setcookie($key, $value, $expires, $path, $domain, $secure);
+    return setcookie($key, $value, $expires, $path, $domain, $secure, $httpOnly);
   
   }
 
@@ -149,12 +150,12 @@ class Cookie {
    * </code>
    * 
    * @param  string  $key The name of the cookie
-   * @param  string  $domain The domain of the cookie
    * @return mixed   true: the cookie has been removed, false: the cookie could not be removed
    */
-  static public function remove($key, $path = '/', $domain = null, $secure = false) {
+  static public function remove($key) {
     unset($_COOKIE[$key]);
-    return setcookie($key, false, -3600, $path, $domain, $secure);
+    setcookie($key, '', 1);
+    return setcookie($key, false);
   }
 
 }

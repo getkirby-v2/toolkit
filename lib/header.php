@@ -15,24 +15,30 @@ class Header {
 
   // configuration
   static public $codes = array(
-    '_200' => 'Ok', 
+    
+    // successful
+    '_200' => 'OK', 
     '_201' => 'Created', 
     '_202' => 'Accepted',
-    //...
+    
+    // redirection
     '_301' => 'Moved Permanently',
     '_302' => 'Found',
     '_303' => 'See Other',
     '_304' => 'Not Modified',
-    //...
+    '_307' => 'Temporary Redirect', 
+    
+    // client error
     '_400' => 'Bad Request',
     '_401' => 'Unauthorized',
-    '_402' => 'Payment required',
+    '_402' => 'Payment Required',
     '_403' => 'Forbidden',
-    '_404' => 'Not found',
-    '_405' => 'Method not allowed',
-    //...
+    '_404' => 'Not Found',
+    '_405' => 'Method Not Allowed',
+    
+    // server error
     '_500' => 'Internal Server Error',
-    '_501' => 'Not implemented',
+    '_501' => 'Not Implemented',
     '_502' => 'Bad Gateway',
     '_503' => 'Service Unavailable'
   );

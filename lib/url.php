@@ -20,7 +20,7 @@ class Url {
   static public function scheme($url = null) {
     if(is_null($url)) {      
       if(
-        (isset($_SERVER['HTTPS']) and strtolower($_SERVER['HTTPS']) != 'off') or
+        (isset($_SERVER['HTTPS']) and !empty($_SERVER['HTTPS']) and strtolower($_SERVER['HTTPS']) != 'off') or
         server::get('SERVER_PORT')            == '443' or 
         server::get('HTTP_X_FORWARDED_PORT')  == '443' or 
         server::get('HTTP_X_FORWARDED_PROTO') == 'https'
@@ -125,6 +125,14 @@ class Url {
   }
 
   /**
+   * Checks if the url contains a query string
+   */
+  static public function hasQuery($url = null) {
+    if(is_null($url)) $url = static::current();
+    return str::contains($url, '?');
+  }
+
+  /**
    */
   static public function hash($url = null) {
     if(is_null($url)) $url = static::current();
@@ -146,7 +154,7 @@ class Url {
     );
 
     $parts  = array_merge($defaults, $parts);
-    $result = array($parts['scheme'] . '://' . $parts['host'] . r(!empty($parts['port']), ':' . $parts['port']));
+    $result = array(r(!empty($parts['scheme']), $parts['scheme'] . '://') . $parts['host'] . r(!empty($parts['port']), ':' . $parts['port']));
 
     if(!empty($parts['fragments'])) $result[] = implode('/', $parts['fragments']);
     if(!empty($parts['params']))    $result[] = static::paramsToString($parts['params']);
@@ -299,10 +307,12 @@ class Url {
     if(is_null($url)) {
       $port = server::get('SERVER_PORT');
       $port = in_array($port, array(80, 443)) ? null : $port;
-      return static::scheme() . '://' . server::get('SERVER_NAME') . r($port, ':' . $port);
+      return static::scheme() . '://' . server::get('SERVER_NAME', server::get('SERVER_ADDR')) . r($port, ':' . $port);
     } else {
-      $port = static::port($url);
-      return static::scheme($url) . '://' . static::host($url) . r($port, ':' . $port);      
+      $port   = static::port($url);
+      $scheme = static::scheme($url);
+      $host   = static::host($url) . r($port, ':' . $port);
+      return r($scheme, $scheme . '://') . $host;      
     }
   }
 
@@ -335,6 +345,20 @@ class Url {
 
     return ($length) ? str::short($url, $length, $rep) : $url;
 
+  }
+
+  /**
+   * Returns the URL for document root no 
+   * matter what the path is. 
+   * 
+   * @return string
+   */
+  static public function index() {
+    if(r::cli()) {
+      return '/';
+    } else {
+      return static::base() . preg_replace('!\/index\.php$!i', '', server::get('SCRIPT_NAME'));
+    }
   }
 
 }

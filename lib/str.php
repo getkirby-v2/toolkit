@@ -24,8 +24,10 @@ class Str {
     '/б/' => 'b',
     '/Ç|Ć|Ĉ|Ċ|Č|Ц/' => 'C',
     '/ç|ć|ĉ|ċ|č|ц/' => 'c',
-    '/Ð|Ď|Đ|Д/' => 'Dj',
-    '/ð|ď|đ|д/' => 'dj',
+    '/Ð|Ď|Đ/' => 'Dj',
+    '/ð|ď|đ/' => 'dj',
+    '/Д/' => 'D',
+    '/д/' => 'd',
     '/È|É|Ê|Ë|Ē|Ĕ|Ė|Ę|Ě|Е|Ё|Э/' => 'E',
     '/è|é|ê|ë|ē|ĕ|ė|ę|ě|е|ё|э/' => 'e',
     '/Ф/' => 'F',
@@ -514,7 +516,7 @@ class Str {
    * @return string
    */
   static public function ucfirst($string) {
-    return static::upper(static::substr($string, 0, 1)) . static::substr($string, 1);
+    return static::upper(static::substr($string, 0, 1)) . static::lower(static::substr($string, 1));
   }
 
   /**
@@ -568,7 +570,7 @@ class Str {
    */
   static public function stripslashes($string) {
     if(is_array($string)) return $string;
-    return get_magic_quotes_gpc() ? stripslashes(stripslashes($string)) : $string;
+    return get_magic_quotes_gpc() ? stripslashes($string) : $string;
   }
 
   /**

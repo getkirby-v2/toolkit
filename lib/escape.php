@@ -14,8 +14,8 @@
  * 
  * @package   Kirby Toolkit
  * @author    Ezra Verheijen <ezra.verheijen@gmail.com>
- * @link      http://getkirby.com
- * @copyright Bastian Allgeier
+ * @link      https://github.com/ezraverheijen/escape
+ * @copyright Ezra Verheijen
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
 class Escape {
@@ -93,11 +93,16 @@ class Escape {
    * <div attr="...ESCAPE UNTRUSTED DATA BEFORE PUTTING HERE...">content</div>
    * 
    * @param  string $string
+   * @param  string $strict Whether to escape characters like [space] % * + , - / ; < = > ^ and |
+   *                        which is necessary in case of unquoted HTML attributes.
    * @return string
    */
-  static public function attr($string) {
+  static public function attr($string, $strict = false) {
     if(static::noNeedToEscape($string)) return $string;
-    return preg_replace_callback('/[^a-z0-9,\.\-_]/iSu', 'static::escapeAttrChar', $string);
+    if($strict) {
+      return preg_replace_callback('/[^a-z0-9,\.\-_]/iSu', 'static::escapeAttrChar', $string);
+    }
+    return static::html($string);
   }
   
   /**

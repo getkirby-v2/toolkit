@@ -274,8 +274,8 @@ class Media {
    *
    * @return int
    */
-  public function modified($format = null) {
-    return f::modified($this->root, $format);
+  public function modified($format = null, $handler = 'date') {
+    return f::modified($this->root, $format, $handler);
   }
 
   /**
@@ -376,7 +376,7 @@ class Media {
    *
    * @param array $data Optional variables, which will be made available to the file
    */
-  static public function load($data = array()) {
+  public function load($data = array()) {
     return f::load($this->root, $data);
   }
 
@@ -427,7 +427,7 @@ class Media {
 
     if(isset($this->cache['dimensions'])) return $this->cache['dimensions'];
 
-    if($this->type() == 'image') {
+    if(in_array($this->mime(), array('image/jpeg', 'image/png', 'image/gif'))) {
       $size   = (array)getimagesize($this->root);
       $width  = a::get($size, 0, 0);
       $height = a::get($size, 1, 0);
@@ -502,6 +502,52 @@ class Media {
    */
   public function orientation() {
     return $this->dimensions()->orientation();
+  }
+
+  /**
+   * Converts the media object to a 
+   * plain PHP array
+   * 
+   * @param closure $callback 
+   * @return array
+   */
+  public function toArray($callback = null) {
+
+    $data = array(
+      'root'       => $this->root(),
+      'url'        => $this->url(),
+      'hash'       => $this->hash(),
+      'dir'        => $this->dir(),
+      'filename'   => $this->filename(),
+      'name'       => $this->name(),
+      'safeName'   => $this->safeName(),
+      'extension'  => $this->extension(),
+      'size'       => $this->size(),
+      'niceSize'   => $this->niceSize(),
+      'modified'   => $this->modified(),
+      'mime'       => $this->mime(),
+      'type'       => $this->type(),
+      'dimensions' => $this->dimensions()->toArray()
+    );
+
+
+    if(is_null($callback)) {
+      return $data;
+    } else {
+      return array_map($callback, $data);
+    }
+
+  }
+
+  /**
+   * Converts the entire file array into 
+   * a json string
+   * 
+   * @param closure $callback Filter callback
+   * @return string
+   */
+  public function toJson($callback = null) {
+    return json_encode($this->toArray($callback));
   }
 
   /**

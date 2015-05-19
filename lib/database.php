@@ -366,9 +366,9 @@ class Database {
    * @param string $table
    * @return boolean
    */
-  static public function dropTable($table) {
+  public function dropTable($table) {
     $sql = new SQL($this);
-    return $this->execute($sql->dropTable());
+    return $this->execute($sql->dropTable($table));
   }
 
   /**
@@ -387,9 +387,37 @@ class Database {
  * MySQL database connector
  */
 database::$connectors['mysql'] = function($params) {
-  if(!isset($params['host']))     throw new Error('The mysql connection requires a "host" parameter');
-  if(!isset($params['database'])) throw new Error('The mysql connection requires a "database" parameter');
-  return 'mysql:host=' . $params['host'] . ';dbname=' . $params['database'] . ';charset=' . a::get($params, 'charset', 'utf8');
+
+  if(!isset($params['host']) and !isset($params['socket'])) {
+    throw new Error('The mysql connection requires either a "host" or a "socket" parameter');
+  } 
+  
+  if(!isset($params['database'])) {
+    throw new Error('The mysql connection requires a "database" parameter');
+  }
+
+  $parts = array();
+
+  if(!empty($params['host'])) {
+    $parts[] = 'host=' . $params['host'];
+  }
+
+  if(!empty($params['port'])) {
+    $parts[] = 'port=' . $params['port'];
+  }
+
+  if(!empty($params['socket'])) {
+    $parts[] = 'unix_socket=' . $params['socket'];
+  }
+
+  if(!empty($params['database'])) {
+    $parts[] = 'dbname=' . $params['database'];
+  }
+
+  $parts[] = 'charset=' . a::get($params, 'charset', 'utf8');
+
+  return 'mysql:' . implode(';', $parts);
+
 };
 
 

@@ -36,8 +36,6 @@ class F {
     'smi'   => 'application/smil',
     'smil'  => 'application/smil',
     'mif'   => 'application/vnd.mif',
-    'xls'   => array('application/excel', 'application/vnd.ms-excel', 'application/msexcel'),
-    'ppt'   => array('application/powerpoint', 'application/vnd.ms-powerpoint'),
     'wbxml' => 'application/wbxml',
     'wmlc'  => 'application/wmlc',
     'dcr'   => 'application/x-director',
@@ -102,7 +100,13 @@ class F {
     'movie' => 'video/x-sgi-movie',
     'doc'   => 'application/msword',
     'docx'  => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'dotx'  => 'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+    'xls'   => array('application/excel', 'application/vnd.ms-excel', 'application/msexcel'),
     'xlsx'  => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'xltx'  => 'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
+    'ppt'   => array('application/powerpoint', 'application/vnd.ms-powerpoint'),
+    'pptx'  => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'potx'  => 'application/vnd.openxmlformats-officedocument.presentationml.template',
     'word'  => array('application/msword', 'application/octet-stream'),
     'xl'    => 'application/excel',
     'eml'   => 'message/rfc822',
@@ -140,11 +144,15 @@ class F {
       'pdf',
       'doc',
       'docx',
+      'dotx',
       'word',
       'xl',
       'xls',
       'xlsx',
+      'xltx',
       'ppt',
+      'pptx',
+      'potx',
       'csv',
       'rtf',
       'rtx',
@@ -176,6 +184,8 @@ class F {
       'rb',
       'xml',
       'json',
+      'java',
+      'py'
     ),
 
     'video' => array(
@@ -500,10 +510,11 @@ class F {
    *
    * @param string $file
    * @param string $format
+   * @param string $handler date or strftime
    * @return int
    */
-  static public function modified($file, $format = null) {
-    return !is_null($format) ? date($format, filemtime($file)) : filemtime($file);
+  static public function modified($file, $format = null, $handler = 'date') {
+    return !is_null($format) ? $handler($format, filemtime($file)) : filemtime($file);
   }
 
   /**
@@ -558,7 +569,7 @@ class F {
 
     $length = strlen($file);
 
-    if($length > 2 and $length < 4) {
+    if($length >= 2 and $length <= 4) {
       // use the file name as extension
       $extension = $file;
     } else {

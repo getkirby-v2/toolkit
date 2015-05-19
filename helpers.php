@@ -67,6 +67,7 @@ function param($key = null, $default = null) {
  * @param boolean $condition
  * @param string $value The string to be returned if the condition is true
  * @param string $alternative An alternative string which should be returned when the condition is false
+ * @return null
  */
 function r($condition, $value, $alternative = null) {
   return $condition ? $value : $alternative;
@@ -87,6 +88,9 @@ function e($condition, $value, $alternative = null) {
  * Alternative for e()
  *
  * @see e()
+ * @param $condition
+ * @param $value
+ * @param null $alternative
  */
 function ecco($condition, $value, $alternative = null) {
   e($condition, $value, $alternative);
@@ -125,6 +129,7 @@ function attr($name, $value = null) {
  * Creates safe html by encoding special characters
  *
  * @param string $text unencoded text
+ * @param bool $keepTags
  * @return string
  */
 function html($text, $keepTags = true) {
@@ -135,6 +140,9 @@ function html($text, $keepTags = true) {
  * Shortcut for html()
  *
  * @see html()
+ * @param $text
+ * @param bool $keepTags
+ * @return string
  */
 function h($text, $keepTags = true) {
   return html::encode($text, $keepTags);
@@ -142,6 +150,9 @@ function h($text, $keepTags = true) {
 
 /**
  * Shortcut for xml::encode()
+ * 
+ * @param $text
+ * @return string
  */
 function xml($text) {
   return xml::encode($text);
@@ -150,13 +161,14 @@ function xml($text) {
 /**
  * Escape context specific output
  * 
- * @param  string $string  Untrusted data
- * @param  string $context Location of output
- * @return string          Escaped data
+ * @param  string  $string  Untrusted data
+ * @param  string  $context Location of output
+ * @param  boolean $strict  Whether to escape an extended set of characters (HTML attributes only)
+ * @return string  Escaped data
  */
-function esc($string, $context = 'html') {
+function esc($string, $context = 'html', $strict = false) {
   if (method_exists('escape', $context)) {
-    return escape::$context($string);
+    return escape::$context($string, $strict);
   }
 }
 
@@ -260,9 +272,9 @@ function call($function, $arguments = array()) {
 
 /**
  * Parses yaml structured text
- *
- * @param string $text
- * @return string parsed text
+ * 
+ * @param $string
+ * @return array
  */
 function yaml($string) {
   return yaml::decode($string);
@@ -284,6 +296,7 @@ function thumb($image, $params = array(), $obj = true) {
  * Simple email sender helper
  *
  * @param array $params
+ * @return Email
  */
 function email($params = array()) {
   return new Email($params);
@@ -291,6 +304,10 @@ function email($params = array()) {
 
 /**
  * Shortcut for the upload class
+ * 
+ * @param $to
+ * @param array $params
+ * @return Upload
  */
 function upload($to, $params = array()) {
   return new Upload($to, $params);
@@ -310,8 +327,10 @@ function invalid($data, $rules, $messages = array()) {
     foreach($validations as $method => $options) {
       if(is_numeric($method)) $method = $options;
       if($method == 'required') {
-        if(!isset($data[$field])) $errors[$field] = a::get($messages, $field, $field);
-      } else {
+        if(!isset($data[$field]) or (empty($data[$field]) and $data[$field] !== 0)) {
+          $errors[$field] = a::get($messages, $field, $field);
+        }
+      } else if(!empty($data[$field]) or $data[$field] === 0) {
         if(!is_array($options)) $options = array($options);
         array_unshift($options, a::get($data, $field));
         if(!call(array('v', $method), $options)) {
@@ -335,6 +354,12 @@ function l($key, $default = null) {
   return l::get($key, $default);
 }
 
+/**
+ * @param $tag
+ * @param bool $html
+ * @param array $attr
+ * @return Brick
+ */
 function brick($tag, $html = false, $attr = array()) {
   return new Brick($tag, $html, $attr);
 }

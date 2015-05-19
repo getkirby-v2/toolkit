@@ -2,7 +2,7 @@
 
 The Kirby 2 toolkit is a set of handy classes and helpers which make your life with PHP easier.
 
-![Build Status](https://travis-ci.org/getkirby/toolkit.svg)
+[![Build Status](https://travis-ci.org/getkirby/toolkit.svg?branch=master)](https://travis-ci.org/getkirby/toolkit)
 
 ## Installation
 

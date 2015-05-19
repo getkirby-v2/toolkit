@@ -29,11 +29,7 @@ class Email extends Obj {
   public $error = null;
 
   public function __set($key, $value) {
-    if(in_array($key, array('to', 'from', 'replyTo'))) {
-      $this->$key = $this->extractAddress($value);
-    } else {
-      $this->$key = $value;
-    }
+    $this->$key = $value;
   }
 
   /**
@@ -216,10 +212,11 @@ email::$services['mailgun'] = function($email) {
   );
 
   $data = array(
-    'from'     => $email->from,
-    'to'       => $email->to,
-    'subject'  => $email->subject,
-    'text'     => $email->body
+    'from'       => $email->from,
+    'to'         => $email->to,
+    'subject'    => $email->subject,
+    'text'       => $email->body,
+    'h:Reply-To' => $email->replyTo,
   );
 
   $email->response = remote::post($url, array(
