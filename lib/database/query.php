@@ -341,7 +341,7 @@ class Query {
 
         } else if(is_callable($args[0])) {
 
-          $query  = new static($this->db, $this->table);
+          $query  = clone $this;
           $result = call_user_func($args[0], $query);
           $where  = '(' . $query->where . ')';
 
