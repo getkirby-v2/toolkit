@@ -159,9 +159,8 @@ class Url {
     if(!empty($parts['fragments'])) $result[] = implode('/', $parts['fragments']);
     if(!empty($parts['params']))    $result[] = static::paramsToString($parts['params']);
     if(!empty($parts['query']))     $result[] = '?' . static::queryToString($parts['query']);
-    if(!empty($parts['hash']))      $result[] = '#' . $parts['hash'];
 
-    return implode('/', $result);
+    return implode('/', $result) . (!empty($parts['hash']) ? '#' . $parts['hash'] : '');
 
   }
 
