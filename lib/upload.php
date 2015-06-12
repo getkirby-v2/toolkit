@@ -60,7 +60,7 @@ class Upload {
     // this dirty hack will simply add a uniqid between the 
     // name and the extension to avoid duplicates
     if($source and f::name($source['name']) == 'image' and detect::ios()) {
-      $source['name'] = 'image-' . uniqid() . ltrim('.' . f::extension($source['name']), '.');
+      $source['name'] = 'image-' . uniqid() . '.' . ltrim(f::extension($source['name']), '.');
     }
 
     return $source;
