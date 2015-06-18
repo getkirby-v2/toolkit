@@ -301,7 +301,7 @@ class Str {
 
   /**
    * Checks if the given string is a URL
-   * 
+   *
    * @param string $string
    * @return boolean
    */
@@ -459,13 +459,13 @@ class Str {
     $string = static::ascii($string);
 
     // replace spaces with simple dashes
-    $string = preg_replace('![^' . $allowed . ']!i','-', $string);
+    $string = preg_replace('![^' . $allowed . ']!i', $separator, $string);
     // remove double dashes
-    $string = preg_replace('![-]{2,}!','-', $string);
+    $string = preg_replace('![-]{2,}!', $separator, $string);
     // trim trailing and leading dashes
-    $string = trim($string, '-');
+    $string = trim($string, $separator);
     // replace slashes with dashes
-    $string = str_replace('/', '-', $string);
+    $string = str_replace('/', $separator, $string);
 
     return $string;
 
