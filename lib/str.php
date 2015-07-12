@@ -594,7 +594,7 @@ class Str {
    * @return string
    */
   static public function ascii($string) {
-    $foreign = static::$ascii;
+    $foreign =  c::get('ascii', static::$ascii);
     $string  = preg_replace(array_keys($foreign), array_values($foreign), $string);
     return preg_replace('/[^\x09\x0A\x0D\x20-\x7E]/', '', $string);
   }
