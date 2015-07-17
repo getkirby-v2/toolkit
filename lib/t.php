@@ -51,14 +51,7 @@ class T {
    * @param string $value the translation for the given key.
    */
   public static function set($key, $value) {
-    $keyParts = str::split($key, '.');
-    $langKey = $keyParts[0];
-    if(!(array_key_exists($langKey, static::$data))) {
-      static::$data[$langKey] = array();
-    }
-    // removes the language code from the key
-    $translationKey = str::substr($key, str::length($langKey) + 1);
-    static::$data[$langKey][$translationKey] = $value;
+    static::$data[$key] = $value;
   }
 
   /**
@@ -89,14 +82,11 @@ class T {
     if(!isset(static::$language)) {
       return null;
     }
+    $keyIncludingLang = static::$language . "." . $key;
     // if the language doesn't exist
-    if(!(array_key_exists(static::$language, static::$data))) {
+    if(!(array_key_exists($keyIncludingLang, static::$data))) {
       return null;
     }
-    // if the key doesn't exist.
-    if(!(array_key_exists($key, static::$data[static::$language]))) {
-      return null;
-    }
-    return static::$data[static::$language][$key];
+    return static::$data[$keyIncludingLang];
   }
 }
