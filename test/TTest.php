@@ -4,7 +4,7 @@ require_once('lib/bootstrap.php');
 
 class TTest extends PHPUnit_Framework_TestCase {
 
-  public function setUp() {
+  public function __construct() {
     T::set('de.user.username', 'Benutzername');
     T::set('de.user.password', 'Passwort');
     T::set('en.user.username', 'Username');

@@ -51,7 +51,8 @@ class T {
    * @param string $value the translation for the given key.
    */
   public static function set($key, $value) {
-    $langKey = str::split($key, '.')[0];
+    $keyParts = str::split($key, '.');
+    $langKey = $keyParts[0];
     if(!(array_key_exists($langKey, static::$data))) {
       static::$data[$langKey] = array();
     }
