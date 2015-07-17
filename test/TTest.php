@@ -33,6 +33,27 @@ class TTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(null, T::get('user.passwordConfirmation'));
   }
 
+  public function testSetWithArray() {
+    T::set("en", array(
+      "bookmark.type" => "Bookmark Type",
+      "bookmark.url" => "URL"
+      )
+    );
+    T::set("de", array(
+      "bookmark.type" => "Lesezeichen Typ",
+      "bookmark.url" => "Link"
+      )
+    );
+    T::setLanguage('en');
+    $this->assertEquals('Bookmark Type', T::get('bookmark.type'));
+    $this->assertEquals('URL', T::get('bookmark.url'));
+
+    T::setLanguage('de');
+    $this->assertEquals('Lesezeichen Typ', T::get('bookmark.type'));
+    $this->assertEquals('Link', T::get('bookmark.url'));
+  }
+
+
   public function testGetCurrentLanguage() {
     T::setLanguage('de');
     $this->assertEquals('de', T::getLanguage());

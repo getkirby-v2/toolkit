@@ -51,7 +51,14 @@ class T {
    * @param string $value the translation for the given key.
    */
   public static function set($key, $value) {
-    static::$data[$key] = $value;
+    if(gettype($value) == "array") {
+      foreach($value as $k => $v) {
+        static::$data[$key . "." . $k] = $v;
+      }
+    } else {
+      static::$data[$key] = $value;
+    }
+
   }
 
   /**
@@ -83,7 +90,6 @@ class T {
       return null;
     }
     $keyIncludingLang = static::$language . "." . $key;
-    // if the language doesn't exist
     if(!(array_key_exists($keyIncludingLang, static::$data))) {
       return null;
     }
