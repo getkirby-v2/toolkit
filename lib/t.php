@@ -71,8 +71,8 @@ class T {
    *   T::set("de.snake", "Schlange");
    *   T::get("snake") // => null, because no langauge is set
    *
-   *   T::setLanguage("de"); // => "Schlange"
-   *   T::get("snake");
+   *   T::setLanguage("de");
+   *   T::get("snake"); // => "Schlange"
    *
    *   T::setLanguage("en");
    *   T::get("snake"); // null, because there's no translation for the key
