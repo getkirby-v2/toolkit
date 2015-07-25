@@ -505,6 +505,27 @@ class Media {
   }
 
   /**
+   * @param array $attr
+   * @return string
+   */
+  public function html($attr = array()) {
+
+    if($this->type() != 'image') return false;
+
+    $img = new Brick('img');
+    $img->attr('src', $this->url());
+
+    if(is_string($attr) or (is_object($attr) and method_exists($attr, '__toString'))) {
+      $img->attr('alt', (string)$attr);
+    } else if(is_array($attr)) {
+      $img->attr($attr);      
+    }
+
+    return $img;
+
+  }
+
+  /**
    * Converts the media object to a 
    * plain PHP array
    * 
