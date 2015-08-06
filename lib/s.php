@@ -156,4 +156,11 @@ class S {
     static::start();
   }
 
+  /**
+   * Create a new session Id
+   */
+  static public function regenerateId() {
+    @session_regenerate_id();      
+  }
+
 }
