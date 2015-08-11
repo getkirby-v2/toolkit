@@ -88,7 +88,14 @@ class Router {
 
     if(is_array($pattern)) {
       foreach($pattern as $v) {
-        $this->register($v['pattern'], $v);
+        if(is_array($v['pattern'])) {
+          foreach($v['pattern'] as $p) {
+            $v['pattern'] = $p;
+            $this->register($p, $v);
+          }
+        } else {        
+          $this->register($v['pattern'], $v);
+        }
       }
       return $this;
     }
