@@ -87,6 +87,19 @@ class S {
   }
 
   /**
+   * Retrieves an item and removes it afterwards
+   * 
+   * @param string $key
+   * @param mixed $default
+   * @return mixed
+   */
+  static public function pull($key, $default = null) {
+    $value = s::get($key, $default); 
+    s::remove($key);
+    return $value;
+  }
+
+  /**
    * Removes a value from the session by key
    * 
    * <code>
