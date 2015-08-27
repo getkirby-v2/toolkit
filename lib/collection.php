@@ -256,6 +256,10 @@ class Collection extends I {
       $split    = @$args[3];
     }
 
+    if(is_object($value)) {
+      $value = (string)$value;
+    }
+
     if(array_key_exists($operator, static::$filters)) {
 
       $collection = call_user_func_array(static::$filters[$operator], array(
