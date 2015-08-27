@@ -124,6 +124,14 @@ class Router {
 
     }
 
+    if(is_string($route->filter)) {
+      if(strpos($route->filter, '|') !== false) {
+        $route->filter = str::split($route->filter, '|');
+      } else {
+        $route->filter = array($route->filter);
+      }
+    }
+
     foreach($route->method as $method) {
       $this->routes[strtoupper($method)][$route->pattern] = $route;
     }
@@ -159,7 +167,7 @@ class Router {
   protected function filterer($filters) {
     foreach((array)$filters as $filter) {
       if(array_key_exists($filter, $this->filters) and is_callable($this->filters[$filter])) {
-        return call_user_func($this->filters[$filter]);
+        call_user_func($this->filters[$filter]);
       }
     }
   }
