@@ -22,6 +22,7 @@ class S {
    * @return string
    */  
   static public function id() {
+    static::start();
     return session_id();
   }
 
@@ -46,12 +47,16 @@ class S {
    * @param  mixed   $value The value for the passed key
    */    
   static public function set($key, $value = false) {
+
+    static::start();
+
     if(!isset($_SESSION)) return false;
     if(is_array($key)) {
       $_SESSION = array_merge($_SESSION, $key);
     } else {
       $_SESSION[$key] = $value;
     }
+
   }
 
   /**
@@ -72,9 +77,13 @@ class S {
    * @return mixed
    */  
   static public function get($key = false, $default = null) {
+
+    static::start();
+
     if(!isset($_SESSION)) return false;
     if(empty($key)) return $_SESSION;
     return isset($_SESSION[$key]) ? $_SESSION[$key] : $default;
+
   }
 
   /**
@@ -98,8 +107,12 @@ class S {
    * @return array    The session array without the value
    */  
   static public function remove($key) {
+
+    static::start();
+
     unset($_SESSION[$key]);
     return $_SESSION;
+
   }
 
   /**
@@ -134,7 +147,7 @@ class S {
    *
    */  
   static public function destroy() {
-    if(static::$started){
+    if(static::$started) {
       session_destroy();
       unset($_SESSION);
       static::$started = false;
@@ -160,6 +173,7 @@ class S {
    * Create a new session Id
    */
   static public function regenerateId() {
+    static::start();
     @session_regenerate_id();      
   }
 
