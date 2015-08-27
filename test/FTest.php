@@ -70,8 +70,8 @@ class FTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testNiceSize() {
-    $this->assertEquals('37 b', f::niceSize($this->contentFile));
-    $this->assertEquals('37 b', f::niceSize(37));
+    $this->assertEquals('37 B', f::niceSize($this->contentFile));
+    $this->assertEquals('37 B', f::niceSize(37));
   }
 
   public function testModified() {

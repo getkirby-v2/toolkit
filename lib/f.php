@@ -495,10 +495,10 @@ class F {
     $size = (int)$size;
 
     // avoid errors for invalid sizes
-    if($size <= 0) return '0 kb';
+    if($size <= 0) return '0 kB';
 
     // available units
-    $unit = array('b','kb','mb','gb','tb','pb', 'eb', 'zb', 'yb');
+    $unit = array('B','kB','MB','GB','TB','PB', 'EB', 'ZB', 'YB');
 
     // the math magic
     return round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];

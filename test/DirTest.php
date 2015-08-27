@@ -49,7 +49,7 @@ class DirTest extends PHPUnit_Framework_TestCase {
     f::write($this->tmpDir . DS . 'testfile-3.txt', str::random(5));
 
     $this->assertEquals(15, dir::size($this->tmpDir));
-    $this->assertEquals('15 b', dir::niceSize($this->tmpDir));
+    $this->assertEquals('15 B', dir::niceSize($this->tmpDir));
 
     dir::remove($this->tmpDir);
 

@@ -66,7 +66,7 @@ class MediaTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testNiceSize() {
-    $this->assertEquals('428 b', $this->media->niceSize());        
+    $this->assertEquals('428 B', $this->media->niceSize());        
   }
 
   public function testMime() {
