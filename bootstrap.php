@@ -85,6 +85,7 @@ load(array(
   'visitor'                     => __DIR__ . DS . 'lib' . DS . 'visitor.php',
   'xml'                         => __DIR__ . DS . 'lib' . DS . 'xml.php',
   'yaml'                        => __DIR__ . DS . 'lib' . DS . 'yaml.php',
+  't'                           => __DIR__ . DS . 'lib' . DS . 't.php',
 
   // vendors
   'spyc'                        => __DIR__ . DS . 'vendors' . DS . 'yaml' . DS . 'yaml.php',
