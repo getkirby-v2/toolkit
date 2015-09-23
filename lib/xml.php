@@ -101,7 +101,7 @@ class Xml {
     $nlevel  = ($level + 1);
     $attr = '@attributes';
     $attributes = html::attr(a::get($array, $attr));
-    if($tag == $attr || count($array) == 1 and $attributes) {
+    if(count($array) == 1 and $attributes) {
       // return the self closed node
       return str_repeat($tab, $level) . '<' . $tag . ($attributes ? ' ' . $attributes : '') . ' />' . PHP_EOL;
     } else {
@@ -133,7 +133,7 @@ class Xml {
         }
       } elseif(trim($value) != '') {
         $value   = (!strstr($value, '<![CDATA[') and htmlspecialchars($value) != $value) ? '<![CDATA[' . $value . ']]>' : $value;
-        $result .= str_repeat($tab, $nlevel) . '<' . $key . '>' . $value . '</' . $key . '>' . PHP_EOL;
+        $result .= str_repeat($tab, $nlevel) . (is_numeric($key) ? '' : '<' . $key . '>') . $value . (is_numeric($key) ? '' : '</' . $key . '>') . PHP_EOL;
       }
     }
     return $result . str_repeat($tab, $level) . '</' . $tag . '>' . PHP_EOL;
