@@ -234,7 +234,6 @@ class Sql {
    * @todo  add more options per column
    * @param string $table The table name
    * @param array $columns
-   * @param string $type mysql or sqlite
    * @return string
    */
   public function createTable($table, $columns = array()) {
