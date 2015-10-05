@@ -26,17 +26,19 @@ class Xml {
    *  
    * </code>
    *    
-   * @param  string  $text
+   * @param  string  $string
    * @param  boolean $html True: convert to html first
    * @return string
    */  
   static public function encode($string, $html = true) {
 
     // convert raw text to html safe text
-    if($html) $text = html::encode($string, false);
+    if($html) {
+      $string = html::encode($string, false);
+    }
 
     // convert html entities to xml entities
-    return strtr($text, html::entities());
+    return strtr($string, html::entities());
 
   }
 
