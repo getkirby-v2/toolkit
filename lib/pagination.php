@@ -47,7 +47,7 @@ class Pagination {
   /**
    * Constructor
    *
-   * @param object $data The collection with all data (KirbyFiles or KirbyPages)
+   * @param mixed $count Either an integer or a Collection
    * @param int $limit The number of items per page
    * @param array $params Additional parameters to control the pagination object
    */
@@ -59,10 +59,10 @@ class Pagination {
     }
 
     $this->options = array_merge(static::$defaults, $params);
-    $this->count   = $count;
-    $this->limit   = $limit;
-    $this->pages   = ceil($this->count / $this->limit);
-    $this->offset  = ($this->page()-1) * $this->limit;
+    $this->count   = (int)$count;
+    $this->limit   = (int)$limit;
+    $this->pages   = (int)ceil($this->count / $this->limit);
+    $this->offset  = (int)(($this->page()-1) * $this->limit);
 
   }
 
@@ -344,8 +344,8 @@ class Pagination {
       return range($this->rangeStart, $this->rangeEnd);
     }
 
-    $this->rangeStart = $this->page - floor($range/2);
-    $this->rangeEnd   = $this->page + floor($range/2);
+    $this->rangeStart = $this->page - (int)floor($range/2);
+    $this->rangeEnd   = $this->page + (int)floor($range/2);
 
     if($this->rangeStart <= 0) {
       $this->rangeEnd += abs($this->rangeStart)+1;
