@@ -463,7 +463,7 @@ class F {
    *
    * </code>
    *
-   * @param  string  $file The path
+   * @param  mixed  $file The path
    * @return mixed
    */
   static public function size($file) {
