@@ -14,7 +14,7 @@
  */
 class F {
 
-  static public $mimes = array(
+  public static $mimes = array(
     'hqx'   => 'application/mac-binhex40',
     'cpt'   => 'application/mac-compactpro',
     'csv'   => array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream'),
@@ -116,7 +116,7 @@ class F {
     'odp'   => 'application/vnd.oasis.opendocument.presentation',
   );
 
-  static public $types = array(
+  public static $types = array(
 
     'image' => array(
       'jpeg',
@@ -220,14 +220,14 @@ class F {
    * @param string $file
    * @return boolean
    */
-  static public function exists($file) {
+  public static function exists($file) {
     return file_exists($file);
   }
 
   /**
    * Safely requires a file if it exists
    */
-  static public function load($file, $data = array()) {
+  public static function load($file, $data = array()) {
     if(file_exists($file)) {
       extract($data);
       require($file);
@@ -253,7 +253,7 @@ class F {
    * @param  boolean $append true: append the content to an exisiting file if available. false: overwrite.
    * @return boolean
    */
-  static public function write($file, $content, $append = false) {
+  public static function write($file, $content, $append = false) {
     if(is_array($content) || is_object($content)) $content = serialize($content);
     $mode = ($append) ? FILE_APPEND | LOCK_EX : LOCK_EX;
     // if the parent directory does not exist, create it
@@ -270,7 +270,7 @@ class F {
    * @param  mixed   $content Either a string or an array. Arrays will be converted to JSON.
    * @return boolean
    */
-  static public function append($file, $content) {
+  public static function append($file, $content) {
     return static::write($file,$content,true);
   }
 
@@ -290,7 +290,7 @@ class F {
    * @param  string $file The path for the file
    * @return mixed
    */
-  static public function read($file) {
+  public static function read($file) {
     return @file_get_contents($file);
   }
 
@@ -300,7 +300,7 @@ class F {
    * @param string $file The path for the file
    * @return string
    */
-  static public function base64($file) {
+  public static function base64($file) {
     return base64_encode(f::read($file));
   }
 
@@ -310,7 +310,7 @@ class F {
    * @param string $file The path for the file
    * @return string
    */
-  static public function uri($file) {
+  public static function uri($file) {
     $mime = static::mime($file);
     return ($mime) ? 'data:' . $mime . ';base64,' . static::base64($file) : false;
   }
@@ -330,7 +330,7 @@ class F {
    * @param  string $new The path to the new location
    * @return boolean
    */
-  static public function move($old, $new) {
+  public static function move($old, $new) {
     if(!file_exists($old) || file_exists($new)) return false;
     return @rename($old, $new);
   }
@@ -342,7 +342,7 @@ class F {
    * @param  string  $target
    * @return boolean
    */
-  static public function copy($file, $target) {
+  public static function copy($file, $target) {
     if(!file_exists($file) || file_exists($target)) return false;
     return @copy($file, $target);
   }
@@ -360,7 +360,7 @@ class F {
    * @param  string  $file The path for the file
    * @return boolean
    */
-  static public function remove($file) {
+  public static function remove($file) {
     return file_exists($file) && is_file($file) && !empty($file) ? @unlink($file) : false;
   }
 
@@ -378,7 +378,7 @@ class F {
    * @param  string  $extension Set an optional extension to overwrite the current one
    * @return string
    */
-  static public function extension($file, $extension = false) {
+  public static function extension($file, $extension = false) {
 
     // overwrite the current extension
     if($extension !== false) {
@@ -396,7 +396,7 @@ class F {
    * @param string $type
    * @return array
    */
-  static public function extensions($type = null) {
+  public static function extensions($type = null) {
     if(is_null($type)) return array_keys(static::$mimes);
     return isset(static::$types[$type]) ? static::$types[$type] : array();
   }
@@ -414,7 +414,7 @@ class F {
    * @param  string  $name The path
    * @return string
    */
-  static public function filename($name) {
+  public static function filename($name) {
     return pathinfo($name, PATHINFO_BASENAME);
   }
 
@@ -432,7 +432,7 @@ class F {
    * @param  string  $name The path or filename
    * @return string
    */
-  static public function name($name) {
+  public static function name($name) {
     return pathinfo($name, PATHINFO_FILENAME);
   }
 
@@ -449,7 +449,7 @@ class F {
    * @param  string  $file The path
    * @return string
    */
-  static public function dirname($file) {
+  public static function dirname($file) {
     return dirname($file);
   }
 
@@ -466,7 +466,7 @@ class F {
    * @param  mixed  $file The path
    * @return mixed
    */
-  static public function size($file) {
+  public static function size($file) {
     return filesize($file);
   }
 
@@ -486,7 +486,7 @@ class F {
    * @param  mixed $size The file size or a file path
    * @return string
    */
-  static public function niceSize($size) {
+  public static function niceSize($size) {
 
     // file mode
     if(is_string($size) && file_exists($size)) {
@@ -515,7 +515,7 @@ class F {
    * @param string $handler date or strftime
    * @return int
    */
-  static public function modified($file, $format = null, $handler = 'date') {
+  public static function modified($file, $format = null, $handler = 'date') {
     return !is_null($format) ? $handler($format, filemtime($file)) : filemtime($file);
   }
 
@@ -525,7 +525,7 @@ class F {
    * @param string $file
    * @return mixed
    */
-  static public function mime($file) {
+  public static function mime($file) {
 
     // stop for invalid files
     if(!file_exists($file)) return null;
@@ -557,7 +557,7 @@ class F {
    *
    * @return array
    */
-  static public function mimes() {
+  public static function mimes() {
     return static::$mimes;
   }
 
@@ -567,7 +567,7 @@ class F {
    * @param string $file Either the file path or extension
    * @return string
    */
-  static public function type($file) {
+  public static function type($file) {
 
     $length = strlen($file);
 
@@ -601,7 +601,7 @@ class F {
    *
    * @return array
    */
-  static public function types() {
+  public static function types() {
     return static::$types;
   }
 
@@ -612,7 +612,7 @@ class F {
    * @param string $value An extension or mime type
    * @return boolean
    */
-  static public function is($file, $value) {
+  public static function is($file, $value) {
 
     if(in_array($value, static::extensions())) {
       // check for the extension
@@ -632,7 +632,7 @@ class F {
    * @param string $mime
    * @return string
    */
-  static public function mimeToExtension($mime) {
+  public static function mimeToExtension($mime) {
     foreach(static::$mimes as $key => $value) {
       if(is_array($value) && in_array($mime, $value)) return $key;
       if($value == $mime) return $key;
@@ -646,7 +646,7 @@ class F {
    * @param string $mime
    * @return string
    */
-  static public function mimeToType($mime) {
+  public static function mimeToType($mime) {
     return static::extensionToType(static::mimeToExtension($mime));
   }
 
@@ -656,7 +656,7 @@ class F {
    * @param string $extension
    * @return string
    */
-  static public function extensionToMime($extension) {
+  public static function extensionToMime($extension) {
     $mime = isset(static::$mimes[$extension]) ? static::$mimes[$extension] : null;
     return is_array($mime) ? array_shift($mime) : $mime;
   }
@@ -667,7 +667,7 @@ class F {
    * @param string $extension
    * @return string
    */
-  static public function extensionToType($extension) {
+  public static function extensionToType($extension) {
 
     // get all categorized types
     foreach(static::$types as $type => $extensions) {
@@ -691,7 +691,7 @@ class F {
    * @param  string $string The file name
    * @return string
    */
-  static public function safeName($string) {
+  public static function safeName($string) {
     $name      = static::name($string);
     $extension = static::extension($string);
     $end       = !empty($extension) ? '.' . str::slug($extension) : '';
@@ -704,7 +704,7 @@ class F {
    * @param string $file
    * @return boolean
    */
-  static public function isWritable($file) {
+  public static function isWritable($file) {
     return is_writable($file);
   }
 
@@ -714,7 +714,7 @@ class F {
    * @param string $file
    * @return boolean
    */
-  static public function isReadable($file) {
+  public static function isReadable($file) {
     return is_readable($file);
   }
 
@@ -723,7 +723,7 @@ class F {
    *
    * @param string $file
    */
-  static public function show($file) {
+  public static function show($file) {
 
     // stop the download if the file does not exist or is not readable
     if(!is_file($file) || !is_readable($file)) return false;
@@ -743,7 +743,7 @@ class F {
    * @param string $file The root to the file
    * @param string $name Optional filename for the download
    */
-  static public function download($file, $name = null) {
+  public static function download($file, $name = null) {
 
     // stop the download if the file does not exist or is not readable
     if(!is_file($file) || !is_readable($file)) return false;

@@ -44,7 +44,7 @@ class A {
    * @param   mixed  $default Optional default value, which should be returned if no element has been found
    * @return  mixed
    */
-  static public function get($array, $key, $default = null) {
+  public static function get($array, $key, $default = null) {
 
     // get an array of keys
     if(is_array($key)) {
@@ -95,7 +95,7 @@ class A {
    * @param   boolean  $echo By default the result will be echoed instantly. You can switch that off here.
    * @return  mixed    If echo is false, this will return the generated array output.
    */
-  static public function show($array, $echo = true) {
+  public static function show($array, $echo = true) {
     return dump($array, $echo);
   }
 
@@ -119,7 +119,7 @@ class A {
    * @param   array   $array The source array
    * @return  string  The JSON string
    */
-  static public function json($array) {
+  public static function json($array) {
     return json_encode((array)$array);
   }
 
@@ -151,7 +151,7 @@ class A {
    * @param   int      $level The indendation level
    * @return  string   The XML string
    */
-  static public function xml($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '  ', $level = 0) {
+  public static function xml($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '  ', $level = 0) {
     return xml::create($array, $tag, $head, $charset, $tab, $level);
   }
 
@@ -189,7 +189,7 @@ class A {
    * @param   string  $key The key name of the column to extract
    * @return  array   The result array with all values from that column.
    */
-  static public function extract($array, $key) {
+  public static function extract($array, $key) {
     $output = array();
     foreach($array AS $a) if(isset($a[$key])) $output[] = $a[ $key ];
     return $output;
@@ -218,7 +218,7 @@ class A {
    * @param   array  $array The source array
    * @return  array  The shuffled result array
    */
-  static public function shuffle($array) {
+  public static function shuffle($array) {
 
     $keys = array_keys($array);
     $new  = array();
@@ -254,7 +254,7 @@ class A {
    * @param   array  $array The source array
    * @return  mixed  The first element
    */
-  static public function first($array) {
+  public static function first($array) {
     return array_shift($array);
   }
 
@@ -281,7 +281,7 @@ class A {
    * @param   array  $array The source array
    * @return  mixed  The last element
    */
-  static public function last($array) {
+  public static function last($array) {
     return array_pop($array);
   }
 
@@ -313,7 +313,7 @@ class A {
    * @param   mixed  $fill The element, which should be used to fill the array
    * @return  array  The filled-up result array
    */
-  static public function fill($array, $limit, $fill='placeholder') {
+  public static function fill($array, $limit, $fill='placeholder') {
     if(count($array) < $limit) {
       $diff = $limit-count($array);
       for($x=0; $x<$diff; $x++) $array[] = $fill;
@@ -348,7 +348,7 @@ class A {
    * @param   array  $required An array of required keys
    * @return  array  An array of missing fields. If this is empty, nothing is missing.
    */
-  static public function missing($array, $required=array()) {
+  public static function missing($array, $required=array()) {
     $missing = array();
     foreach($required AS $r) {
       if(empty($array[$r])) $missing[] = $r;
@@ -404,7 +404,7 @@ class A {
    * @param   const   $method A PHP sort method flag or 'natural' for natural sorting, which is not supported in PHP by sort flags
    * @return  array   The sorted array
    */
-  static public function sort($array, $field, $direction = 'desc', $method = SORT_REGULAR) {
+  public static function sort($array, $field, $direction = 'desc', $method = SORT_REGULAR) {
 
     $direction = strtolower($direction) == 'desc' ? SORT_DESC : SORT_ASC;
     $helper    = array();
@@ -436,7 +436,7 @@ class A {
    * @param   array    $array The array to analyze
    * @return  boolean  true: The array is associative false: It's not
    */
-  static public function isAssociative($array) {
+  public static function isAssociative($array) {
     return !ctype_digit(implode(NULL, array_keys($array)));
   }
 
@@ -447,7 +447,7 @@ class A {
    * @param   int    $decimals The number of decimals to return
    * @return  int    The average value
    */
-  static public function average($array, $decimals = 0) {
+  public static function average($array, $decimals = 0) {
     return round(array_sum($array), $decimals) / sizeof($array);
   }
 
@@ -458,7 +458,7 @@ class A {
    * @param array $array2
    * @return array
    */
-  static public function merge($array1, $array2) {
+  public static function merge($array1, $array2) {
     $merged = $array1;
     foreach($array2 as $key => $value) {
       if(is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {

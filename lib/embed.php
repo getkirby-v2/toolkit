@@ -21,7 +21,7 @@ class Embed {
    * @param array $attr Additional attributes for the iframe
    * @return string
    */
-  static public function youtube($url, $attr = array()) {
+  public static function youtube($url, $attr = array()) {
 
     // http://www.youtube.com/embed/d9NF2edxy-M
     if(preg_match('!youtube.com\/embed\/([a-z0-9_-]+)!i', $url, $array)) {
@@ -59,7 +59,7 @@ class Embed {
    * @param array $attr Additional attributes for the iframe
    * @return string
    */
-  static public function vimeo($url, $attr = array()) {
+  public static function vimeo($url, $attr = array()) {
 
     // get the uid from the url
     if(preg_match('!vimeo.com\/([0-9]+)!i', $url, $array)) {
@@ -93,7 +93,7 @@ class Embed {
    * @param string $file The name of a particular file from the gist, which should displayed only.
    * @return string
    */
-  static public function gist($url, $file = null) {
+  public static function gist($url, $file = null) {
 
     // url for the script file
     $url = $url . '.js' . r(!is_null($file), '?file=' . $file);

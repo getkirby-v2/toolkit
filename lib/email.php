@@ -23,8 +23,8 @@ class Email extends Obj {
   const ERROR_INVALID_SERVICE = 5;
   const ERROR_DISABLED = 6;
 
-  static public $services = array();
-  static public $disabled = false;
+  public static $services = array();
+  public static $disabled = false;
 
   public $error = null;
 

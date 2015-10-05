@@ -32,14 +32,14 @@ class Server {
    * @param  mixed    $default Optional default value, which should be returned if no element has been found
    * @return mixed
    */  
-  static public function get($key = false, $default = null) {
+  public static function get($key = false, $default = null) {
     if(empty($key)) return $_SERVER;
     $key   = str::upper($key);
     $value = a::get($_SERVER, $key, $default);
     return static::sanitize($key, $value);
   }
 
-  static public function sanitize($key, $value) {
+  public static function sanitize($key, $value) {
 
     switch($key) {
       case 'SERVER_ADDR':

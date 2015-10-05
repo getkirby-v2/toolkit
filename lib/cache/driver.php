@@ -38,7 +38,7 @@ abstract class Driver {
    * @param  int     $minutes
    * @return void
    */
-  abstract public function set($key, $value, $minutes = null);
+  public abstract function set($key, $value, $minutes = null);
 
   /**
    * Private method to retrieve the cache value
@@ -47,7 +47,7 @@ abstract class Driver {
    * @param string $key
    * @return object Value
    */
-  abstract public function retrieve($key);
+  public abstract function retrieve($key);
 
   /**
    * Get an item from the cache.
@@ -178,13 +178,13 @@ abstract class Driver {
    * @param string $key
    * @return boolean
    */
-  abstract public function remove($key);
+  public abstract function remove($key);
 
   /**
    * Flush the entire cache
    *
    * @return boolean
    */
-  abstract public function flush();
+  public abstract function flush();
 
 }

@@ -12,7 +12,7 @@
 class Pagination {
 
   // configuration
-  static public $defaults = array(
+  public static $defaults = array(
     'variable'      => 'page',
     'method'        => 'param',
     'omitFirstPage' => true,

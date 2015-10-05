@@ -18,7 +18,7 @@ class System {
    *
    * @return boolean
    */
-  static public function available() {
+  public static function available() {
     return (!ini_get('safe_mode') && function_exists('exec'));
   }
 
@@ -28,7 +28,7 @@ class System {
    * @param  string  $command Name or path of the command to check
    * @return boolean
    */
-  static public function isExecutable($command) {
+  public static function isExecutable($command) {
     // check if everything we need is available
     if(!static::available()) {
       throw new Exception('The exec() function is not available on this system. Probably, safe_mode is on (shame!).');
@@ -48,7 +48,7 @@ class System {
    * @param  string  $command Name or path of the command
    * @return mixed
    */
-  static public function realpath($command) {
+  public static function realpath($command) {
     // check if everything we need is available
     if(!static::available()) {
       throw new Exception('The exec() function is not available on this system. Probably, safe_mode is on (shame!).');
@@ -87,7 +87,7 @@ class System {
    * @param  string  $what What to return ('status', 'success', 'output' or 'all')
    * @return mixed
    */
-  static public function execute($command, $arguments = array(), $what = 'all') {
+  public static function execute($command, $arguments = array(), $what = 'all') {
     // check if everything we need is available
     if(!static::available()) {
       throw new Exception('The exec() function is not available on this system. Probably, safe_mode is on (shame!).');
@@ -143,7 +143,7 @@ class System {
    * @param  string  $arguments Additional arguments
    * @return array
    */
-  static public function __callStatic($command, $arguments) {
+  public static function __callStatic($command, $arguments) {
     return static::execute($command, $arguments, 'all');
   }
 

@@ -16,9 +16,9 @@ class Data {
 
   const ERROR_INVALID_ADAPTER = 0;
 
-  static public $adapters = array();
+  public static $adapters = array();
 
-  static public function adapter($type) {
+  public static function adapter($type) {
 
     if(isset(static::$adapters[$type])) return static::$adapters[$type];
 
@@ -34,17 +34,17 @@ class Data {
 
   }
 
-  static public function encode($data, $type) {
+  public static function encode($data, $type) {
     $adapter = static::adapter($type);
     return call_user_func($adapter['encode'], $data);
   }
 
-  static public function decode($data, $type) {
+  public static function decode($data, $type) {
     $adapter = static::adapter($type);
     return call_user_func($adapter['decode'], $data);
   }
 
-  static public function read($file, $type = null) {
+  public static function read($file, $type = null) {
 
     // type autodetection
     if(is_null($type)) $type = f::extension($file);
@@ -61,7 +61,7 @@ class Data {
 
   }
 
-  static public function write($file, $data, $type = null) {
+  public static function write($file, $data, $type = null) {
     // type autodetection
     if(is_null($type)) $type = f::extension($file);
     return f::write($file, data::encode($data, $type));

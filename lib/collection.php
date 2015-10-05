@@ -11,8 +11,7 @@
  */
 class Collection extends I {
 
-  static public $filters = array();
-
+  public static $filters = array();
 
   protected $pagination;
 

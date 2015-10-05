@@ -15,7 +15,7 @@
 class Remote {
 
   // configuration
-  static public $defaults = array(
+  public static $defaults = array(
     'method'   => 'GET',
     'data'     => array(),
     'file'     => null,
@@ -181,7 +181,7 @@ class Remote {
    * @param array $params
    * @return object Response
    */
-  static public function request($url, $params = array()) {
+  public static function request($url, $params = array()) {
     $request = new self($url, $params);
     return $request->response();
   }
@@ -193,7 +193,7 @@ class Remote {
    * @param array $params
    * @return object Response
    */
-  static public function get($url, $params = array()) {
+  public static function get($url, $params = array()) {
 
     $defaults = array(
       'method' => 'GET',
@@ -222,7 +222,7 @@ class Remote {
    * @param array $params
    * @return object Response
    */
-  static public function post($url, $params = array()) {
+  public static function post($url, $params = array()) {
 
     $defaults = array(
       'method' => 'POST'
@@ -240,7 +240,7 @@ class Remote {
    * @param array $params
    * @return object Response
    */
-  static public function put($url, $params = array()) {
+  public static function put($url, $params = array()) {
 
     $defaults = array(
       'method' => 'PUT'
@@ -258,7 +258,7 @@ class Remote {
    * @param array $params
    * @return object Response
    */
-  static public function delete($url, $params = array()) {
+  public static function delete($url, $params = array()) {
 
     $defaults = array(
       'method' => 'DELETE'
@@ -276,7 +276,7 @@ class Remote {
    * @param array $params
    * @return object Response
    */
-  static public function head($url, $params = array()) {
+  public static function head($url, $params = array()) {
 
     $defaults = array(
       'method' => 'HEAD'
@@ -295,7 +295,7 @@ class Remote {
    * @param array $params
    * @return array
    */
-  static public function headers($url, $params = array()) {
+  public static function headers($url, $params = array()) {
     $request = static::head($url, $params);
     return array_merge($request->headers(), $request->info());
   }

@@ -14,10 +14,10 @@
 class Crypt {
     
   // encryption salt - should be changed
-  static public $salt = '-';
+  public static $salt = '-';
 
   // all available encryption modes
-  static public $encryption = array(
+  public static $encryption = array(
     'rijndael-128',
     'rijndael-256',
     'blowfish',
@@ -33,7 +33,7 @@ class Crypt {
    * @param string $mode Check out the $encryption array for available modes
    * @return string
    */
-  static public function encode($text, $key = null, $mode = 'blowfish') {
+  public static function encode($text, $key = null, $mode = 'blowfish') {
 
     // check for mcrypt support
     if(!function_exists('mcrypt_get_iv_size')) {
@@ -62,7 +62,7 @@ class Crypt {
    * @param string $mode Check out the $encryption array for available modes
    * @return string
    */
-  static public function decode($text, $key = null, $mode = 'blowfish') {
+  public static function decode($text, $key = null, $mode = 'blowfish') {
 
     // check for mcrypt support
     if(!function_exists('mcrypt_get_iv_size')) {

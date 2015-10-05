@@ -26,7 +26,7 @@ class Escape {
    * @param  string  $string
    * @return boolean
    */
-  static public function noNeedToEscape($string) {
+  public static function noNeedToEscape($string) {
     return $string === '' || ctype_digit($string);
   }
   
@@ -36,7 +36,7 @@ class Escape {
    * @param  string $char
    * @return string
    */
-  static public function convertEncoding($char) {
+  public static function convertEncoding($char) {
     return str::convert($char, 'UTF-16BE', 'UTF-8');
   }
   
@@ -46,7 +46,7 @@ class Escape {
    * @param  string $char
    * @return boolean
    */
-  static public function charIsUndefined($char) {
+  public static function charIsUndefined($char) {
     $ascii = ord($char);
     return ($ascii <= 0x1f && $char != "\t" && $char != "\n" && $char != "\r")
       || ($ascii >= 0x7f && $ascii <= 0x9f);
@@ -69,7 +69,7 @@ class Escape {
    * @param  string $string
    * @return string
    */
-  static public function html($string) {
+  public static function html($string) {
     $flags = ENT_QUOTES;
     if(defined('ENT_SUBSTITUTE')) {
       $flags |= ENT_SUBSTITUTE;
@@ -96,7 +96,7 @@ class Escape {
    * @param  string $string
    * @return string 
    */
-  static public function xml($string) {
+  public static function xml($string) {
     if (defined('ENT_XML1')) {
       return htmlspecialchars($string, ENT_QUOTES | ENT_XML1, 'UTF-8');
     } else {
@@ -124,7 +124,7 @@ class Escape {
    *                        which is necessary in case of unquoted HTML attributes.
    * @return string
    */
-  static public function attr($string, $strict = false) {
+  public static function attr($string, $strict = false) {
     if(static::noNeedToEscape($string)) return $string;
     if($strict !== true) {
       return preg_replace_callback('/[^a-z0-9,\.\-_]/iSu', 'static::escapeAttrChar', $string);
@@ -145,7 +145,7 @@ class Escape {
    * @param  string $string
    * @return string
    */
-  static public function js($string) {
+  public static function js($string) {
     if(static::noNeedToEscape($string)) return $string;
     return preg_replace_callback('/[^a-z0-9,\._]/iSu', 'static::escapeJSChar', $string);
   }
@@ -166,7 +166,7 @@ class Escape {
    * @param  string $string
    * @return string
    */
-  static public function css($string) {
+  public static function css($string) {
     if(static::noNeedToEscape($string)) return $string;
     return preg_replace_callback('/[^a-z0-9]/iSu', 'static::escapeCSSChar', $string);
   }
@@ -182,7 +182,7 @@ class Escape {
    * @param string  $string
    * @return string
    */
-  static public function url($string) {
+  public static function url($string) {
     return rawurlencode($string);
   }
   
@@ -198,7 +198,7 @@ class Escape {
    *               upper hex entity if a named entity does not exist or
    *               entity with the &#xHH; format if ASCII value is less than 256.
    */
-  static protected function escapeAttrChar($matches) {
+  protected static function escapeAttrChar($matches) {
     $char = $matches[0];
     
     if(static::charIsUndefined($char)) {
@@ -234,7 +234,7 @@ class Escape {
    * @param  array  $matches
    * @return string
    */
-  static protected function escapeJSChar($matches) {
+  protected static function escapeJSChar($matches) {
     $char = $matches[0];
     if(str::length($char) == 1) {
       return sprintf('\\x%02X', ord($char));
@@ -252,7 +252,7 @@ class Escape {
    * @param  array  $matches
    * @return string
    */
-  static protected function escapeCSSChar($matches) {
+  protected static function escapeCSSChar($matches) {
     $char = $matches[0];
     if(str::length($char) == 1) {
       $ord = ord($char);

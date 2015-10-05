@@ -19,7 +19,7 @@ class Password {
    * @param string $plaintext
    * @return string
    */
-  static public function hash($plaintext) {
+  public static function hash($plaintext) {
     $salt = substr(str_replace('+', '.', base64_encode(sha1(str::random(), true))), 0, 22);
     return crypt($plaintext, '$2a$10$' . $salt);
   }
@@ -30,7 +30,7 @@ class Password {
    * @param string
    * @return boolean
    */
-  static public function isHash($hash) {
+  public static function isHash($hash) {
     return preg_match('!^\$2a\$10\$!', $hash);
   }
 
@@ -41,7 +41,7 @@ class Password {
    * @param string $hash
    * @return boolean
    */
-  static public function match($plaintext, $hash) {
+  public static function match($plaintext, $hash) {
     return crypt($plaintext, $hash) === $hash;
   }  
 

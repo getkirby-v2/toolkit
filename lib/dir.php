@@ -13,7 +13,7 @@
  */
 class Dir {
 
-  static public $defaults = array(
+  public static $defaults = array(
     'permissions' => 0755,
     'ignore'      => array('.', '..', '.DS_Store', '.gitignore', '.git', '.svn', '.htaccess', 'Thumb.db', '@eaDir')
   );
@@ -32,7 +32,7 @@ class Dir {
    * @param   string  $dir The path for the new directory
    * @return  boolean True: the dir has been created, false: creating failed
    */
-  static public function make($dir, $recursive = true) {
+  public static function make($dir, $recursive = true) {
     return is_dir($dir) ? true : @mkdir($dir, static::$defaults['permissions'], $recursive);
   }
 
@@ -51,7 +51,7 @@ class Dir {
    * @param   array   $ignore Optional array with filenames, which should be ignored
    * @return  mixed   An array of filenames or false
    */
-  static public function read($dir, $ignore = array()) {
+  public static function read($dir, $ignore = array()) {
     if(!is_dir($dir)) return array();
     $skip = array_merge(static::$defaults['ignore'], $ignore);
     return (array)array_diff(scandir($dir),$skip);
@@ -72,7 +72,7 @@ class Dir {
    * @param   string  $new The desired path where the dir should be moved to
    * @return  boolean True: the directory has been moved, false: moving failed
    */
-  static public function move($old, $new) {
+  public static function move($old, $new) {
     if(!is_dir($old)) return false;
     return @rename($old, $new);
   }
@@ -92,7 +92,7 @@ class Dir {
    * @param   boolean  $keep If set to true, the directory will flushed but not removed.
    * @return  boolean  True: the directory has been removed, false: removing failed
    */
-  static public function remove($dir, $keep = false) {
+  public static function remove($dir, $keep = false) {
     if(!is_dir($dir)) return false;
 
     // It's easier to handle this with the Folder class
@@ -106,7 +106,7 @@ class Dir {
    * @param   string   $dir The path of the directory
    * @return  boolean  True: the directory has been flushed, false: flushing failed
    */
-  static public function clean($dir) {
+  public static function clean($dir) {
     return static::remove($dir, true);
   }
 
@@ -116,7 +116,7 @@ class Dir {
    * @param   string $dir The path of the directory
    * @return  mixed
    */
-  static public function size($dir) {
+  public static function size($dir) {
 
     if(!file_exists($dir)) return false;
 
@@ -132,7 +132,7 @@ class Dir {
    * @param string $dir The path of the directory
    * @return mixed
    */
-  static public function niceSize($dir) {
+  public static function niceSize($dir) {
     return f::niceSize(static::size($dir));
   }
 
@@ -144,7 +144,7 @@ class Dir {
    * @param   string   $format
    * @return  int
    */
-  static public function modified($dir, $format = null) {
+  public static function modified($dir, $format = null) {
     // It's easier to handle this with the Folder class
     $object = new Folder($dir);
     return $object->modified($format);
@@ -158,7 +158,7 @@ class Dir {
    * @param int $time
    * @return boolean
    */
-  static public function wasModifiedAfter($dir, $time) {
+  public static function wasModifiedAfter($dir, $time) {
 
     if(filemtime($dir) > $time) return true;
 
@@ -180,7 +180,7 @@ class Dir {
    * @param string $dir
    * @return boolean
    */
-  static public function writable($dir) {
+  public static function writable($dir) {
     return is_writable($dir);
   }
 
@@ -190,7 +190,7 @@ class Dir {
    * @param string $dir
    * @return boolean
    */
-  static public function readable($dir) {
+  public static function readable($dir) {
     return is_readable($dir);
   }
 
@@ -200,7 +200,7 @@ class Dir {
    * @param string $dir Source path
    * @param string $to Destination path
    */
-  static public function copy($dir, $to) {
+  public static function copy($dir, $to) {
     // It's easier to handle this with the Folder class
     $object = new Folder($dir);
     return $object->copy($to);

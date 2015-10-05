@@ -14,14 +14,14 @@
  */
 class S {
 
-  static protected $started = false;
+  protected static $started = false;
 
   /**
    * Returns the current session id
    * 
    * @return string
    */  
-  static public function id() {
+  public static function id() {
     static::start();
     return session_id();
   }
@@ -46,7 +46,7 @@ class S {
    * @param  mixed   $key The key to define
    * @param  mixed   $value The value for the passed key
    */    
-  static public function set($key, $value = false) {
+  public static function set($key, $value = false) {
 
     static::start();
 
@@ -76,7 +76,7 @@ class S {
    * @param  mixed    $default Optional default value, which should be returned if no element has been found
    * @return mixed
    */  
-  static public function get($key = false, $default = null) {
+  public static function get($key = false, $default = null) {
 
     static::start();
 
@@ -93,7 +93,7 @@ class S {
    * @param mixed $default
    * @return mixed
    */
-  static public function pull($key, $default = null) {
+  public static function pull($key, $default = null) {
     $value = s::get($key, $default); 
     s::remove($key);
     return $value;
@@ -119,7 +119,7 @@ class S {
    * @param  mixed    $key The key to remove by
    * @return array    The session array without the value
    */  
-  static public function remove($key) {
+  public static function remove($key) {
 
     static::start();
 
@@ -139,7 +139,7 @@ class S {
    * </code>
    * 
    */  
-  static public function start() {
+  public static function start() {
     if(static::$started) return true;
     session_start();
     static::$started = true;
@@ -159,7 +159,7 @@ class S {
    * </code>
    *
    */  
-  static public function destroy() {
+  public static function destroy() {
     if(static::$started) {
       session_destroy();
       unset($_SESSION);
@@ -170,14 +170,14 @@ class S {
   /**
    * Alternative for s::destroy()
    */
-  static public function stop() {
+  public static function stop() {
     s::destroy();
   }
 
   /**
    * Destroys a session first and then starts it again
    */  
-  static public function restart() {
+  public static function restart() {
     static::destroy();
     static::start();
   }
@@ -185,7 +185,7 @@ class S {
   /**
    * Create a new session Id
    */
-  static public function regenerateId() {
+  public static function regenerateId() {
     static::start();
     session_regenerate_id();      
   }

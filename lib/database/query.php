@@ -79,7 +79,7 @@ class Query {
   protected $debug = false;
 
   // an array with reserved sql values
-  static protected $literals = array('NOW()');
+  protected static $literals = array('NOW()');
 
   /**
    * Constructor

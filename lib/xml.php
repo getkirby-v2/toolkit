@@ -30,7 +30,7 @@ class Xml {
    * @param  boolean $html True: convert to html first
    * @return string
    */  
-  static public function encode($string, $html = true) {
+  public static function encode($string, $html = true) {
 
     // convert raw text to html safe text
     if($html) {
@@ -57,7 +57,7 @@ class Xml {
    * @param  string  $string
    * @return string
    */  
-  static public function decode($string) {
+  public static function decode($string) {
     // convert xml entities to html entities
     $string = strtr($string, static::entities());
     return html::decode($string);
@@ -69,7 +69,7 @@ class Xml {
    * @param  string  $xml
    * @return mixed
    */
-  static public function parse($xml) {
+  public static function parse($xml) {
 
     $xml = preg_replace('/(<\/?)(\w+):([^>]*>)/', '$1$2$3', $xml);
     $xml = @simplexml_load_string($xml, null, LIBXML_NOENT);
@@ -84,7 +84,7 @@ class Xml {
    * 
    * @return array
    */
-  static public function entities() {
+  public static function entities() {
     return array_flip(html::entities());    
   }
 
@@ -98,7 +98,7 @@ class Xml {
    * @param  int     $level   The indendation level
    * @return string  The XML string
    */
-  static public function create($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '  ', $level = 0) {
+  public static function create($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '  ', $level = 0) {
     $result  = ($level == 0 && $head) ? '<?xml version="1.0" encoding="' . $charset . '"?>' . PHP_EOL : '';
     $nlevel  = ($level + 1);
     $result .= str_repeat($tab, $level) . '<' . $tag . '>' . PHP_EOL;

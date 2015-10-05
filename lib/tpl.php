@@ -13,9 +13,9 @@
  */
 class Tpl extends Silo {
 
-  static public $data = array();
+  public static $data = array();
 
-  static public function load($_file, $_data = array(), $_return = true) {
+  public static function load($_file, $_data = array(), $_return = true) {
     if(!file_exists($_file)) return false;
     ob_start();
     extract(array_merge(static::$data, (array)$_data));

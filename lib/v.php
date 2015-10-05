@@ -15,14 +15,14 @@
 class V {
 
   // an array with all installed validators
-  static public $validators = array();
+  public static $validators = array();
 
   /**
    * Return the list of all validators
    *
    * @return array
    */
-  static public function validators() {
+  public static function validators() {
     return static::$validators;
   }
 
@@ -33,7 +33,7 @@ class V {
    * @param array $arguments
    * @return boolean
    */
-  static public function __callStatic($method, $arguments) {
+  public static function __callStatic($method, $arguments) {
 
     // check for missing validators
     if(!isset(static::$validators[$method])) throw new Exception('The validator does not exist: ' . $method);

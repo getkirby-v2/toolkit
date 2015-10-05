@@ -14,17 +14,17 @@
 class Visitor {
 
   // banned ips
-  static public $banned = array();
+  public static $banned = array();
 
   // cache for the detected language code
-  static protected $acceptedLanguageCode = null;
+  protected static $acceptedLanguageCode = null;
 
   /**
    * Returns the ip address of the current visitor
    *
    * @return string
    */
-  static public function ip() {
+  public static function ip() {
     return getenv('REMOTE_ADDR');
   }
 
@@ -33,7 +33,7 @@ class Visitor {
    *
    * @return string
    */
-  static public function ua() {
+  public static function ua() {
     return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
   }
 
@@ -42,7 +42,7 @@ class Visitor {
    *
    * @return string
    */
-  static public function userAgent() {
+  public static function userAgent() {
     return static::ua();
   }
 
@@ -51,7 +51,7 @@ class Visitor {
    *
    * @return string
    */
-  static public function acceptedLanguage() {
+  public static function acceptedLanguage() {
     return isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : null;
   }
 
@@ -60,7 +60,7 @@ class Visitor {
    *
    * @return string
    */
-  static public function acceptedLanguageCode() {
+  public static function acceptedLanguageCode() {
     if(!is_null(static::$acceptedLanguageCode)) return static::$acceptedLanguageCode;
     $detected = explode(',', static::acceptedLanguage());
     $detected = explode('-', $detected[0]);
@@ -72,7 +72,7 @@ class Visitor {
    *
    * @return string
    */
-  static public function referrer() {
+  public static function referrer() {
     return r::referer();
   }
 
@@ -81,7 +81,7 @@ class Visitor {
    *
    * @return string
    */
-  static public function referer() {
+  public static function referer() {
     return r::referer();
   }
 
@@ -90,7 +90,7 @@ class Visitor {
    *
    * @return boolean
    */
-  static public function banned() {
+  public static function banned() {
     return in_array(static::ip(), static::$banned);
   }
 

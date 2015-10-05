@@ -14,7 +14,7 @@
 class Header {
 
   // configuration
-  static public $codes = array(
+  public static $codes = array(
     
     // successful
     '_200' => 'OK', 
@@ -51,7 +51,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function contentType($mime, $charset = 'UTF-8', $send = true) {  
+  public static function contentType($mime, $charset = 'UTF-8', $send = true) {  
     if(f::extensionToMime($mime)) $mime = f::extensionToMime($mime);
     $header = 'Content-type: ' . $mime;
     if($charset) $header .= '; charset=' . $charset;
@@ -67,7 +67,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function type($mime, $charset = 'UTF-8', $send = true) {
+  public static function type($mime, $charset = 'UTF-8', $send = true) {
     return static::contentType($mime, $charset, $send);
   }
 
@@ -78,7 +78,7 @@ class Header {
    * @param boolean $send If set to false the header will be returned instead
    * @return mixed
    */
-  static public function status($code, $send = true) {
+  public static function status($code, $send = true) {
 
     $codes    = static::$codes;
     $code     = !array_key_exists('_' . $code, $codes) ? 400 : $code;
@@ -99,7 +99,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function success($send = true) {
+  public static function success($send = true) {
     return static::status(200, $send);
   }
 
@@ -109,7 +109,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function created($send = true) {
+  public static function created($send = true) {
     return static::status(201, $send);
   }
 
@@ -119,7 +119,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function accepted($send = true) {
+  public static function accepted($send = true) {
     return static::status(202, $send);
   }
 
@@ -129,7 +129,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function error($send = true) {
+  public static function error($send = true) {
     return static::status(400, $send);
   }
 
@@ -139,7 +139,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function forbidden($send = true) {
+  public static function forbidden($send = true) {
     return static::status(403, $send);
   }
 
@@ -149,7 +149,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function notfound($send = true) {
+  public static function notfound($send = true) {
     return static::status(404, $send);
   }
 
@@ -159,7 +159,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function missing($send = true) {
+  public static function missing($send = true) {
     return static::status(404, $send);
   }
 
@@ -169,7 +169,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function panic($send = true) {
+  public static function panic($send = true) {
     return static::status(500, $send);
   }
 
@@ -179,7 +179,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function unavailable($send = true) {
+  public static function unavailable($send = true) {
     return static::status(503, $send);
   }
 
@@ -189,7 +189,7 @@ class Header {
    * @param boolean $send
    * @return mixed
    */
-  static public function redirect($url, $code = 301, $send = true) {
+  public static function redirect($url, $code = 301, $send = true) {
 
     $status   = static::status($code, false); 
     $location = 'Location:' . $url;
@@ -209,7 +209,7 @@ class Header {
    * 
    * @param array $params Check out the defaults array for available parameters
    */
-  static public function download($params = array()) {
+   public static function download($params = array()) {
 
     $defaults = array(
       'name'     => 'download',

@@ -14,9 +14,9 @@ class Thumb extends Obj {
   const ERROR_INVALID_IMAGE  = 0;
   const ERROR_INVALID_DRIVER = 1;
 
-  static public $drivers = array();
+  public static $drivers = array();
 
-  static public $defaults = array(
+  public static $defaults = array(
     'destination' => false,
     'filename'    => '{safeName}-{hash}.{extension}',
     'url'         => '/thumbs',

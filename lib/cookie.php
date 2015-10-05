@@ -14,7 +14,7 @@
 class Cookie {
 
   // configuration
-  static public $salt = 'KirbyToolkitCookieSalt';
+  public static $salt = 'KirbyToolkitCookieSalt';
 
   /**
    * Set a new cookie
@@ -35,7 +35,7 @@ class Cookie {
    * @param  boolean $httpOnly avoids the cookie to be accessed via javascript
    * @return boolean true: the cookie has been created, false: cookie creation failed
    */
-  static public function set($key, $value, $expires = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true) {
+  public static function set($key, $value, $expires = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true) {
   
     // convert minutes to seconds    
     if($expires > 0) $expires = time() + ($expires * 60);
@@ -71,7 +71,7 @@ class Cookie {
    * @param  boolean $secure only sets the cookie over https
    * @return boolean true: the cookie has been created, false: cookie creation failed
    */
-  static public function forever($key, $value, $path = '/', $domain = null, $secure = false) {
+  public static function forever($key, $value, $path = '/', $domain = null, $secure = false) {
     return static::set($key, $value, 2628000, $path, $domain, $secure);
   }
 
@@ -89,7 +89,7 @@ class Cookie {
    * @param  string  $default The default value, which should be returned if the cookie has not been found
    * @return mixed   The found value
    */
-  static public function get($key = null, $default = null) {
+  public static function get($key = null, $default = null) {
     if(is_null($key)) return $_COOKIE;
     $value = isset($_COOKIE[$key]) ? $_COOKIE[$key] : null;
     return empty($value) ? $default : static::parse($value);
@@ -100,7 +100,7 @@ class Cookie {
    * 
    * @return boolean
    */
-  static public function exists($key) {
+  public static function exists($key) {
     return !is_null(static::get($key));
   }
 
@@ -111,7 +111,7 @@ class Cookie {
    * @param string $value
    * @return string
    */
-  static protected function hash($value) {
+  protected static function hash($value) {
     return sha1($value . static::$salt);
   }
 
@@ -122,7 +122,7 @@ class Cookie {
    * @param string $string
    * @return mixed
    */
-  static protected function parse($string) {
+  protected static function parse($string) {
 
     // extract hash and value
     $parts = str::split($string, '+');
@@ -152,7 +152,7 @@ class Cookie {
    * @param  string  $key The name of the cookie
    * @return mixed   true: the cookie has been removed, false: the cookie could not be removed
    */
-  static public function remove($key) {
+  public static function remove($key) {
     unset($_COOKIE[$key]);
     setcookie($key, '', 1);
     return setcookie($key, false);

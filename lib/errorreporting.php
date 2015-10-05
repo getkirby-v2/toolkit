@@ -18,7 +18,7 @@ class ErrorReporting {
    *
    * @return int     The current value
    */
-  static public function get() {
+  public static function get() {
     return error_reporting();
   }
 
@@ -28,7 +28,7 @@ class ErrorReporting {
    * @param  int     $level The new level to set
    * @return int     The new value
    */
-  static public function set($level) {
+  public static function set($level) {
     if(static::get() !== error_reporting($level)) {
       throw new Exception('Internal error: error_reporting() did not return the old value.');
     }
@@ -42,7 +42,7 @@ class ErrorReporting {
    * @param  int     $current A custom current level
    * @return boolean
    */
-  static public function includes($level, $current = null) {
+  public static function includes($level, $current = null) {
     // also allow strings
     if(is_string($level)) {
       if(defined($level)) {
@@ -64,7 +64,7 @@ class ErrorReporting {
    * @param  int     $level The level to add
    * @return boolean
    */
-  static public function add($level) {
+  public static function add($level) {
     // check if it is already added
     if(static::includes($level)) return false;
 
@@ -81,7 +81,7 @@ class ErrorReporting {
    * @param  int     $level The level to remove
    * @return boolean
    */
-  static public function remove($level) {
+  public static function remove($level) {
     // check if it is already removed
     if(!static::includes($level)) return false;
 
