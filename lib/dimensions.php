@@ -131,7 +131,7 @@ class Dimensions {
    *
    * </code>
    *
-   * @param int $width the max width
+   * @param int $fit the max width
    * @param boolean $force If true, the dimensions will be upscaled to fit the width if smaller
    * @return object returns this object with recalculated dimensions
    */
@@ -167,7 +167,7 @@ class Dimensions {
    *
    * </code>
    *
-   * @param int $height the max height
+   * @param int $fit the max height
    * @param boolean $force If true, the dimensions will be upscaled to fit the height if smaller
    * @return object returns this object with recalculated dimensions
    */
