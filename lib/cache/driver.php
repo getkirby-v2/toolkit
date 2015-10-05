@@ -105,7 +105,7 @@ abstract class Driver {
    * Checks when an item in the cache expires
    *
    * @param string $key
-   * @return int
+   * @return mixed
    */
   public function expires($key) {
     // get the Value object
@@ -132,7 +132,7 @@ abstract class Driver {
    * Checks when the cache has been created
    *
    * @param string $key
-   * @return int
+   * @return mixed
    */
   public function created($key) {
     // get the Value object
