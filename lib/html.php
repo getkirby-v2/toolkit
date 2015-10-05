@@ -210,7 +210,7 @@ class Html {
   /**
    * Generates an "a mailto" tag
    *
-   * @param string $href The url for the a tag
+   * @param string $email The url for the a tag
    * @param mixed $text The optional text. If null, the url will be used as text
    * @param array $attr Additional attributes for the tag
    * @return string the generated html
