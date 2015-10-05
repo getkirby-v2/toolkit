@@ -28,9 +28,6 @@ class Redirect {
   /**
    * Redirects to a specific URL. You can pass either a normal URI
    * a controller path or simply nothing (which redirects home)
-   * 
-   * @param string $uri
-   * @param array $arguments
    */
   static public function to() {
     static::send(call_user_func_array(array('url', 'to'), func_get_args()));
