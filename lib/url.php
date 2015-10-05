@@ -67,7 +67,8 @@ class Url {
    */
   static public function port($url = null) {
     if(is_null($url)) $url = static::current();
-    return parse_url($url, PHP_URL_PORT);
+    $port = intval(parse_url($url, PHP_URL_PORT));
+    return v::between($port, 1, 65535) ? $port : false;
   }
 
   /**
@@ -310,7 +311,7 @@ class Url {
     } else {
       $port   = static::port($url);
       $scheme = static::scheme($url);
-      $host   = static::host($url) . r($port, ':' . $port);
+      $host   = static::host($url) . r(is_int($port), ':' . $port);
       return r($scheme, $scheme . '://') . $host;      
     }
   }
@@ -327,7 +328,7 @@ class Url {
    * </code>
    *
    * @param  string  $url The URL to be shortened
-   * @param  int     $chars The final number of characters the URL should have
+   * @param  int     $length The final number of characters the URL should have
    * @param  boolean $base True: only take the base of the URL.
    * @param  string  $rep The element, which should be added if the string is too long. Ellipsis is the default.
    * @return string  The shortened URL

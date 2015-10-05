@@ -64,7 +64,7 @@ function param($key = null, $default = null) {
 /**
  * Smart version of return with an if condition as first argument
  *
- * @param boolean $condition
+ * @param mixed $condition
  * @param mixed $value The string to be returned if the condition is true
  * @param mixed $alternative An alternative string which should be returned when the condition is false
  * @return null
@@ -76,7 +76,7 @@ function r($condition, $value, $alternative = null) {
 /**
  * Smart version of echo with an if condition as first argument
  *
- * @param boolean $condition
+ * @param mixed $condition
  * @param mixed $value The string to be echoed if the condition is true
  * @param mixed $alternative An alternative string which should be echoed when the condition is false
  */
