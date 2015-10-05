@@ -481,13 +481,13 @@ class F {
    *
    * </code>
    *
-   * @param  int $size The file size or a file path
+   * @param  mixed $size The file size or a file path
    * @return string
    */
   static public function niceSize($size) {
 
     // file mode
-    if(!is_int($size) and file_exists($size)) {
+    if(is_string($size) and file_exists($size)) {
       $size = static::size($size);
     }
 

@@ -130,7 +130,6 @@ class Dir {
    * Returns a nicely formatted size of all the contents of the folder
    *
    * @param string $dir The path of the directory
-   * @param boolean $recursive
    * @return mixed
    */
   static public function niceSize($dir) {
