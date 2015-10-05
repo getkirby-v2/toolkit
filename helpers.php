@@ -109,7 +109,7 @@ function dump($variable, $echo = true) {
   } else {
     $output = '<pre>' . print_r($variable, true) . '</pre>';
   }
-  if($echo == true) echo $output;
+  if($echo === true) echo $output;
   return $output;
 }
 
@@ -327,10 +327,10 @@ function invalid($data, $rules, $messages = array()) {
     foreach($validations as $method => $options) {
       if(is_numeric($method)) $method = $options;
       if($method == 'required') {
-        if(!isset($data[$field]) or (empty($data[$field]) and $data[$field] !== 0)) {
+        if(!isset($data[$field]) || (empty($data[$field]) && $data[$field] !== 0)) {
           $errors[$field] = a::get($messages, $field, $field);
         }
-      } else if(!empty($data[$field]) or $data[$field] === 0) {
+      } else if(!empty($data[$field]) || $data[$field] === 0) {
         if(!is_array($options)) $options = array($options);
         array_unshift($options, a::get($data, $field));
         if(!call(array('v', $method), $options)) {
