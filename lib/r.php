@@ -85,7 +85,7 @@ class R {
    * @return array
    */
   static public function getData($key = null, $default = null) {
-    return a::get(static::sanitize($_GET), $key, $default);
+    return a::get((array)static::sanitize($_GET), $key, $default);
   }
 
   /**
@@ -94,7 +94,7 @@ class R {
    * @return array
    */
   static public function postData($key = null, $default = null) {
-    return a::get(static::sanitize($_POST), $key, $default);
+    return a::get((array)static::sanitize($_POST), $key, $default);
   }
 
   /**
@@ -199,7 +199,7 @@ class R {
   /**
    * Returns the request body from POST requests for example
    *
-   * @return array
+   * @return mixed
    */
   static public function body() {
     if(!is_null(static::$body)) return static::$body;
