@@ -1,7 +1,5 @@
 <?php
 
-if(!defined('SORT_NATURAL')) define('SORT_NATURAL', 'natural');
-
 /**
  * Collection
  *
