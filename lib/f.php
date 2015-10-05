@@ -429,7 +429,7 @@ class F {
    *
    * </code>
    *
-   * @param  string  $file The path or filename
+   * @param  string  $name The path or filename
    * @return string
    */
   static public function name($name) {
