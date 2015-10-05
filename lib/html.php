@@ -102,7 +102,9 @@ class Html {
    */
   static public function encode($string, $keepTags = true) {
     if($keepTags) {
-      return stripslashes(implode('', preg_replace_callback('/^([^<].+[^>])$/', create_function('$match', 'return htmlentities($match[1], ENT_COMPAT, "utf-8");'), preg_split('/(<.+?>)/', $string, -1, PREG_SPLIT_DELIM_CAPTURE))));
+      return stripslashes(implode('', preg_replace_callback('/^([^<].+[^>])$/', function($match) {
+        return htmlentities($match[1], ENT_COMPAT, 'utf-8');
+      }, preg_split('/(<.+?>)/', $string, -1, PREG_SPLIT_DELIM_CAPTURE))));
     } else {
       return htmlentities($string, ENT_COMPAT, 'utf-8');
     }
