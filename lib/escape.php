@@ -126,7 +126,7 @@ class Escape {
    */
   static public function attr($string, $strict = false) {
     if(static::noNeedToEscape($string)) return $string;
-    if($strict) {
+    if($strict !== true) {
       return preg_replace_callback('/[^a-z0-9,\.\-_]/iSu', 'static::escapeAttrChar', $string);
     }
     return static::html($string);
