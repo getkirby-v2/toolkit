@@ -341,9 +341,9 @@ class Query {
 
         } else if(is_callable($args[0])) {
 
-          $query  = clone $this;
-          $result = call_user_func($args[0], $query);
-          $where  = '(' . $query->where . ')';
+          $query = clone $this;
+          call_user_func($args[0], $query);
+          $where = '(' . $query->where . ')';
 
         }
 
