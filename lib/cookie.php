@@ -35,7 +35,7 @@ class Cookie {
    * @param  boolean $httpOnly avoids the cookie to be accessed via javascript
    * @return boolean true: the cookie has been created, false: cookie creation failed
    */
-  static public function set($key, $value, $expires = 0, $path = '/', $domain = null, $secure = false, $httpOnly = false) {
+  static public function set($key, $value, $expires = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true) {
   
     // convert minutes to seconds    
     if($expires > 0) $expires = time() + ($expires * 60);
@@ -119,7 +119,7 @@ class Cookie {
    * Parses the hashed value from a cookie
    * and tries to extract the value 
    * 
-   * @param string $hash
+   * @param string $string
    * @return mixed
    */
   static protected function parse($string) {
