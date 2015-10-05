@@ -197,7 +197,7 @@ class Str {
    *
    * @param  string  $string
    * @param  string  $mode
-   * @return string
+   * @return mixed
    */
   static public function parse($string, $mode = 'json') {
 
@@ -248,7 +248,7 @@ class Str {
    *
    * </code>
    *
-   * @param string $href The url for the a tag
+   * @param string $email The url for the a tag
    * @param mixed $text The optional text. If null, the url will be used as text
    * @param array $attr Additional attributes for the tag
    * @return string the generated html
@@ -323,7 +323,7 @@ class Str {
    * </code>
    *
    * @param  string  $string The string to be shortened
-   * @param  int     $chars The final number of characters the string should have
+   * @param  int     $length The final number of characters the string should have
    * @param  string  $rep The element, which should be added if the string is too long. Ellipsis is the default.
    * @return string  The shortened string
    */
@@ -378,7 +378,7 @@ class Str {
    * @return string
    */
   static public function substr($str, $start, $length = null) {
-    return MB ? mb_substr($str, $start, $length == null ? static::length($str) : $length, 'UTF-8') : substr($str, $start, $length);
+    return MB ? mb_substr($str, $start, $length === null ? static::length($str) : $length, 'UTF-8') : substr($str, $start, $length);
   }
 
   /**
@@ -448,7 +448,7 @@ class Str {
   /**
    * Convert a string to a safe version to be used in a URL
    *
-   * @param  string  $text The unsafe string
+   * @param  string  $string The unsafe string
    * @param  string  $separator To be used instead of space and other non-word characters.
    * @return string  The safe string
    */
@@ -578,7 +578,7 @@ class Str {
    * which replaces tags like {mytag} with any other string
    *
    * @param  string $string
-   * @param  array  $replace An associative array with keys, which should be replaced and values.
+   * @param  array  $data An associative array with keys, which should be replaced and values.
    * @return string
    */
   static public function template($string, $data = array()) {
