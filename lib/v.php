@@ -91,7 +91,7 @@ v::$validators = array(
     return filter_var($value, FILTER_VALIDATE_IP) !== false;
   },
   'match' => function($value, $preg) {
-    return preg_match($preg, $value) == true;
+    return preg_match($preg, $value) > 0;
   },
   'max' => function($value, $max) {
     return size($value) <= $max;
