@@ -381,7 +381,9 @@ class F {
   static public function extension($file, $extension = false) {
 
     // overwrite the current extension
-    if($extension) return static::name($file) . '.' . $extension;
+    if($extension !== false) {
+      return static::name($file) . '.' . $extension;
+    }
 
     // return the current extension
     return strtolower(pathinfo($file, PATHINFO_EXTENSION));
