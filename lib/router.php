@@ -81,8 +81,10 @@ class Router {
   /**
    * Adds a new route
    *
-   * @param object $route
-   * @return object
+   * @param mixed $pattern
+   * @param mixed $params
+   * @param mixed $optional
+   * @return Obj
    */
   public function register($pattern, $params = array(), $optional = array()) {
 
@@ -241,7 +243,7 @@ class Router {
   /**
    * Translate route URI wildcards into regular expressions.
    *
-   * @param  string  $uri
+   * @param  string  $pattern
    * @return string
    */
   protected function wildcards($pattern) {
