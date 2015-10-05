@@ -26,7 +26,7 @@ class SimpleImage {
      */
     public $quality = 80;
 
-    protected $image, $filename, $original_info, $width, $height, $imagestring;
+    protected $image, $filename, $original_info, $width, $height, $imagestring, $exif;
 
     /**
      * Create instance and load an image, or create an image from scratch
@@ -38,17 +38,15 @@ class SimpleImage {
      *                                  Where red, green, blue - integers 0-255, alpha - integer 0-127<br>
      *                                  (is used for creating image from scratch)
      *
-     * @return SimpleImage
      * @throws Exception
      *
      */
     function __construct($filename = null, $width = null, $height = null, $color = null) {
-        if ($filename) {
+        if ($filename !== null) {
             $this->load($filename);
-        } elseif ($width) {
+        } elseif ($width !== null) {
             $this->create($width, $height, $color);
         }
-        return $this;
     }
 
     /**
@@ -267,7 +265,7 @@ class SimpleImage {
             'mime' => 'image/png'
         );
 
-        if ($color) {
+        if ($color !== null) {
             $this->fill($color);
         }
 
@@ -545,7 +543,7 @@ class SimpleImage {
     /**
      * Load a base64 string as image
      *
-     * @param string        $filename   base64 string
+     * @param string        $base64string   base64 string
      *
      * @return SimpleImage
      *
@@ -885,7 +883,7 @@ class SimpleImage {
         // Determine quality, filename, and format
         $quality = $quality ?: $this->quality;
         $filename = $filename ?: $this->filename;
-        if( !$format ) {
+        if( $format === null ) {
             $format = $this->file_ext($filename) ?: $this->original_info['format'];
         }
 
@@ -976,7 +974,7 @@ class SimpleImage {
 
         // Determine textbox size
         $box = imagettfbbox($font_size, $angle, $font_file, $text);
-        if (!$box) {
+        if (empty($box)) {
             throw new Exception('Unable to load font: '.$font_file);
         }
         $box_width = abs($box[6] - $box[2]);
@@ -1087,8 +1085,6 @@ class SimpleImage {
 
     /**
      * Get meta data of image or base64 string
-     *
-     * @param string|null       $imagestring    If omitted treat as a normal image
      *
      * @return SimpleImage
      * @throws Exception
