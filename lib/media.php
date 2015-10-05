@@ -29,11 +29,8 @@ class Media {
   // the content of the file
   protected $content = null;
 
-  // cache for the exif object
-  protected $exif = null;
-
-  // cache for the dimensions object
-  protected $dimensions = null;
+  // cache for various data
+  protected $cache = array();
 
   /**
    * Constructor
@@ -46,6 +43,13 @@ class Media {
     $this->filename  = basename($root);
     $this->name      = pathinfo($root, PATHINFO_FILENAME);
     $this->extension = strtolower(pathinfo($root, PATHINFO_EXTENSION));
+  }
+
+  /**
+   * Resets the internal cache
+   */
+  public function reset() {
+    $this->cache = array();
   }
 
   /**
@@ -281,7 +285,6 @@ class Media {
   /**
    * Returns the mime type of a file
    *
-   * @param string $file
    * @return string
    */
   public function mime() {
@@ -382,8 +385,6 @@ class Media {
 
   /**
    * Read and send the file with the correct headers
-   *
-   * @param string $file
    */
   public function show() {
     f::show($this->root);
@@ -405,8 +406,8 @@ class Media {
    * @return Exif
    */
   public function exif() {
-    if(!is_null($this->exif)) return $this->exif;
-    return $this->exif = new Exif($this);
+    if(isset($this->cache['exif'])) return $this->cache['exif'];
+    return $this->cache['exif'] = new Exif($this);
   }
 
   /**
