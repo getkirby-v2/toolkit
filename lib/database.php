@@ -28,6 +28,9 @@ class Database {
   // the database type (mysql, sqlite)
   protected $type;
 
+  // the connection id
+  protected $id;
+
   // the optional prefix for table names
   protected $prefix;
 
