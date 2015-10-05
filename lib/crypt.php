@@ -1,8 +1,5 @@
 <?php
 
-// check for mcrypt support
-if(!function_exists('mcrypt_get_iv_size')) throw new Exception('The mcrypt extension is missing');
-
 /**
  * Crypt
  * 
@@ -15,65 +12,75 @@ if(!function_exists('mcrypt_get_iv_size')) throw new Exception('The mcrypt exten
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
 class Crypt {
-		
-	// encryption salt - should be changed
-	static public $salt = '-';
+    
+  // encryption salt - should be changed
+  static public $salt = '-';
 
-	// all available encryption modes
-	static public $encryption = array(
-		'rijndael-128',
-		'rijndael-256',
-		'blowfish',
-		'twofish',
-		'des'
-	);
+  // all available encryption modes
+  static public $encryption = array(
+    'rijndael-128',
+    'rijndael-256',
+    'blowfish',
+    'twofish',
+    'des'
+  );
 
-	/**
-	 * Encodes a string
-	 * 
-	 * @param string $text
-	 * @param string $key An optional encryption key
-	 * @param string $mode Check out the $encryption array for available modes
-	 * @return string
-	 */
-	static public function encode($text, $key = null, $mode = 'blowfish') {
+  /**
+   * Encodes a string
+   * 
+   * @param string $text
+   * @param string $key An optional encryption key
+   * @param string $mode Check out the $encryption array for available modes
+   * @return string
+   */
+  static public function encode($text, $key = null, $mode = 'blowfish') {
 
-		// all modes are lowercase so we try to avoid errors here
-		$mode = strtolower($mode);
+    // check for mcrypt support
+    if(!function_exists('mcrypt_get_iv_size')) {
+      throw new Exception('The mcrypt extension is missing');
+    }
 
-		// check for a valid encryption mode
-		if(!in_array($mode, static::$encryption)) throw new Exception('Invalid encryption mode: ' . $mode);
+    // all modes are lowercase so we try to avoid errors here
+    $mode = strtolower($mode);
 
-		$size   = mcrypt_get_iv_size($mode, MCRYPT_MODE_ECB);
-		$iv     = mcrypt_create_iv($size, MCRYPT_RAND);
-		$result = mcrypt_encrypt($mode, static::$salt . $key, $text, MCRYPT_MODE_ECB, $iv);
-		
-		return trim($result);
+    // check for a valid encryption mode
+    if(!in_array($mode, static::$encryption)) throw new Exception('Invalid encryption mode: ' . $mode);
 
-	}
+    $size   = mcrypt_get_iv_size($mode, MCRYPT_MODE_ECB);
+    $iv     = mcrypt_create_iv($size, MCRYPT_RAND);
+    $result = mcrypt_encrypt($mode, static::$salt . $key, $text, MCRYPT_MODE_ECB, $iv);
+    
+    return trim($result);
 
-	/**
-	 * Decodes a string
-	 * 
-	 * @param string $text
-	 * @param string $key An optional encryption key
-	 * @param string $mode Check out the $encryption array for available modes
-	 * @return string
-	 */
-	static public function decode($text, $key = null, $mode = 'blowfish') {
+  }
 
-		// all modes are lowercase so we try to avoid errors here
-		$mode = strtolower($mode);
+  /**
+   * Decodes a string
+   * 
+   * @param string $text
+   * @param string $key An optional encryption key
+   * @param string $mode Check out the $encryption array for available modes
+   * @return string
+   */
+  static public function decode($text, $key = null, $mode = 'blowfish') {
 
-		// check for a valid encryption mode
-		if(!in_array($mode, static::$encryption)) throw new Exception('Invalid encryption mode: ' . $mode);
+    // check for mcrypt support
+    if(!function_exists('mcrypt_get_iv_size')) {
+      throw new Exception('The mcrypt extension is missing');
+    }
 
-		$size   = mcrypt_get_iv_size($mode, MCRYPT_MODE_ECB);
-		$iv     = mcrypt_create_iv($size, MCRYPT_RAND);
-		$result = mcrypt_decrypt($mode, static::$salt . $key, $text, MCRYPT_MODE_ECB, $iv);
-		
-		return trim($result);
+    // all modes are lowercase so we try to avoid errors here
+    $mode = strtolower($mode);
 
-	}
+    // check for a valid encryption mode
+    if(!in_array($mode, static::$encryption)) throw new Exception('Invalid encryption mode: ' . $mode);
+
+    $size   = mcrypt_get_iv_size($mode, MCRYPT_MODE_ECB);
+    $iv     = mcrypt_create_iv($size, MCRYPT_RAND);
+    $result = mcrypt_decrypt($mode, static::$salt . $key, $text, MCRYPT_MODE_ECB, $iv);
+    
+    return trim($result);
+
+  }
 
 }
