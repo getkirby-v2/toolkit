@@ -55,29 +55,28 @@ class System {
     }
 
     // if this is actually a file, we don't need to search for it any longer
-    if(file_exists($command)) return (is_executable($command))? realpath($command) : false;
+    if(file_exists($command)) {
+      return is_executable($command) ? realpath($command) : false;
+    }
 
     // let the shell search for it
     // depends on the operating system
-    $exists = false; // does the command exist?
-    $result = '';    // where is it located?
-    if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
+    if(strtolower(substr(PHP_OS, 0, 3)) === 'win') {
       // Windows
       // run the "where" command
       $result = `where $command`;
-
       // everything besides "Could not find files" would be OK
       $exists = !preg_match('/Could not find files/', $result);
     } else {
       // Unix
       // run the "which" command
       $result = `which $command`;
-
       // an empty output means there is no path
       $exists = !empty($result);
     }
 
-    return ($exists)? trim($result) : false;
+    return $exists ? trim($result) : false;
+
   }
 
   /**
