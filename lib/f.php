@@ -523,7 +523,7 @@ class F {
    * Returns the mime type of a file
    *
    * @param string $file
-   * @return string
+   * @return mixed
    */
   static public function mime($file) {
 
