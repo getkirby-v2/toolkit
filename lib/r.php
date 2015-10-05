@@ -56,7 +56,7 @@ class R {
 
       if(!static::is('GET')) {
         $body = static::body();
-        @parse_str($body, $parsed);
+        parse_str($body, $parsed);
 
         if(!is_array($parsed)) {
           $parsed = json_decode($body, false);
