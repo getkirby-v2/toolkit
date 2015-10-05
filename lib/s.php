@@ -187,7 +187,7 @@ class S {
    */
   static public function regenerateId() {
     static::start();
-    @session_regenerate_id();      
+    session_regenerate_id();      
   }
 
 }
