@@ -391,7 +391,7 @@ class Database {
  */
 database::$connectors['mysql'] = function($params) {
 
-  if(!isset($params['host']) and !isset($params['socket'])) {
+  if(!isset($params['host']) && !isset($params['socket'])) {
     throw new Error('The mysql connection requires either a "host" or a "socket" parameter');
   } 
   

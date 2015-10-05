@@ -185,7 +185,7 @@ class Html {
       return implode(' ', $attributes);
     }
 
-    if(empty($value) and $value !== '0' and $value !== 0) {
+    if(empty($value) && $value !== '0' && $value !== 0) {
       return false;
     } else if(is_bool($value)) {
       return $value === true ? strtolower($name) : '';
@@ -218,7 +218,7 @@ class Html {
    * @return string the generated html
    */
   static public function email($email, $text = null, $attr = array()) {
-    $email = str::encode($email, 3);
+    $email = str::encode($email);
     $attr  = array_merge(array('href' => 'mailto:' . $email), $attr);
     if(empty($text)) $text = $email;
     return static::tag('a', $text, $attr);

@@ -57,7 +57,7 @@ class Detect {
    * @return boolean
    */
   static public function iis() {
-    return isset($_SERVER['SERVER_SOFTWARE']) and strpos($_SERVER['SERVER_SOFTWARE'],'IIS') !== false ? true : false;  
+    return isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'],'IIS') !== false ? true : false;  
   }    
 
   /**
@@ -235,7 +235,7 @@ class Detect {
    */
   static public function ios() {
     $ua = visitor::ua();
-    return (str::contains($ua, 'iPod') or str::contains($ua, 'iPhone') or str::contains($ua, 'iPad'));
+    return (str::contains($ua, 'iPod') || str::contains($ua, 'iPhone') || str::contains($ua, 'iPad'));
   }
   
 }

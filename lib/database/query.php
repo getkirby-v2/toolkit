@@ -540,7 +540,6 @@ class Query {
           'limit'    => $this->limit
         ));
 
-        break;
       case 'update':
 
         return $sql->update(array(
@@ -549,7 +548,6 @@ class Query {
           'values' => $this->values,
         ));
 
-        break;
       case 'insert':
 
         return $sql->insert(array(
@@ -557,7 +555,6 @@ class Query {
           'values' => $this->values,
         ));
 
-        break;
       case 'delete':
 
         return $sql->delete(array(
@@ -565,7 +562,6 @@ class Query {
           'where' => $this->where,
         ));
 
-        break;
     }
 
   }

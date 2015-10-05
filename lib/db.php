@@ -28,7 +28,7 @@ class DB {
    * @return object
    */
   static public function connect($params = null) {
-    if(is_null($params) and !is_null(static::$connection)) return static::$connection;
+    if(is_null($params) && !is_null(static::$connection)) return static::$connection;
     if(is_null($params)) {
 
       // try to connect with the default connection settings

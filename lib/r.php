@@ -298,7 +298,7 @@ class R {
    * @return boolean
    */
   static public function cli() {
-    return defined('STDIN') or (substr(PHP_SAPI, 0, 3) == 'cgi' and $term = getenv('TERM') and $term !== 'unknown');
+    return defined('STDIN') || (substr(PHP_SAPI, 0, 3) == 'cgi' && $term = getenv('TERM') && $term !== 'unknown');
   }
 
   /**
@@ -313,7 +313,7 @@ class R {
    * @return boolean
    */
   static public function ajax() {
-    return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) and strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+    return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
   }
 
   /**

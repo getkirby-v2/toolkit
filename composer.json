@@ -17,10 +17,6 @@
     "forum": "http://forum.getkirby.com",
     "source": "https://github.com/getkirby/toolkit"
   },
-  "replace": {
-    "abeautifulsite/simpleimage": "2.5.3",
-    "mustangostang/spyc": "0.5.1"
-  },
   "autoload": {
     "files": ["bootstrap.php"]
   }

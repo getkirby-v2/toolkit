@@ -71,7 +71,7 @@ class Location {
     $seconds = count($coord) > 2 ? $this->num($coord[2]) : 0;
 
     $hemi = strtoupper($hemi);
-    $flip = ($hemi == 'W' or $hemi == 'S') ? -1 : 1;
+    $flip = ($hemi == 'W' || $hemi == 'S') ? -1 : 1;
 
     return $flip * ($degrees + $minutes / 60 + $seconds / 3600);
 

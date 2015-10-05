@@ -254,7 +254,7 @@ class F {
    * @return boolean
    */
   static public function write($file, $content, $append = false) {
-    if(is_array($content) or is_object($content)) $content = serialize($content);
+    if(is_array($content) || is_object($content)) $content = serialize($content);
     $mode = ($append) ? FILE_APPEND | LOCK_EX : LOCK_EX;
     // if the parent directory does not exist, create it
     if(!is_dir(dirname($file))) {
@@ -331,7 +331,7 @@ class F {
    * @return boolean
    */
   static public function move($old, $new) {
-    if(!file_exists($old) or file_exists($new)) return false;
+    if(!file_exists($old) || file_exists($new)) return false;
     return @rename($old, $new);
   }
 
@@ -343,7 +343,7 @@ class F {
    * @return boolean
    */
   static public function copy($file, $target) {
-    if(!file_exists($file) or file_exists($target)) return false;
+    if(!file_exists($file) || file_exists($target)) return false;
     return @copy($file, $target);
   }
 
@@ -361,7 +361,7 @@ class F {
    * @return boolean
    */
   static public function remove($file) {
-    return file_exists($file) and is_file($file) and !empty($file) ? @unlink($file) : false;
+    return file_exists($file) && is_file($file) && !empty($file) ? @unlink($file) : false;
   }
 
   /**
@@ -489,7 +489,7 @@ class F {
   static public function niceSize($size) {
 
     // file mode
-    if(is_string($size) and file_exists($size)) {
+    if(is_string($size) && file_exists($size)) {
       $size = static::size($size);
     }
 
@@ -539,7 +539,7 @@ class F {
     }
 
     // for older versions with mime_content_type go for that.
-    if(function_exists('mime_content_type') and $mime = @mime_content_type($file) !== false) {
+    if(function_exists('mime_content_type') && $mime = @mime_content_type($file) !== false) {
       return $mime;
     }
 
@@ -571,7 +571,7 @@ class F {
 
     $length = strlen($file);
 
-    if($length >= 2 and $length <= 4) {
+    if($length >= 2 && $length <= 4) {
       // use the file name as extension
       $extension = $file;
     } else {
@@ -634,7 +634,7 @@ class F {
    */
   static public function mimeToExtension($mime) {
     foreach(static::$mimes as $key => $value) {
-      if(is_array($value) and in_array($mime, $value)) return $key;
+      if(is_array($value) && in_array($mime, $value)) return $key;
       if($value == $mime) return $key;
     }
     return null;
@@ -726,7 +726,7 @@ class F {
   static public function show($file) {
 
     // stop the download if the file does not exist or is not readable
-    if(!is_file($file) or !is_readable($file)) return false;
+    if(!is_file($file) || !is_readable($file)) return false;
 
     // send the browser headers
     header::type(f::mime($file));
@@ -746,7 +746,7 @@ class F {
   static public function download($file, $name = null) {
 
     // stop the download if the file does not exist or is not readable
-    if(!is_file($file) or !is_readable($file)) return false;
+    if(!is_file($file) || !is_readable($file)) return false;
 
     header::download(array(
       'name'     => $name ? $name : f::filename($file),

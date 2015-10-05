@@ -23,7 +23,7 @@ class Data {
     if(isset(static::$adapters[$type])) return static::$adapters[$type];
 
     foreach(static::$adapters as $adapter) {
-      if(is_array($adapter['extension']) and in_array($type, $adapter['extension'])) {
+      if(is_array($adapter['extension']) && in_array($type, $adapter['extension'])) {
         return $adapter;
       } else if($adapter['extension'] == $type) {
         return $adapter;
@@ -94,7 +94,7 @@ data::$adapters['kd'] = array(
     $result = array();
     foreach($data AS $key => $value) {
       $key = str::ucfirst(str::slug($key));
-      if(empty($key) or is_null($value)) continue;
+      if(empty($key) || is_null($value)) continue;
       // escape accidental dividers within a field
       $value = preg_replace('!\n----(.*?\R*)!', "\n ----$1", $value);
 
@@ -144,7 +144,7 @@ data::$adapters['php'] = array(
   'encode' => function($array) {
     return '<?php ' . PHP_EOL . PHP_EOL . 'return ' . var_export($array, true) . PHP_EOL . PHP_EOL . '?>';
   },
-  'decode' => function($string) {
+  'decode' => function() {
     throw new Error('Decoding PHP strings is not supported');
   },
   'read' => function($file) {

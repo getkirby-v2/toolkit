@@ -59,7 +59,7 @@ class Upload {
     // which will lead to overwritten duplicates. 
     // this dirty hack will simply add a uniqid between the 
     // name and the extension to avoid duplicates
-    if($source and f::name($source['name']) == 'image' and detect::ios()) {
+    if($source && f::name($source['name']) == 'image' && detect::ios()) {
       $source['name'] = 'image-' . uniqid() . '.' . ltrim(f::extension($source['name']), '.');
     }
 
@@ -100,7 +100,7 @@ class Upload {
 
     $source = $this->source();
 
-    if(is_null($source['name']) or is_null($source['tmp_name'])) {
+    if(is_null($source['name']) || is_null($source['tmp_name'])) {
       throw new Error('The file has not been found', static::ERROR_MISSING_FILE);
     }
 
@@ -108,7 +108,7 @@ class Upload {
       throw new Error('The upload failed', static::ERROR_FAILED_UPLOAD);
     }
 
-    if(file_exists($this->to()) and $this->options['overwrite'] === false) {
+    if(file_exists($this->to()) && $this->options['overwrite'] === false) {
       throw new Error('The file exists and cannot be overwritten', static::ERROR_UNALLOWED_OVERWRITE);
     }
 

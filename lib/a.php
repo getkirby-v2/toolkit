@@ -436,7 +436,7 @@ class A {
    * @param   array    $array The array to analyze
    * @return  boolean  true: The array is associative false: It's not
    */
-  static function isAssociative($array) {
+  static public function isAssociative($array) {
     return !ctype_digit(implode(NULL, array_keys($array)));
   }
 
@@ -447,7 +447,7 @@ class A {
    * @param   int    $decimals The number of decimals to return
    * @return  int    The average value
    */
-  static function average($array, $decimals = 0) {
+  static public function average($array, $decimals = 0) {
     return round(array_sum($array), $decimals) / sizeof($array);
   }
 
@@ -458,10 +458,10 @@ class A {
    * @param array $array2
    * @return array
    */
-  static function merge($array1, $array2) {
+  static public function merge($array1, $array2) {
     $merged = $array1;
     foreach($array2 as $key => $value) {
-      if(is_array($value) and isset($merged[$key]) and is_array($merged[$key])) {
+      if(is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
         $merged[$key] = static::merge($merged[$key], $value);
       } else {
         $merged[$key] = $value;

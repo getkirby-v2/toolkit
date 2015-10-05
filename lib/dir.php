@@ -167,7 +167,7 @@ class Dir {
     foreach($content as $item) {
       $subdir = $dir . DS . $item;
       if(filemtime($subdir) > $time) return true;
-      if(is_dir($subdir) and dir::wasModifiedAfter($subdir, $time)) return true;
+      if(is_dir($subdir) && dir::wasModifiedAfter($subdir, $time)) return true;
     }
 
     return false;
@@ -200,7 +200,7 @@ class Dir {
    * @param string $dir Source path
    * @param string $to Destination path
    */
-  static function copy($dir, $to) {
+  static public function copy($dir, $to) {
     // It's easier to handle this with the Folder class
     $object = new Folder($dir);
     return $object->copy($to);

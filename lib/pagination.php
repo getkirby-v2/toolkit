@@ -175,7 +175,7 @@ class Pagination {
 
       $query = url::query($this->options['url']);
 
-      if($page == 1 and $this->options['omitFirstPage']) {
+      if($page == 1 && $this->options['omitFirstPage']) {
         unset($query[$this->options['variable']]);
       } else {
         $query[$this->options['variable']] = $page;
@@ -187,7 +187,7 @@ class Pagination {
 
       $params = url::params($this->options['url']);
 
-      if($page == 1 and $this->options['omitFirstPage']) {
+      if($page == 1 && $this->options['omitFirstPage']) {
         unset($params[$this->options['variable']]);
       } else {
         $params[$this->options['variable']] = $page;

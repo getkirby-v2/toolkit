@@ -36,9 +36,9 @@ class Response {
     $this->code    = $code;
 
     // convert arrays to json
-    if(is_array($this->content) and $this->format == 'json') {
+    if(is_array($this->content) && $this->format == 'json') {
 
-      if(defined('JSON_PRETTY_PRINT') and get('pretty')) {
+      if(defined('JSON_PRETTY_PRINT') && get('pretty')) {
         $this->content = json_encode($this->content, JSON_PRETTY_PRINT);
       } else {
         $this->content = json_encode($this->content);

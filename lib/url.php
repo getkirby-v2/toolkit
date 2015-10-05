@@ -20,9 +20,9 @@ class Url {
   static public function scheme($url = null) {
     if(is_null($url)) {      
       if(
-        (isset($_SERVER['HTTPS']) and !empty($_SERVER['HTTPS']) and strtolower($_SERVER['HTTPS']) != 'off') or
-        server::get('SERVER_PORT')            == '443' or 
-        server::get('HTTP_X_FORWARDED_PORT')  == '443' or 
+        (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) != 'off') ||
+        server::get('SERVER_PORT')            == '443' || 
+        server::get('HTTP_X_FORWARDED_PORT')  == '443' || 
         server::get('HTTP_X_FORWARDED_PROTO') == 'https'
       ) {
         return 'https';
@@ -235,7 +235,7 @@ class Url {
    */
   static public function isAbsolute($url) {
     // don't convert absolute urls
-    return (str::startsWith($url, 'http://') or str::startsWith($url, 'https://') or str::startsWith($url, '//'));
+    return (str::startsWith($url, 'http://') || str::startsWith($url, 'https://') || str::startsWith($url, '//'));
   }
 
   /**

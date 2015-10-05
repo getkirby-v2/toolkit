@@ -130,7 +130,7 @@ class Cookie {
     $value = a::last($parts);
 
     // if the hash or the value is missing at all return null
-    if(empty($hash) or empty($value)) return null;
+    if(empty($hash) || empty($value)) return null;
 
     // compare the extracted hash with the hashed value
     if($hash !== static::hash($value)) return null;

@@ -13,12 +13,12 @@ class Timer {
 
   public static $time = null;
 
-  static function start() {
+  static public function start() {
     $time = explode(' ', microtime());
     static::$time = (double)$time[1] + (double)$time[0];
   }
 
-  static function stop() {
+  static public function stop() {
     $time  = explode(' ', microtime());
     $time  = (double)$time[1] + (double)$time[0];
     $timer = static::$time;

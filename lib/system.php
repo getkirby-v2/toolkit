@@ -19,7 +19,7 @@ class System {
    * @return boolean
    */
   static public function available() {
-    return !ini_get('safe_mode') and function_exists('exec');
+    return (!ini_get('safe_mode') && function_exists('exec'));
   }
 
   /**

@@ -288,7 +288,7 @@ class Sql {
       $output[] = trim(str::template($template[$type], array(
         'column.name'    => $name,
         'column.null'    => r(a::get($column, 'null') === false, 'NOT NULL', 'NULL'),
-        'column.key'     => r($key and $key != 'INDEX', $key, false),
+        'column.key'     => r($key && $key != 'INDEX', $key, false),
         'column.default' => r(!is_null($defaultValue), 'DEFAULT ' . $defaultValue),
       )));
 

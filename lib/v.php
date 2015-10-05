@@ -59,7 +59,7 @@ v::$validators = array(
     return v::match($value, '/^[a-z0-9]+$/i');
   },
   'between' => function($value, $min, $max) {
-    return v::min($value, $min) and v::max($value, $max);
+    return v::min($value, $min) && v::max($value, $max);
   },
   'date' => function($value) {
     $time = strtotime($value);
@@ -79,7 +79,7 @@ v::$validators = array(
     return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
   },
   'filename' => function($value) {
-    return v::match($value, '/^[a-z0-9@._-]+$/i') and v::min($value, 2);
+    return v::match($value, '/^[a-z0-9@._-]+$/i') && v::min($value, 2);
   },
   'in' => function($value, $in) {
     return in_array($value, $in, true);

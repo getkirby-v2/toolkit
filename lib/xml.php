@@ -98,8 +98,8 @@ class Xml {
    * @param  int     $level   The indendation level
    * @return string  The XML string
    */
-  static function create($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '  ', $level = 0) {
-    $result  = ($level == 0 and $head) ? '<?xml version="1.0" encoding="' . $charset . '"?>' . PHP_EOL : '';
+  static public function create($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '  ', $level = 0) {
+    $result  = ($level == 0 && $head) ? '<?xml version="1.0" encoding="' . $charset . '"?>' . PHP_EOL : '';
     $nlevel  = ($level + 1);
     $result .= str_repeat($tab, $level) . '<' . $tag . '>' . PHP_EOL;
     foreach($array as $key => $value) {
@@ -115,7 +115,7 @@ class Xml {
           }
           $mtags = true;
         }
-        if(!$mtags and count($value) > 0) {
+        if(!$mtags && count($value) > 0) {
           $result .= static::create($value, $key, $head, $charset, $tab, $nlevel);
         }
       } elseif(trim($value) != '') {

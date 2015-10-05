@@ -21,7 +21,7 @@ class Folder {
    * Constructor
    */
   public function __construct($root) {
-    if(file_exists($root) and is_file($root)) throw new Exception('Invalid folder: ' . $root);
+    if(file_exists($root) && is_file($root)) throw new Exception('Invalid folder: ' . $root);
     $this->root = $root;
   }
 

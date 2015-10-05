@@ -516,7 +516,7 @@ class Media {
     $img = new Brick('img');
     $img->attr('src', $this->url());
 
-    if(is_string($attr) or (is_object($attr) and method_exists($attr, '__toString'))) {
+    if(is_string($attr) || (is_object($attr) && method_exists($attr, '__toString'))) {
       $img->attr('alt', (string)$attr);
     } else if(is_array($attr)) {
       $img->attr($attr);      

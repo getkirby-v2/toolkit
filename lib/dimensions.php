@@ -91,7 +91,7 @@ class Dimensions {
    */
   public function fit($box, $force = false) {
 
-    if($this->width == 0 or $this->height == 0) {
+    if($this->width == 0 || $this->height == 0) {
       $this->width  = $box;
       $this->height = $box;
       return $this;
@@ -100,10 +100,10 @@ class Dimensions {
     $ratio = $this->ratio();
 
     if($this->width > $this->height) {
-      if($this->width > $box || $force == true) $this->width = $box;
+      if($this->width > $box || $force === true) $this->width = $box;
       $this->height = round($this->width / $ratio);
     } elseif($this->height > $this->width) {
-      if($this->height > $box || $force == true) $this->height = $box;
+      if($this->height > $box || $force === true) $this->height = $box;
       $this->width = round($this->height * $ratio);
     } elseif($this->width > $box) {
       $this->width  = $box;
@@ -139,7 +139,7 @@ class Dimensions {
 
     if(!$fit) return $this;
 
-    if($this->width <= $fit and !$force) return $this;
+    if($this->width <= $fit && !$force) return $this;
 
     $ratio = $this->ratio();
 
@@ -175,7 +175,7 @@ class Dimensions {
 
     if(!$fit) return $this;
 
-    if($this->height <= $fit and !$force) return $this;
+    if($this->height <= $fit && !$force) return $this;
 
     $ratio = $this->ratio();
 

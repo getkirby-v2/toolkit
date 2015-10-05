@@ -60,7 +60,7 @@ class Thumb extends Obj {
     if(!$this->isThere()) {
 
       // check for a valid image
-      if(!$this->source->exists() or $this->source->type() != 'image') {
+      if(!$this->source->exists() || $this->source->type() != 'image') {
         throw new Error('The given image is invalid', static::ERROR_INVALID_IMAGE);
       }
 
@@ -184,7 +184,7 @@ class Thumb extends Obj {
 
     // if the thumb already exists and the source hasn't been updated
     // we don't need to generate a new thumbnail
-    if(file_exists($this->destination->root) and f::modified($this->destination->root) >= $this->source->modified()) return true;
+    if(file_exists($this->destination->root) && f::modified($this->destination->root) >= $this->source->modified()) return true;
 
     return false;
 
@@ -201,10 +201,10 @@ class Thumb extends Obj {
     if($this->options['overwrite'] === true) return false;
 
     // try to use the original if resizing is not necessary
-    if($this->options['width']   >= $this->source->width()  and
-       $this->options['height']  >= $this->source->height() and
-       $this->options['crop']    == false                   and
-       $this->options['blur']    == false                   and
+    if($this->options['width']   >= $this->source->width()  &&
+       $this->options['height']  >= $this->source->height() &&
+       $this->options['crop']    == false                   &&
+       $this->options['blur']    == false                   &&
        $this->options['upscale'] == false) return true;
 
     return false;

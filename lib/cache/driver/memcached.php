@@ -23,7 +23,6 @@ class Memcached extends Driver {
    * see defaults for available parameters
    *
    * @param array $params
-   * @return void
    */
   public function __construct($params = array()) {
 

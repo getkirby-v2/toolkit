@@ -24,7 +24,7 @@ class Collection extends I {
    * @return Collection
    */
   public function slice($offset = null, $limit = null) {
-    if($offset === null and $limit === null) return $this;
+    if($offset === null && $limit === null) return $this;
     $collection = clone $this;
     $collection->data = array_slice($collection->data, $offset, $limit);
     return $collection;
@@ -248,7 +248,7 @@ class Collection extends I {
     $split      = @$args[2];
     $collection = clone $this;
 
-    if(is_string($value) and array_key_exists($value, static::$filters)) {
+    if(is_string($value) && array_key_exists($value, static::$filters)) {
       $operator = $value;
       $value    = @$args[2];
       $split    = @$args[3];
@@ -282,7 +282,7 @@ class Collection extends I {
    * @return mixed
    */
   static public function extractValue($item, $field) {
-    if(is_array($item) and isset($item[$field])) {
+    if(is_array($item) && isset($item[$field])) {
       return $item[$field];
     } else if(is_object($item)) {
       return $item->$field();
@@ -424,7 +424,7 @@ class Collection extends I {
       if(!$value) throw new Exception('Invalid grouping value for key: ' . $key);
 
       // make sure we have a proper key for each group
-      if(is_object($value) or is_array($value)) throw new Exception('You cannot group by arrays or objects');
+      if(is_object($value) || is_array($value)) throw new Exception('You cannot group by arrays or objects');
 
       // ignore upper/lowercase for group names
       if($i) $value = str::lower($value);
@@ -555,7 +555,7 @@ collection::$filters['*='] = function($collection, $field, $value, $split = fals
 };
 
 // greater than
-collection::$filters['>'] = function($collection, $field, $value, $split = false) {
+collection::$filters['>'] = function($collection, $field, $value) {
 
   foreach($collection->data as $key => $item) {
     if(collection::extractValue($item, $field) > $value) continue;
@@ -567,7 +567,7 @@ collection::$filters['>'] = function($collection, $field, $value, $split = false
 };
 
 // greater and equals
-collection::$filters['>='] = function($collection, $field, $value, $split = false) {
+collection::$filters['>='] = function($collection, $field, $value) {
 
   foreach($collection->data as $key => $item) {
     if(collection::extractValue($item, $field) >= $value) continue;
@@ -579,7 +579,7 @@ collection::$filters['>='] = function($collection, $field, $value, $split = fals
 };
 
 // less than
-collection::$filters['<'] = function($collection, $field, $value, $split = false) {
+collection::$filters['<'] = function($collection, $field, $value) {
 
   foreach($collection->data as $key => $item) {
     if(collection::extractValue($item, $field) < $value) continue;
@@ -591,7 +591,7 @@ collection::$filters['<'] = function($collection, $field, $value, $split = false
 };
 
 // less and equals
-collection::$filters['<='] = function($collection, $field, $value, $split = false) {
+collection::$filters['<='] = function($collection, $field, $value) {
 
   foreach($collection->data as $key => $item) {
     if(collection::extractValue($item, $field) <= $value) continue;

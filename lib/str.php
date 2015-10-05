@@ -201,24 +201,19 @@ class Str {
    */
   static public function parse($string, $mode = 'json') {
 
-    if(is_array($string) or is_object($string)) return $string;
+    if(is_array($string) || is_object($string)) return $string;
 
     switch($mode) {
       case 'json':
         return (array)@json_decode($string, true);
-        break;
       case 'xml':
         return xml::parse($string);
-        break;
       case 'url':
         return (array)@parse_url($string);
-        break;
       case 'php':
         return @unserialize($string);
-        break;
       default:
         return $string;
-        break;
     }
 
   }
@@ -459,7 +454,7 @@ class Str {
     $string = static::ascii($string);
 
     // replace spaces with simple dashes
-    $string = preg_replace('![^' . $allowed . ']!i','-', $string);
+    $string = preg_replace('![^' . $allowed . ']!i', $separator, $string);
     // remove double dashes
     $string = preg_replace('![-]{2,}!','-', $string);
     // trim trailing and leading dashes
@@ -492,7 +487,7 @@ class Str {
 
     foreach($parts AS $p) {
       $p = trim($p);
-      if(static::length($p) > 0 and static::length($p) >= $length) $out[] = $p;
+      if(static::length($p) > 0 && static::length($p) >= $length) $out[] = $p;
     }
 
     return $out;
@@ -625,7 +620,7 @@ class Str {
    * @return boolean
    */
   static public function startsWith($string, $needle) {
-    return $needle === '' or strpos($string, $needle) === 0;
+    return $needle === '' || strpos($string, $needle) === 0;
   }
 
   /**
@@ -636,7 +631,7 @@ class Str {
    * @return boolean
    */
   static public function endsWith($string, $needle) {
-    return $needle === '' or static::substr($string, -static::length($needle)) === $needle;
+    return $needle === '' || static::substr($string, -static::length($needle)) === $needle;
   }
 
   /**
