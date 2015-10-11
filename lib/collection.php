@@ -423,7 +423,15 @@ class Collection extends I {
       if(!$value) throw new Exception('Invalid grouping value for key: ' . $key);
 
       // make sure we have a proper key for each group
-      if(is_object($value) || is_array($value)) throw new Exception('You cannot group by arrays or objects');
+      if(is_array($value)) {
+        throw new Exception('You cannot group by arrays or objects');
+      } else if(is_object($value)) {
+        if(!method_exists($value, '__toString')) {
+          throw new Exception('You cannot group by arrays or objects');
+        } else {
+          $value = (string)$value;
+        }
+      } 
 
       // ignore upper/lowercase for group names
       if($i) $value = str::lower($value);
