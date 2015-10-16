@@ -97,7 +97,7 @@ class Url {
     foreach(explode('/', $path) as $part) {
       $pos = strpos($part, ':');
       if($pos === false) continue;
-      $params[substr($part, 0, $pos)] = substr($part, $pos+1);
+      $params[substr($part, 0, $pos)] = urldecode(substr($part, $pos+1));
     }
     return $params;
   }
