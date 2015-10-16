@@ -28,18 +28,15 @@ class Cookie {
    * 
    * @param  string  $key The name of the cookie
    * @param  string  $value The cookie content
-   * @param  int     $expires The number of minutes until the cookie expires
+   * @param  int     $lifetime The number of minutes until the cookie expires
    * @param  string  $path The path on the server to set the cookie for
    * @param  string  $domain the domain 
    * @param  boolean $secure only sets the cookie over https
    * @param  boolean $httpOnly avoids the cookie to be accessed via javascript
    * @return boolean true: the cookie has been created, false: cookie creation failed
    */
-  public static function set($key, $value, $expires = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true) {
-  
-    // convert minutes to seconds    
-    if($expires > 0) $expires = time() + ($expires * 60);
-    
+  public static function set($key, $value, $lifetime = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true) {
+      
     // convert array values to json 
     if(is_array($value)) $value = a::json($value);
 
@@ -50,8 +47,17 @@ class Cookie {
     $_COOKIE[$key] = $value;
     
     // store the cookie
-    return setcookie($key, $value, $expires, $path, $domain, $secure, $httpOnly);
+    return setcookie($key, $value, static::lifetime($lifetime), $path, $domain, $secure, $httpOnly);
   
+  }
+
+  /**
+   * Calculates the lifetime for a cookie
+   * 
+   * @return int
+   */
+  public static function lifetime($minutes) {
+    return $minutes > 0 ? (time() + ($minutes * 60)) : 0;
   }
 
   /**
@@ -154,8 +160,7 @@ class Cookie {
    */
   public static function remove($key) {
     unset($_COOKIE[$key]);
-    setcookie($key, '', 1);
-    return setcookie($key, false);
+    return setcookie($key, null, -1, '/');
   }
 
 }
