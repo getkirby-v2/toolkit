@@ -105,9 +105,15 @@ class S {
 
   /**
    * Generates a fingerprint from the user agent string
+   * 
+   * @return string
    */
   public static function fingerprint() {
-    return sha1($_SERVER['HTTP_USER_AGENT'] . (ip2long($_SERVER['REMOTE_ADDR']) & ip2long('255.255.0.0')));
+    if(!r::cli()) {
+      return sha1($_SERVER['HTTP_USER_AGENT'] . (ip2long($_SERVER['REMOTE_ADDR']) & ip2long('255.255.0.0')));      
+    } else {
+      return '';
+    }
   }
 
   /**
