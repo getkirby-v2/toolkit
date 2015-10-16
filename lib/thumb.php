@@ -93,14 +93,15 @@ class Thumb extends Obj {
       return call($this->options['destination'], $this);
     } else {
 
-      $destination = new Obj();
+      $destination = new Obj();      
+      $safeName    = f::safeName($this->source->name());
 
       $destination->filename = str::template($this->options['filename'], array(
         'extension'    => $this->source->extension(),
         'name'         => $this->source->name(),
         'filename'     => $this->source->filename(),
-        'safeName'     => f::safeName($this->source->name()),
-        'safeFilename' => f::safeName($this->source->name()) . '.' . $this->extension(),
+        'safeName'     => $safeName,
+        'safeFilename' => $safeName . '.' . $this->extension(),
         'width'        => $this->options['width'],
         'height'       => $this->options['height'],
         'hash'         => md5($this->source->root() . $this->settingsIdentifier()),
