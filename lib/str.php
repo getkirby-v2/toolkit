@@ -456,11 +456,11 @@ class Str {
     // replace spaces with simple dashes
     $string = preg_replace('![^' . $allowed . ']!i', $separator, $string);
     // remove double dashes
-    $string = preg_replace('![-]{2,}!','-', $string);
+    $string = preg_replace('![' . preg_quote($separator) . ']{2,}!', $separator, $string);
     // trim trailing and leading dashes
-    $string = trim($string, '-');
+    $string = trim($string, $separator);
     // replace slashes with dashes
-    $string = str_replace('/', '-', $string);
+    $string = str_replace('/', $separator, $string);
 
     return $string;
 
