@@ -18,6 +18,7 @@ class Pagination {
     'omitFirstPage' => true,
     'page'          => false,
     'url'           => null,
+    'redirect'      => false,
   );
 
   // options
@@ -84,15 +85,36 @@ class Pagination {
     // make sure the page is an int
     $this->page = intval($this->page);
 
+    // set the first page correctly
+    if($this->page == 0) {
+      $this->page = 1;
+    }
+
     // sanitize the page if too low
-    if($this->page < 1) $this->page = 1;
+    if($this->page < 1) {
+      $this->redirect();
+      $this->page = 1;
+    }
 
     // sanitize the page if too high
-    if($this->page > $this->pages && $this->count > 0) $this->page = $this->lastPage();
+    if($this->page > $this->pages && $this->count > 0) {
+      $this->redirect();
+      $this->page = $this->lastPage();
+    }
 
     // return the sanitized page number
     return $this->page;
 
+  }
+
+  /**
+   * Redirects to an error page if the redirect option is set
+   * and the pagination is beyond the allowed boundaries
+   */
+  public function redirect() {
+    if($redirect = $this->options['redirect']) {
+      go($redirect);
+    }
   }
 
   /**
