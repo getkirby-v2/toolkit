@@ -94,7 +94,14 @@ data::$adapters['kd'] = array(
     $result = array();
     foreach($data AS $key => $value) {
       $key = str::ucfirst(str::slug($key));
+
       if(empty($key) || is_null($value)) continue;
+
+      // avoid problems with arrays
+      if(is_array($value)) {
+        $value = '';
+      }
+
       // escape accidental dividers within a field
       $value = preg_replace('!\n----(.*?\R*)!', "\n ----$1", $value);
 
