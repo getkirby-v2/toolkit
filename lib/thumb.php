@@ -104,7 +104,7 @@ class Thumb extends Obj {
         'safeFilename' => $safeName . '.' . $this->extension(),
         'width'        => $this->options['width'],
         'height'       => $this->options['height'],
-        'hash'         => md5($this->source->root() . $this->settingsIdentifier()),
+        'hash'         => md5(str_replace(kirby()->roots()->index(), null, $this->source()->root()) . $this->settingsIdentifier()),
       ));
 
       $destination->url  = $this->options['url'] . '/' . $destination->filename;
