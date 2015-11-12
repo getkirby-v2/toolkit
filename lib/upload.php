@@ -162,9 +162,8 @@ class Upload {
 
   }
 
-  protected function fail($code) {
-
-    $messages = array(
+  protected function messages() {
+    return array(
       static::ERROR_MISSING_FILE        => 'The file is missing',
       static::ERROR_MISSING_TMP_DIR     => 'The /tmp directory is missing on your server',
       static::ERROR_FAILED_UPLOAD       => 'The upload failed',
@@ -174,6 +173,11 @@ class Upload {
       static::ERROR_MOVE_FAILED         => 'The file could not be moved',
       static::ERROR_UNACCEPTED          => 'The file is not accepted by the server'
     );
+  }
+
+  protected function fail($code) {
+
+    $messages = $this->messages();
 
     if(!isset($messages[$code])) {
       $code = static::ERROR_FAILED_UPLOAD;
