@@ -13,12 +13,14 @@
  */
 class Upload {
 
-  const ERROR_MISSING_FILE        = 0;
-  const ERROR_FAILED_UPLOAD       = 1;
-  const ERROR_UNALLOWED_OVERWRITE = 2;
-  const ERROR_FILE_TOO_BIG        = 3;
-  const ERROR_MOVE_FAILED         = 4;
-  const ERROR_UNACCEPTED          = 5;
+  const ERROR_FAILED_UPLOAD       = 0;
+  const ERROR_MISSING_TMP_DIR     = 1;
+  const ERROR_MISSING_FILE        = 2;
+  const ERROR_UNALLOWED_OVERWRITE = 3;
+  const ERROR_PARTIAL_UPLOAD      = 4;
+  const ERROR_MAX_SIZE            = 5;
+  const ERROR_MOVE_FAILED         = 6;
+  const ERROR_UNACCEPTED          = 7;
 
   public $options = array();
   public $error   = null;
@@ -31,7 +33,7 @@ class Upload {
       'input'     => 'file',
       'to'        => $to,
       'overwrite' => true,
-      'maxSize'   => detect::maxUploadSize(),
+      'maxSize'   => false,
       'accept'    => null,
     );
 
@@ -92,6 +94,19 @@ class Upload {
 
   }
 
+  /**
+   * Returns the maximum accepted file size
+   * 
+   * @return int
+   */
+  public function maxSize() {
+    $sizes = array(detect::maxPostSize(), detect::maxUploadSize());
+    if($this->options['maxSize']) {
+      $sizes[] = $this->options['maxSize'];
+    }
+    return min($sizes);
+  }
+
   public function file() {
     return $this->file;
   }
@@ -101,31 +116,70 @@ class Upload {
     $source = $this->source();
 
     if(is_null($source['name']) || is_null($source['tmp_name'])) {
-      throw new Error('The file has not been found', static::ERROR_MISSING_FILE);
+      $this->fail(static::ERROR_MISSING_FILE);
     }
 
     if($source['error'] !== 0) {
-      throw new Error('The upload failed', static::ERROR_FAILED_UPLOAD);
+
+      switch($source['error']) {
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+          $this->fail(static::ERROR_MAX_SIZE);
+        case UPLOAD_ERR_PARTIAL:
+          $this->fail(static::ERROR_PARTIAL_UPLOAD);
+        case UPLOAD_ERR_NO_FILE:
+          $this->fail(static::ERROR_MISSING_FILE);
+        case UPLOAD_ERR_NO_TMP_DIR:
+          $this->fail(static::ERROR_MISSING_TMP_DIR);
+        case UPLOAD_ERR_CANT_WRITE:
+          $this->fail(static::ERROR_MOVE_FAILED);
+        case UPLOAD_ERR_EXTENSION:
+          $this->fail(static::ERROR_UNACCEPTED);
+        default: 
+          $this->fail(static::ERROR_FAILED_UPLOAD);
+      }
+
     }
 
     if(file_exists($this->to()) && $this->options['overwrite'] === false) {
-      throw new Error('The file exists and cannot be overwritten', static::ERROR_UNALLOWED_OVERWRITE);
+      $this->fail(static::ERROR_UNALLOWED_OVERWRITE);
     }
 
-    if($source['size'] > $this->options['maxSize']) {
-      throw new Error('The file is too big', static::ERROR_FILE_TOO_BIG);
+    if($this->options['maxSize'] && $source['size'] > $this->options['maxSize']) {
+      $this->fail(static::ERROR_MAX_SIZE);
     }
 
     if(is_callable($this->options['accept'])) {
       $accepted = call($this->options['accept'], new Media($source['tmp_name']));
       if($accepted === false) {
-        throw new Error('The file is not accepted by the server', static::ERROR_UNACCEPTED);
+        $this->fail(static::ERROR_UNACCEPTED);
       }
     }
 
     if(!@move_uploaded_file($source['tmp_name'], $this->to())) {
-      throw new Error('The file could not be moved', static::ERROR_MOVE_FAILED);
+      $this->fail(static::ERROR_MOVE_FAILED);
     }
+
+  }
+
+  protected function fail($code) {
+
+    $messages = array(
+      static::ERROR_MISSING_FILE        => 'The file is missing',
+      static::ERROR_MISSING_TMP_DIR     => 'The /tmp directory is missing on your server',
+      static::ERROR_FAILED_UPLOAD       => 'The upload failed',
+      static::ERROR_PARTIAL_UPLOAD      => 'The file has been only been partially uploaded',
+      static::ERROR_UNALLOWED_OVERWRITE => 'The file exists and cannot be overwritten',
+      static::ERROR_MAX_SIZE            => 'The file is too big. The maximum size is ' . f::niceSize($this->maxSize()),
+      static::ERROR_MOVE_FAILED         => 'The file could not be moved',
+      static::ERROR_UNACCEPTED          => 'The file is not accepted by the server'
+    );
+
+    if(!isset($messages[$code])) {
+      $code = static::ERROR_FAILED_UPLOAD;
+    }
+
+    throw new Error($messages[$code], $code);
 
   }
 

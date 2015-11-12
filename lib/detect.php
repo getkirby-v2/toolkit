@@ -206,14 +206,14 @@ class Detect {
   }
 
   /**
-   * Returns the max accepted upload size
-   * defined in the php.ini
-   *
+   * Converts any ini size value to an integer
+   * 
+   * @param string $key
    * @return int
    */
-  public static function maxUploadSize() {
+  public static function iniSize($key) {
 
-    $size = ini_get('post_max_size');
+    $size = ini_get($key);
     $size = trim($size);
     $last = strtolower($size[strlen($size)-1]);
     switch($last) {
@@ -226,6 +226,26 @@ class Detect {
     }
     return $size;    
 
+  }
+
+  /**
+   * Returns the max accepted upload size
+   * defined in the php.ini
+   *
+   * @return int
+   */
+  public static function maxUploadSize() {
+    return static::iniSize('upload_max_filesize');
+  }
+
+  /**
+   * Returns the max accepted post size
+   * defined in the php.ini
+   *
+   * @return int
+   */
+  public static function maxPostSize() {    
+    return static::iniSize('post_max_size');
   }
 
   /**
