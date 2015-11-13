@@ -30,6 +30,18 @@ class Collection extends I {
   }
 
   /**
+   * Returns a new combined collection
+   *
+   * @return Collection
+   */
+
+  public function merge($collection2) {
+    $collection = clone $this;
+    $collection->data = a::merge($collection->data, $collection2->data);
+    return $collection;
+  }
+
+  /**
    * Returns a new collection with a limited number of elements
    *
    * @param int $limit The number of elements to return
@@ -431,7 +443,7 @@ class Collection extends I {
         } else {
           $value = (string)$value;
         }
-      } 
+      }
 
       // ignore upper/lowercase for group names
       if($i) $value = str::lower($value);
@@ -471,7 +483,7 @@ class Collection extends I {
       if(isset($lowerkeys[strtolower($key)])) {
         return $lowerkeys[$key];
       } else {
-        return $default;        
+        return $default;
       }
     }
   }
