@@ -276,6 +276,10 @@ thumb::$drivers['im'] = function($thumb) {
   $command[] = '"' . $thumb->source->root() . '"';
   $command[] = '-strip';
 
+  if($thumb->source->extension() === 'gif') {
+    $command[] = '-coalesce';
+  }
+
   if($thumb->options['grayscale']) {
     $command[] = '-colorspace gray';
   }
