@@ -87,6 +87,16 @@ class Url {
   }
 
   /**
+   * Returns the correct separator for parameters
+   * depending on the operating system
+   * 
+   * @return string
+   */
+  public static function paramSeparator() {
+    return detect::windows() ? ';' : ':';
+  }
+
+  /**
    * Returns the params in the url
    */
   public static function params($url = null) {
@@ -95,7 +105,7 @@ class Url {
     if(empty($path)) return array();
     $params = array();
     foreach(explode('/', $path) as $part) {
-      $pos = strpos($part, ':');
+      $pos = strpos($part, static::paramSeparator());
       if($pos === false) continue;
       $params[substr($part, 0, $pos)] = urldecode(substr($part, $pos+1));
     }
@@ -111,7 +121,7 @@ class Url {
     if(empty($path)) return null;
     $frag = array();
     foreach(explode('/', $path) as $part) {
-      if(strpos($part, ':') === false) $frag[] = $part;
+      if(strpos($part, static::paramSeparator()) === false) $frag[] = $part;
     }
     return $frag;
   }
@@ -173,7 +183,7 @@ class Url {
   public static function paramsToString($params = null) {
     if(is_null($params)) $params = url::params();
     $result = array();
-    foreach($params as $key => $val) $result[] = $key . ':' . $val;
+    foreach($params as $key => $val) $result[] = $key . static::paramSeparator() . $val;
     return implode('/', $result);
   }
 
