@@ -101,17 +101,32 @@ class Xml {
   public static function create($array, $tag = 'root', $head = true, $charset = 'utf-8', $tab = '  ', $level = 0) {
     $result  = ($level == 0 && $head) ? '<?xml version="1.0" encoding="' . $charset . '"?>' . PHP_EOL : '';
     $nlevel  = ($level + 1);
-    $result .= str_repeat($tab, $level) . '<' . $tag . '>' . PHP_EOL;
+    $attr = '@attributes';
+    $attributes = html::attr(a::get($array, $attr));
+    if(count($array) == 1 and $attributes) {
+      // return the self closed node
+      return str_repeat($tab, $level) . '<' . $tag . ($attributes ? ' ' . $attributes : '') . ' />' . PHP_EOL;
+    } else {
+      $result .= str_repeat($tab, $level) . '<' . $tag . ($attributes ? ' ' . $attributes . ' ' : '') . '>' . PHP_EOL;
+    }
     foreach($array as $key => $value) {
       $key = str::lower($key);
+      if($key == $attr) {
+        continue;
+      }
       if(is_array($value)) {
         $mtags = false;
         foreach($value as $key2 => $value2) {
+          if($key2 == $attr) {
+            continue;
+          }
           if(is_array($value2)) {
-            $result .= static::create($value2, $key, $head, $charset, $tab, $nlevel);
+            $result .= static::create($value2, $key2, $head, $charset, $tab, $nlevel);
+          } elseif(!is_numeric($key)) {
+            $result .= static::create($value, $key, $head, $charset, $tab, $nlevel);
           } elseif(trim($value2) != '') {
-            $value2  = (htmlspecialchars($value2) != $value2) ? '<![CDATA[' . $value2 . ']]>' : $value2;
-            $result .= str_repeat($tab, $nlevel) . '<' . $key . '>' . $value2 . '</' . $key . '>' . PHP_EOL;
+            $value2  = (!strstr($value2, '<![CDATA[') and htmlspecialchars($value2) != $value2) ? '<![CDATA[' . $value2 . ']]>' : $value2;
+            $result .= str_repeat($tab, $nlevel) . '<' . $key2 . '>' . $value2 . '</' . $key2 . '>' . PHP_EOL;
           }
           $mtags = true;
         }
@@ -119,8 +134,8 @@ class Xml {
           $result .= static::create($value, $key, $head, $charset, $tab, $nlevel);
         }
       } elseif(trim($value) != '') {
-        $value   = (htmlspecialchars($value) != $value) ? '<![CDATA[' . $value . ']]>' : $value;
-        $result .= str_repeat($tab, $nlevel) . '<' . $key . '>' . $value . '</' . $key . '>' . PHP_EOL;
+        $value   = (!strstr($value, '<![CDATA[') and htmlspecialchars($value) != $value) ? '<![CDATA[' . $value . ']]>' : $value;
+        $result .= str_repeat($tab, $nlevel) . (is_numeric($key) ? '' : '<' . $key . '>') . $value . (is_numeric($key) ? '' : '</' . $key . '>') . PHP_EOL;
       }
     }
     return $result . str_repeat($tab, $level) . '</' . $tag . '>' . PHP_EOL;
