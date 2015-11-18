@@ -214,6 +214,8 @@ class F {
 
   );
 
+  public static $units = array('B','kB','MB','GB','TB','PB', 'EB', 'ZB', 'YB');
+
   /**
    * Checks if a file exists
    *
@@ -499,11 +501,8 @@ class F {
     // avoid errors for invalid sizes
     if($size <= 0) return '0 kB';
 
-    // available units
-    $unit = array('B','kB','MB','GB','TB','PB', 'EB', 'ZB', 'YB');
-
     // the math magic
-    return round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
+    return round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . static::$units[$i];
 
   }
 
