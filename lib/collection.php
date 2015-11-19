@@ -314,7 +314,7 @@ class Collection extends I {
     $array      = $collection->data;
     $params     = array();
 
-    if(empty($array) || empty(array_filter($args)) return $collection;
+    if(empty($array) || empty(array_filter($args))) return $collection;
 
     foreach($args as $i => $param) {
       if(is_string($param)) {
