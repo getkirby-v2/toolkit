@@ -313,8 +313,10 @@ class Collection extends I {
     $collection = clone $this;
     $array      = $collection->data;
     $params     = array();
+    
+    $args = array_filter($args);
 
-    if(empty($array) || empty(array_filter($args))) return $collection;
+    if(empty($array) || empty($args)) return $collection;
 
     foreach($args as $i => $param) {
       if(is_string($param)) {
