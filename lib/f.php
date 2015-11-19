@@ -758,4 +758,23 @@ class F {
 
   }
 
+  /**
+   * Tries to find a file by various extensions
+   * 
+   * @param string $base
+   * @param array $extensions
+   * @return string|false
+   */
+  public static function resolve($base, $extensions) {
+
+    foreach($extensions as $ext) {
+      if(file_exists($base . DS . $ext)) {
+        return $base . DS . $ext;
+      }      
+    }
+
+    return false;
+
+  }
+
 }
