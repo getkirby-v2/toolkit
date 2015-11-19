@@ -766,15 +766,11 @@ class F {
    * @return string|false
    */
   public static function resolve($base, $extensions) {
-
     foreach($extensions as $ext) {
-      if(file_exists($base . DS . $ext)) {
-        return $base . DS . $ext;
-      }      
+      $file = $base . '.' . $ext;
+      if(file_exists($file)) return $file;
     }
-
     return false;
-
   }
 
 }
