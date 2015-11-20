@@ -89,6 +89,7 @@ load(array(
   // vendors
   'spyc'                        => __DIR__ . DS . 'vendors' . DS . 'yaml' . DS . 'yaml.php',
   'abeautifulsite\\simpleimage' => __DIR__ . DS . 'vendors' . DS . 'abeautifulsite' . DS . 'SimpleImage.php',
+  'mimereader'                  => __DIR__ . DS . 'vendors' . DS . 'mimereader' . DS . 'mimereader.php',
 
 ));
 
