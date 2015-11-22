@@ -432,6 +432,17 @@ class Media {
       $size   = (array)getimagesize($this->root);
       $width  = a::get($size, 0, 0);
       $height = a::get($size, 1, 0);
+    } else if($this->extension() == 'svg') {
+      $content = $this->read();
+      $xml     = simplexml_load_string($content);
+      $attr    = $xml->attributes();  
+      $width   = floatval($attr->width); 
+      $height  = floatval($attr->height);
+      if($width == 0 or $height == 0 and !empty($attr->viewBox)) {
+        $box    = str::split($attr->viewBox, ' ');
+        $width  = floatval(a::get($box, 2, 0));
+        $height = floatval(a::get($box, 3, 0));
+      }
     } else {
       $width  = 0;
       $height = 0;
