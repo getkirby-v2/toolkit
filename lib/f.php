@@ -542,12 +542,26 @@ class F {
       return $mime;
     }
 
-    // guess the matching mime type by extension
-    $ext  = pathinfo($file, PATHINFO_EXTENSION);
-    $info = isset(static::$mimes[$ext]) ? static::$mimes[$ext] : null;
+    // shell check
+    try {
+      $mime = system::execute('file', [$file, '-z', '-b', '--mime'], 'output');  
+      $mime = trim(str::split($mime, ';')[0]);
+      if(f::mimeToExtension($mime)) return $mime;
+    } catch(Exception $e) {
+      // no mime type detectable with shell  
+      $mime = null;
+    }
 
-    // if there are more than one applicable mimes for the extension, return the first
-    return is_array($info) ? array_shift($info) : $info;
+    // Mime Sniffing
+    $reader = new MimeReader($file);
+    $mime   = $reader->get_type();
+
+    if(!empty($mime) && f::mimeToExtension($mime)) {
+      return $mime;
+    }
+
+    // guess the matching mime type by extension
+    return f::extensionToMime(f::extension($file));
 
   }
 
@@ -756,6 +770,21 @@ class F {
 
     die(f::read($file));
 
+  }
+
+  /**
+   * Tries to find a file by various extensions
+   * 
+   * @param string $base
+   * @param array $extensions
+   * @return string|false
+   */
+  public static function resolve($base, $extensions) {
+    foreach($extensions as $ext) {
+      $file = $base . '.' . $ext;
+      if(file_exists($file)) return $file;
+    }
+    return false;
   }
 
 }

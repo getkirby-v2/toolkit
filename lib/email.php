@@ -37,9 +37,9 @@ class Email extends Obj {
    * to make sure it can be sent at all
    */
   public function validate() {
-    if(!v::email($this->to))      throw new Error('Invalid recipient', static::ERROR_INVALID_RECIPIENT);
-    if(!v::email($this->from))    throw new Error('Invalid sender', static::ERROR_INVALID_SENDER);
-    if(!v::email($this->replyTo)) throw new Error('Invalid reply address', static::ERROR_INVALID_REPLY_TO);
+    if(!v::email($this->extractAddress($this->to)))      throw new Error('Invalid recipient', static::ERROR_INVALID_RECIPIENT);
+    if(!v::email($this->extractAddress($this->from)))    throw new Error('Invalid sender', static::ERROR_INVALID_SENDER);
+    if(!v::email($this->extractAddress($this->replyTo))) throw new Error('Invalid reply address', static::ERROR_INVALID_REPLY_TO);
     if(!isset($this->subject))    throw new Error('Missing subject', static::ERROR_INVALID_SUBJECT);
     if(!isset($this->body))       throw new Error('Missing body', static::ERROR_INVALID_BODY);
   }
