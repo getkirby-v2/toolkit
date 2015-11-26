@@ -417,19 +417,19 @@ class Collection extends I {
   }
 
   /**
-   * Groups the collection by a given field
+   * Groups the collection by a given callback
    *
-   * @param string $field
+   * @param callable $callback
    * @return object A new collection with an item for each group and a subcollection in each group
    */
-  public function groupBy($field, $i = true) {
+  public function group($callback) {
 
     $groups = array();
 
     foreach($this->data as $key => $item) {
 
       // get the value to group by
-      $value = $this->extractValue($item, $field);
+      $value = call_user_func($callback, $item);
 
       // make sure that there's always a proper value to group by
       if(!$value) throw new Exception('Invalid grouping value for key: ' . $key);
@@ -445,9 +445,6 @@ class Collection extends I {
         }
       }
 
-      // ignore upper/lowercase for group names
-      if($i) $value = str::lower($value);
-
       if(!isset($groups[$value])) {
         // create a new entry for the group if it does not exist yet
         $groups[$value] = new static(array($key => $item));
@@ -459,6 +456,25 @@ class Collection extends I {
     }
 
     return new static($groups);
+
+  }
+
+  /**
+   * Groups the collection by a given field
+   *
+   * @param string $field
+   * @return object A new collection with an item for each group and a subcollection in each group
+   */
+  public function groupBy($field, $i = true) {
+
+    return $this->group(function($item) use ($field, $i) {
+
+      $value = $this->extractValue($item, $field);
+
+      // ignore upper/lowercase for group names
+      return ($i == true) ? str::lower($value) : $value;
+
+    });
 
   }
 
