@@ -424,6 +424,8 @@ class Collection extends I {
    */
   public function group($callback) {
 
+    if (!is_callable($callback)) throw new Exception($callback . ' is not callable. Did you mean to use groupBy()?');
+
     $groups = array();
 
     foreach($this->data as $key => $item) {
@@ -466,6 +468,8 @@ class Collection extends I {
    * @return object A new collection with an item for each group and a subcollection in each group
    */
   public function groupBy($field, $i = true) {
+
+    if (!is_string($field)) throw new Exception('Cannot group by non-string values. Did you mean to call group()?');
 
     return $this->group(function($item) use ($field, $i) {
 
