@@ -626,6 +626,9 @@ class Query {
    */
   public function aggregate($method, $column = '*', $default = 0) {
 
+    // reset the sorting to avoid counting issues
+    $this->order = null;
+
     $fetch  = $this->fetch;
     $row    = $this->select($method . '(' . $column . ') as aggregation')->fetch('Obj')->first();
     $result =  $row ? $row->get('aggregation') : $default;
