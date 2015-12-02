@@ -315,7 +315,7 @@ class Database {
     }
 
     // fetch that stuff
-    $results = $this->statement->$options['method']();
+    $results = $this->statement->{$options['method']}();
 
     if($options['iterator'] == 'array') return $this->lastResult = $results;
     return $this->lastResult = new $options['iterator']($results);
