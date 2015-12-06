@@ -125,8 +125,39 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
     $this->isUntouched();
     
   }
-  
+
   public function testGroup() {
+
+    $collection = new Collection();
+
+    $collection->user1 = array(
+      'username' => 'peter',
+      'group'    => 'admin'
+    );
+
+    $collection->user2 = array(
+      'username' => 'paul',
+      'group'    => 'admin'
+    );
+
+    $collection->user3 = array(
+      'username' => 'mary',
+      'group'    => 'client'
+    );
+
+    $groups = $collection->group(function($item) {
+      return $item['group'];
+    });
+
+    $this->assertEquals(2, $groups->admin()->count());
+    $this->assertEquals(1, $groups->client()->count());
+
+    $firstAdmin = $groups->admin()->first();
+    $this->assertEquals('peter', $firstAdmin['username']);
+
+  }
+  
+  public function testGroupBy() {
 
     $collection = new Collection();
 
