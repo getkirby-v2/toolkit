@@ -457,7 +457,7 @@ class Collection extends I {
 
     }
 
-    return new static($groups);
+    return new Collection($groups);
 
   }
 
