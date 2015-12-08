@@ -538,6 +538,48 @@ class Media {
   }
 
   /**
+   * Scales the image if possible
+   * 
+   * @param int $width
+   * @param mixed $height
+   * @param mixed $quality
+   * @return Media
+   */
+  public function resize($width, $height = null, $quality = null) {
+
+    if($this->type() != 'image') return $this;
+
+    $params = array('width' => $width);
+
+    if($height)  $params['height']  = $height;
+    if($quality) $params['quality'] = $quality;
+
+    return new Thumb($this, $params);
+
+  }
+
+  /**
+   * Scales and crops the image if possible
+   * 
+   * @param int $width
+   * @param mixed $height
+   * @param mixed $quality
+   * @return Media
+   */
+  public function crop($width, $height = null, $quality = null) {
+
+    if($this->type() != 'image') return $this;
+
+    $params = array('width' => $width, 'crop' => true);
+
+    if($height)  $params['height']  = $height;
+    if($quality) $params['quality'] = $quality;
+
+    return new Thumb($this, $params);
+
+  }
+
+  /**
    * Converts the media object to a 
    * plain PHP array
    * 
