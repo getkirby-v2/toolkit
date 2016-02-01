@@ -65,6 +65,8 @@ class Dimensions {
    * @return float
    */
   public function ratio() {
+    if($this->width == 0 || $this->height == 0) return 0;
+    
     return ($this->width / $this->height);
   }
 
