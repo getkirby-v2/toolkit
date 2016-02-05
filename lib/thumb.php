@@ -59,6 +59,9 @@ class Thumb extends Obj {
     // don't create the thumbnail if it exists
     if(!$this->isThere()) {
 
+      // try to create the thumb folder if it is not there yet
+      dir::make(dirname($this->destination->root));
+
       // check for a valid image
       if(!$this->source->exists() || $this->source->type() != 'image') {
         throw new Error('The given image is invalid', static::ERROR_INVALID_IMAGE);
