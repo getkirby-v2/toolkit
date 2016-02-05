@@ -66,7 +66,7 @@ v::$validators = array(
   },
   'date' => function($value) {
     $time = strtotime($value);
-    if(!$time) return false;
+    if(!is_int($time)) return false;
 
     $year  = date('Y', $time);
     $month = date('m', $time);
