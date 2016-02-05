@@ -73,7 +73,7 @@ class SystemTest extends PHPUnit_Framework_TestCase {
   
   public function testRealpath() {
     // basic stuff
-    $this->assertEquals('/bin/bash', System::realpath('bash'));
+    $this->assertEquals('/bin/sh', System::realpath('sh'));
     $this->assertEquals(false, System::realpath('notexistingforsure'));
     
     // executable file
