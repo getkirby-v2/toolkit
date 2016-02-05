@@ -65,7 +65,11 @@ class Dimensions {
    * @return float
    */
   public function ratio() {
-    return ($this->width / $this->height);
+    if($this->width && $this->height) {
+      return ($this->width / $this->height);      
+    } else {
+      return 0;
+    }
   }
 
   /**
@@ -221,6 +225,7 @@ class Dimensions {
    * @return string
    */
   public function orientation() {
+    if(!$this->ratio())    return false;
     if($this->portrait())  return 'portrait';
     if($this->landscape()) return 'landscape';
     if($this->square())    return 'square';
