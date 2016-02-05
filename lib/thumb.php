@@ -276,6 +276,10 @@ thumb::$drivers['im'] = function($thumb) {
   $command[] = '"' . $thumb->source->root() . '"';
   $command[] = '-strip';
 
+  if($thumb->options['interlace']) {
+    $command[] = '-interlace line';
+  }
+
   if($thumb->source->extension() === 'gif') {
     $command[] = '-coalesce';
   }
