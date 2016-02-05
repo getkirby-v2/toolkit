@@ -92,6 +92,16 @@ class Collection extends I {
   }
 
   /**
+   * Checks if an element is in the collection by key. 
+   * 
+   * @param string $key
+   * @return boolean
+   */
+  public function has($key) {
+    return isset($this->data[$key]);
+  }
+
+  /**
    * Returns the last element from the array
    *
    * @return mixed
