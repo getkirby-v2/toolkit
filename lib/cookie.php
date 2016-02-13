@@ -159,8 +159,12 @@ class Cookie {
    * @return mixed   true: the cookie has been removed, false: the cookie could not be removed
    */
   public static function remove($key) {
-    unset($_COOKIE[$key]);
-    return setcookie($key, null, -1, '/');
+    if(static::exists($key)) {
+      unset($_COOKIE[$key]);
+      return setcookie($key, null, -1, '/');
+    } else {
+      return true;
+    }
   }
 
 }
