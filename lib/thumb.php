@@ -33,6 +33,7 @@ class Thumb extends Obj {
     'grayscale'   => false,
     'overwrite'   => false,
     'autoOrient'  => false,
+    'interlace'   => false
   );
 
   public $source      = null;
