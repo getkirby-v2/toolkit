@@ -198,7 +198,7 @@ class F {
       'flv',
       'swf',
       'mp4',
-      'mv4',
+      'm4v',
       'mpg',
       'mpe'
     ),
