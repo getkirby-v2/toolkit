@@ -227,8 +227,15 @@ class Str {
   public static function encode($string) {
     $string  = (string)$string;
     $encoded = '';
-    for($i=0; $i < static::length($string); $i++) {
-      $encoded .= rand(1, 2) == 1 ? '&#' . ord($string[$i]) . ';' : '&#x' . dechex(ord($string[$i])) . ';';
+    for($i = 0; $i < static::length($string); $i++) {
+      $char = static::substr($string, $i, 1);
+      if(MB) {
+        list(, $code) = unpack('N', mb_convert_encoding($char, 'UCS-4BE', 'UTF-8'));        
+      } else {
+        $code = ord($char);
+      }
+      
+      $encoded .= rand(1, 2) == 1 ? '&#' . $code . ';' : '&#x' . dechex($code) . ';';
     }
     return $encoded;
   }
