@@ -117,4 +117,38 @@ class ATest extends PHPUnit_Framework_TestCase {
 
   }
 
+  public function testUpdate() {
+
+    // original data
+    $source = [
+      'a' => 'value a',
+      'b' => 'value b'
+    ];
+
+    // test with simple array
+    $result = a::update($source, [
+      'a' => 'updated value a',
+      'c' => 'new value c'
+    ]);
+
+    $this->assertEquals('updated value a', $result['a']);
+    $this->assertEquals('value b', $result['b']);
+    $this->assertEquals('new value c', $result['c']);
+
+    // test with callbacks
+    $result = a::update($source, [
+      'a' => function($value) {
+        return 'updated ' . $value;
+      },
+      'c' => function($value) {
+        return 'new value c';
+      }
+    ]);
+
+    $this->assertEquals('updated value a', $result['a']);
+    $this->assertEquals('value b', $result['b']);
+    $this->assertEquals('new value c', $result['c']);
+
+  }
+
 }
