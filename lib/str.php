@@ -92,6 +92,18 @@ class Str {
   );
 
   /**
+   * Default options for string methods
+   * 
+   * @var array
+   */
+  public static $defaults = array(
+    'slug' => array(
+      'separator' => '-', 
+      'allowed'   => 'a-z0-9'
+    )
+  );
+
+  /**
    * Converts a string to a html-safe string
    *
    * <code>
@@ -455,7 +467,10 @@ class Str {
    * @param  string  $separator To be used instead of space and other non-word characters.
    * @return string  The safe string
    */
-  public static function slug($string, $separator = '-', $allowed = 'a-z0-9') {
+  public static function slug($string, $separator = null, $allowed = null) {
+
+    $separator = $separator ?: static::$defaults['slug']['separator'];
+    $allowed   = $allowed   ?: static::$defaults['slug']['allowed'];
 
     $string = trim($string);
     $string = static::lower($string);

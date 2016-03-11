@@ -112,7 +112,47 @@ class StrTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testSlug() {
-    // no test yet
+
+    // Double dashes
+    $this->assertEquals('a-b', str::slug('a--b'));
+
+    // Dashes at the end of the line
+    $this->assertEquals('a', str::slug('a-'));
+
+    // Dashes at the beginning of the line
+    $this->assertEquals('a', str::slug('-a'));
+
+    // Underscores converted to dashes
+    $this->assertEquals('a-b', str::slug('a_b'));
+
+    // Unallowed characters
+    $this->assertEquals('a-b', str::slug('a@b'));
+
+    // Spaces characters
+    $this->assertEquals('a-b', str::slug('a b'));
+
+    // Double Spaces characters
+    $this->assertEquals('a-b', str::slug('a  b'));
+
+    // Custom separator
+    $this->assertEquals('a+b', str::slug('a-b', '+'));
+
+    // Allow underscores
+    $this->assertEquals('a_b', str::slug('a_b', '-', 'a-z0-9_'));
+
+    // store default defaults
+    $defaults = str::$defaults['slug'];
+
+    // Custom str defaults
+    str::$defaults['slug']['separator'] = '+';
+    str::$defaults['slug']['allowed']   = 'a-z0-9_';
+
+    $this->assertEquals('a+b', str::slug('a-b'));
+    $this->assertEquals('a_b', str::slug('a_b'));
+
+    // Reset str defaults
+    str::$defaults['slug'] = $defaults;
+
   }
 
   public function testSplit() {
