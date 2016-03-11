@@ -66,6 +66,8 @@ class StrTest extends PHPUnit_Framework_TestCase {
 
   public function testSubstr() {
 
+    $this->assertEquals($this->sample, str::substr($this->sample, 0));
+
     $this->assertEquals('Super', str::substr($this->sample, 0, 5));
 
     $this->assertEquals(' Äwes', str::substr($this->sample, 5, 5));

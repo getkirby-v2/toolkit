@@ -380,7 +380,8 @@ class Str {
    * @return string
    */
   public static function substr($str, $start, $length = null) {
-    return MB ? mb_substr($str, $start, $length === null ? static::length($str) : $length, 'UTF-8') : substr($str, $start, $length);
+    $length = $length === null ? static::length($str) : $length;
+    return MB ? mb_substr($str, $start, $length, 'UTF-8') : substr($str, $start, $length);
   }
 
   /**
