@@ -300,7 +300,20 @@ thumb::$drivers['im'] = function($thumb) {
 
   if($thumb->options['crop']) {
     $command[] = $thumb->options['width'] . 'x' . $thumb->options['height'] . '^';
-    $command[] = '-gravity Center -crop ' . $thumb->options['width'] . 'x' . $thumb->options['height'] . '+0+0';
+
+    $gravity = 'Center';
+    switch (strtolower($thumb->options['crop'])) {
+      case 'top'          : $gravity = 'North';     break;
+      case 'top right'    : $gravity = 'NorthEast'; break;
+      case 'right'        : $gravity = 'East';      break;
+      case 'bottom right' : $gravity = 'SouthEast'; break;
+      case 'bottom'       : $gravity = 'South';     break;
+      case 'bottom left'  : $gravity = 'SouthWest'; break;
+      case 'left'         : $gravity = 'West';      break;
+      case 'top left'     : $gravity = 'NorthWest'; break;
+    }
+
+    $command[] = '-gravity ' . $gravity . ' -crop ' . $thumb->options['width'] . 'x' . $thumb->options['height'] . '+0+0';
   } else {
     $dimensions = clone $thumb->source->dimensions();
     $dimensions->fitWidthAndHeight($thumb->options['width'], $thumb->options['height'], $thumb->options['upscale']);
@@ -330,7 +343,7 @@ thumb::$drivers['gd'] = function($thumb) {
     $img->quality = $thumb->options['quality'];
 
     if($thumb->options['crop']) {
-      @$img->thumbnail($thumb->options['width'], $thumb->options['height']);
+      @$img->thumbnail($thumb->options['width'], $thumb->options['height'], $thumb->options['crop']);
     } else {
       $dimensions = clone $thumb->source->dimensions();
       $dimensions->fitWidthAndHeight($thumb->options['width'], $thumb->options['height'], $thumb->options['upscale']);
