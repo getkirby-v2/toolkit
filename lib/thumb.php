@@ -303,14 +303,14 @@ thumb::$drivers['im'] = function($thumb) {
 
     $gravity = 'Center';
     switch (strtolower($thumb->options['crop'])) {
-      case 'top'          : $gravity = 'North';     break;
-      case 'top right'    : $gravity = 'NorthEast'; break;
-      case 'right'        : $gravity = 'East';      break;
-      case 'bottom right' : $gravity = 'SouthEast'; break;
-      case 'bottom'       : $gravity = 'South';     break;
-      case 'bottom left'  : $gravity = 'SouthWest'; break;
-      case 'left'         : $gravity = 'West';      break;
-      case 'top left'     : $gravity = 'NorthWest'; break;
+      case 'top':          $gravity = 'North';     break;
+      case 'top right':    $gravity = 'NorthEast'; break;
+      case 'right':        $gravity = 'East';      break;
+      case 'bottom right': $gravity = 'SouthEast'; break;
+      case 'bottom':       $gravity = 'South';     break;
+      case 'bottom left':  $gravity = 'SouthWest'; break;
+      case 'left':         $gravity = 'West';      break;
+      case 'top left':     $gravity = 'NorthWest'; break;
     }
 
     $command[] = '-gravity ' . $gravity . ' -crop ' . $thumb->options['width'] . 'x' . $thumb->options['height'] . '+0+0';
