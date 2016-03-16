@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     SimpleImage class
- * @version     2.5.5
+ * @version     2.6.0
  * @author      Cory LaViska for A Beautiful Site, LLC (http://www.abeautifulsite.net/)
  * @author      Nazar Mokrynskyi <nazar@mokrynskyi.com> - merging of forks, namespace support, PhpDoc editing, adaptive_resize() method, other fixes
  * @license     This software is licensed under the MIT license: http://opensource.org/licenses/MIT
@@ -26,7 +26,7 @@ class SimpleImage {
      */
     public $quality = 80;
 
-    protected $image, $filename, $original_info, $width, $height, $imagestring, $exif;
+    protected $image, $filename, $original_info, $width, $height, $imagestring;
 
     /**
      * Create instance and load an image, or create an image from scratch
@@ -38,23 +38,25 @@ class SimpleImage {
      *                                  Where red, green, blue - integers 0-255, alpha - integer 0-127<br>
      *                                  (is used for creating image from scratch)
      *
+     * @return SimpleImage
      * @throws Exception
      *
      */
-    public function __construct($filename = null, $width = null, $height = null, $color = null) {
-        if ($filename !== null) {
+    function __construct($filename = null, $width = null, $height = null, $color = null) {
+        if ($filename) {
             $this->load($filename);
-        } elseif ($width !== null) {
+        } elseif ($width) {
             $this->create($width, $height, $color);
         }
+        return $this;
     }
 
     /**
      * Destroy image resource
      *
      */
-    public function __destruct() {
-        if( get_resource_type($this->image) === 'gd' ) {
+    function __destruct() {
+        if( $this->image !== null && get_resource_type($this->image) === 'gd' ) {
             imagedestroy($this->image);
         }
     }
@@ -72,7 +74,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function adaptive_resize($width, $height = null) {
+    function adaptive_resize($width, $height = null) {
 
         return $this->thumbnail($width, $height);
 
@@ -84,47 +86,44 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function auto_orient() {
-		
-	// stop if there's no exif data
-	if(!isset($this->original_info['exif']['Orientation'])) {
-		return $this;
-	}
-		
-        switch ($this->original_info['exif']['Orientation']) {
-            case 1:
-                // Do nothing
-                break;
-            case 2:
-                // Flip horizontal
-                $this->flip('x');
-                break;
-            case 3:
-                // Rotate 180 counterclockwise
-                $this->rotate(-180);
-                break;
-            case 4:
-                // vertical flip
-                $this->flip('y');
-                break;
-            case 5:
-                // Rotate 90 clockwise and flip vertically
-                $this->flip('y');
-                $this->rotate(90);
-                break;
-            case 6:
-                // Rotate 90 clockwise
-                $this->rotate(90);
-                break;
-            case 7:
-                // Rotate 90 clockwise and flip horizontally
-                $this->flip('x');
-                $this->rotate(90);
-                break;
-            case 8:
-                // Rotate 90 counterclockwise
-                $this->rotate(-90);
-                break;
+    function auto_orient() {
+
+        if(isset($this->original_info['exif']['Orientation'])) {
+            switch ($this->original_info['exif']['Orientation']) {
+                case 1:
+                    // Do nothing
+                    break;
+                case 2:
+                    // Flip horizontal
+                    $this->flip('x');
+                    break;
+                case 3:
+                    // Rotate 180 counterclockwise
+                    $this->rotate(-180);
+                    break;
+                case 4:
+                    // vertical flip
+                    $this->flip('y');
+                    break;
+                case 5:
+                    // Rotate 90 clockwise and flip vertically
+                    $this->flip('y');
+                    $this->rotate(90);
+                    break;
+                case 6:
+                    // Rotate 90 clockwise
+                    $this->rotate(90);
+                    break;
+                case 7:
+                    // Rotate 90 clockwise and flip horizontally
+                    $this->flip('x');
+                    $this->rotate(90);
+                    break;
+                case 8:
+                    // Rotate 90 counterclockwise
+                    $this->rotate(-90);
+                    break;
+            }
         }
 
         return $this;
@@ -142,7 +141,7 @@ class SimpleImage {
      * @return  SimpleImage
      *
      */
-    public function best_fit($max_width, $max_height) {
+    function best_fit($max_width, $max_height) {
 
         // If it already fits, there's nothing to do
         if ($this->width <= $max_width && $this->height <= $max_height) {
@@ -180,7 +179,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function blur($type = 'selective', $passes = 1) {
+    function blur($type = 'selective', $passes = 1) {
         switch (strtolower($type)) {
             case 'gaussian':
                 $type = IMG_FILTER_GAUSSIAN_BLUR;
@@ -203,7 +202,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function brightness($level) {
+    function brightness($level) {
         imagefilter($this->image, IMG_FILTER_BRIGHTNESS, $this->keep_within($level, -255, 255));
         return $this;
     }
@@ -217,7 +216,7 @@ class SimpleImage {
      *
      *
      */
-    public function contrast($level) {
+    function contrast($level) {
         imagefilter($this->image, IMG_FILTER_CONTRAST, $this->keep_within($level, -100, 100));
         return $this;
     }
@@ -232,7 +231,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function colorize($color, $opacity) {
+    function colorize($color, $opacity) {
         $rgba = $this->normalize_color($color);
         $alpha = $this->keep_within(127 - (127 * $opacity), 0, 127);
         imagefilter($this->image, IMG_FILTER_COLORIZE, $this->keep_within($rgba['r'], 0, 255), $this->keep_within($rgba['g'], 0, 255), $this->keep_within($rgba['b'], 0, 255), $alpha);
@@ -250,7 +249,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function create($width, $height = null, $color = null) {
+    function create($width, $height = null, $color = null) {
 
         $height = $height ?: $width;
         $this->width = $width;
@@ -265,7 +264,7 @@ class SimpleImage {
             'mime' => 'image/png'
         );
 
-        if ($color !== null) {
+        if ($color) {
             $this->fill($color);
         }
 
@@ -284,7 +283,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function crop($x1, $y1, $x2, $y2) {
+    function crop($x1, $y1, $x2, $y2) {
 
         // Determine crop size
         if ($x2 < $x1) {
@@ -319,7 +318,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function desaturate($percentage = 100) {
+    function desaturate($percentage = 100) {
 
         // Determine percentage
         $percentage = $this->keep_within($percentage, 0, 100);
@@ -349,7 +348,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function edges() {
+    function edges() {
         imagefilter($this->image, IMG_FILTER_EDGEDETECT);
         return $this;
     }
@@ -360,7 +359,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function emboss() {
+    function emboss() {
         imagefilter($this->image, IMG_FILTER_EMBOSS);
         return $this;
     }
@@ -374,7 +373,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function fill($color = '#000000') {
+    function fill($color = '#000000') {
 
         $rgba = $this->normalize_color($color);
         $fill_color = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
@@ -394,7 +393,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function fit_to_height($height) {
+    function fit_to_height($height) {
 
         $aspect_ratio = $this->height / $this->width;
         $width = $height / $aspect_ratio;
@@ -411,7 +410,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function fit_to_width($width) {
+    function fit_to_width($width) {
 
         $aspect_ratio = $this->height / $this->width;
         $height = $width * $aspect_ratio;
@@ -428,7 +427,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function flip($direction) {
+    function flip($direction) {
 
         $new = imagecreatetruecolor($this->width, $this->height);
         imagealphablending($new, false);
@@ -459,7 +458,7 @@ class SimpleImage {
      * @return int
      *
      */
-    public function get_height() {
+    function get_height() {
         return $this->height;
     }
 
@@ -469,7 +468,7 @@ class SimpleImage {
      * @return string   portrait|landscape|square
      *
      */
-    public function get_orientation() {
+    function get_orientation() {
 
         if (imagesx($this->image) > imagesy($this->image)) {
             return 'landscape';
@@ -496,7 +495,7 @@ class SimpleImage {
      * )</pre>
      *
      */
-    public function get_original_info() {
+    function get_original_info() {
         return $this->original_info;
     }
 
@@ -506,7 +505,7 @@ class SimpleImage {
      * @return int
      *
      */
-    public function get_width() {
+    function get_width() {
         return $this->width;
     }
 
@@ -516,7 +515,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function invert() {
+    function invert() {
         imagefilter($this->image, IMG_FILTER_NEGATE);
         return $this;
     }
@@ -530,7 +529,7 @@ class SimpleImage {
      * @throws Exception
      *
      */
-    public function load($filename) {
+    function load($filename) {
 
         // Require GD library
         if (!extension_loaded('gd')) {
@@ -543,12 +542,12 @@ class SimpleImage {
     /**
      * Load a base64 string as image
      *
-     * @param string        $base64string   base64 string
+     * @param string        $filename   base64 string
      *
      * @return SimpleImage
      *
      */
-    public function load_base64($base64string) {
+    function load_base64($base64string) {
         if (!extension_loaded('gd')) {
             throw new Exception('Required extension GD is not loaded.');
         }
@@ -564,7 +563,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function mean_remove() {
+    function mean_remove() {
         imagefilter($this->image, IMG_FILTER_MEAN_REMOVAL);
         return $this;
     }
@@ -577,7 +576,7 @@ class SimpleImage {
      * @throws Exception
      *
      */
-    public function opacity($opacity) {
+    function opacity($opacity) {
 
         // Determine opacity
         $opacity = $this->keep_within($opacity, 0, 1) * 100;
@@ -608,7 +607,7 @@ class SimpleImage {
      * @throws Exception
      *
      */
-    public function output($format = null, $quality = null) {
+    function output($format = null, $quality = null) {
 
         // Determine quality
         $quality = $quality ?: $this->quality;
@@ -640,6 +639,7 @@ class SimpleImage {
                 imagegif($this->image);
                 break;
             case 'image/jpeg':
+                imageinterlace($this->image, true);
                 imagejpeg($this->image, null, round($quality));
                 break;
             case 'image/png':
@@ -647,6 +647,7 @@ class SimpleImage {
                 break;
             default:
                 throw new Exception('Unsupported image format: '.$this->filename);
+                break;
         }
     }
 
@@ -660,7 +661,7 @@ class SimpleImage {
      * @throws Exception
      *
      */
-    public function output_base64($format = null, $quality = null) {
+    function output_base64($format = null, $quality = null) {
 
         // Determine quality
         $quality = $quality ?: $this->quality;
@@ -699,6 +700,7 @@ class SimpleImage {
                 break;
             default:
                 throw new Exception('Unsupported image format: '.$this->filename);
+                break;
         }
         $image_data = ob_get_contents();
         ob_end_clean();
@@ -722,7 +724,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function overlay($overlay, $position = 'center', $opacity = 1, $x_offset = 0, $y_offset = 0) {
+    function overlay($overlay, $position = 'center', $opacity = 1, $x_offset = 0, $y_offset = 0) {
 
         // Load overlay image
         if( !($overlay instanceof SimpleImage) ) {
@@ -788,7 +790,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function pixelate($block_size = 10) {
+    function pixelate($block_size = 10) {
         imagefilter($this->image, IMG_FILTER_PIXELATE, $block_size, true);
         return $this;
     }
@@ -802,7 +804,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function resize($width, $height) {
+    function resize($width, $height) {
 
         // Generate new GD image
         $new = imagecreatetruecolor($width, $height);
@@ -845,7 +847,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function rotate($angle, $bg_color = '#000000') {
+    function rotate($angle, $bg_color = '#000000') {
 
         // Perform the rotation
         $rgba = $this->normalize_color($bg_color);
@@ -876,12 +878,12 @@ class SimpleImage {
      * @throws Exception
      *
      */
-    public function save($filename = null, $quality = null, $format = null) {
+    function save($filename = null, $quality = null, $format = null) {
 
         // Determine quality, filename, and format
         $quality = $quality ?: $this->quality;
         $filename = $filename ?: $this->filename;
-        if( $format === null ) {
+        if( !$format ) {
             $format = $this->file_ext($filename) ?: $this->original_info['format'];
         }
 
@@ -916,7 +918,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function sepia() {
+    function sepia() {
         imagefilter($this->image, IMG_FILTER_GRAYSCALE);
         imagefilter($this->image, IMG_FILTER_COLORIZE, 100, 50, 0);
         return $this;
@@ -928,7 +930,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function sketch() {
+    function sketch() {
         imagefilter($this->image, IMG_FILTER_MEAN_REMOVAL);
         return $this;
     }
@@ -941,7 +943,7 @@ class SimpleImage {
      * @return SimpleImage
      *
      */
-    public function smooth($level) {
+    function smooth($level) {
         imagefilter($this->image, IMG_FILTER_SMOOTH, $this->keep_within($level, -10, 10));
         return $this;
     }
@@ -952,27 +954,39 @@ class SimpleImage {
      * @param string        $text
      * @param string        $font_file
      * @param float|int     $font_size
-     * @param string        $color
+     * @param string|array  $color
      * @param string        $position
      * @param int           $x_offset
      * @param int           $y_offset
+     * @param string|array  $stroke_color
+     * @param string        $stroke_size
+     * @param string        $alignment
+     * @param int           $letter_spacing
      *
      * @return SimpleImage
      * @throws Exception
      *
      */
-    public function text($text, $font_file, $font_size = 12, $color = '#000000', $position = 'center', $x_offset = 0, $y_offset = 0) {
+    function text($text, $font_file, $font_size = 12, $color = '#000000', $position = 'center', $x_offset = 0, $y_offset = 0, $stroke_color = null, $stroke_size = null, $alignment = null, $letter_spacing = 0) {
 
         // todo - this method could be improved to support the text angle
         $angle = 0;
 
         // Determine text color
-        $rgba = $this->normalize_color($color);
-        $color = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+        if(is_array($color)) {
+            foreach($color as $var) {
+                $rgba = $this->normalize_color($var);
+                $color_arr[] = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+            }
+        } else {
+            $rgba = $this->normalize_color($color);
+            $color_arr[] = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+        }
+
 
         // Determine textbox size
         $box = imagettfbbox($font_size, $angle, $font_file, $text);
-        if (empty($box)) {
+        if (!$box) {
             throw new Exception('Unable to load font: '.$font_file);
         }
         $box_width = abs($box[6] - $box[2]);
@@ -1019,10 +1033,98 @@ class SimpleImage {
                 break;
         }
 
+        if($alignment === "left") {
+            // Left aligned text
+            $x = -($x * 2);
+        } else if($alignment === "right") {
+            // Right aligned text
+            $dimensions = imagettfbbox($font_size, $angle, $font_file, $text);
+            $alignment_offset = abs($dimensions[4] - $dimensions[0]);
+            $x = -(($x * 2) + $alignment_offset);
+        }
+
         // Add the text
         imagesavealpha($this->image, true);
         imagealphablending($this->image, true);
-        imagettftext($this->image, $font_size, $angle, $x, $y, $color, $font_file, $text);
+
+        if(isset($stroke_color) && isset($stroke_size)) {
+
+            // Text with stroke
+            if(is_array($color) || is_array($stroke_color)) {
+                // Multi colored text and/or multi colored stroke
+
+                if(is_array($stroke_color)) {
+                    foreach($stroke_color as $key => $var) {
+                        $rgba = $this->normalize_color($stroke_color[$key]);
+                        $stroke_color[$key] = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+                    }
+                } else {
+                    $rgba = $this->normalize_color($stroke_color);
+                    $stroke_color = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+                }
+
+                $array_of_letters = str_split($text, 1);
+
+                foreach($array_of_letters as $key => $var) {
+
+                    if($key > 0) {
+                        $dimensions = imagettfbbox($font_size, $angle, $font_file, $array_of_letters[$key - 1]);
+                        $x += abs($dimensions[4] - $dimensions[0]) + $letter_spacing;
+                    }
+
+                    // If the next letter is empty, we just move forward to the next letter
+                    if($var !== " ") {
+                        $this->imagettfstroketext($this->image, $font_size, $angle, $x, $y, current($color_arr), current($stroke_color), $stroke_size, $font_file, $var);
+
+                       // #000 is 0, black will reset the array so we write it this way
+                        if(next($color_arr) === false) {
+                            reset($color_arr);
+                        }
+
+                        // #000 is 0, black will reset the array so we write it this way
+                        if(next($stroke_color) === false) {
+                            reset($stroke_color);
+                        }
+                    }
+                }
+
+            } else {
+                $rgba = $this->normalize_color($stroke_color);
+                $stroke_color = imagecolorallocatealpha($this->image, $rgba['r'], $rgba['g'], $rgba['b'], $rgba['a']);
+                $this->imagettfstroketext($this->image, $font_size, $angle, $x, $y, $color_arr[0], $stroke_color, $stroke_size, $font_file, $text);
+            }
+
+        } else {
+
+            // Text without stroke
+
+            if(is_array($color)) {
+                // Multi colored text
+
+                $array_of_letters = str_split($text, 1);
+
+                foreach($array_of_letters as $key => $var) {
+
+                    if($key > 0) {
+                        $dimensions = imagettfbbox($font_size, $angle, $font_file, $array_of_letters[$key - 1]);
+                        $x += abs($dimensions[4] - $dimensions[0]) + $letter_spacing;
+                    }
+
+                    // If the next letter is empty, we just move forward to the next letter
+                    if($var !== " ") {
+                        imagettftext($this->image, $font_size, $angle, $x, $y, current($color_arr), $font_file, $var);
+
+                        // #000 is 0, black will reset the array so we write it this way
+                        if(next($color_arr) === false) {
+                            reset($color_arr);
+                        }
+                    }
+                }
+
+            } else {
+                imagettftext($this->image, $font_size, $angle, $x, $y, $color_arr[0], $font_file, $text);
+            }
+        }
 
         return $this;
 
@@ -1036,11 +1138,12 @@ class SimpleImage {
      *
      * @param int           $width
      * @param int|null      $height If omitted - assumed equal to $width
+     * @param string        $focal 
      *
      * @return SimpleImage
      *
      */
-    public function thumbnail($width, $height = null) {
+    public function thumbnail($width, $height = null, $focal = 'center') {
 
         // Determine height
         $height = $height ?: $width;
@@ -1055,12 +1158,67 @@ class SimpleImage {
         } else {
             $this->fit_to_width($width);
         }
-        $left = floor(($this->width / 2) - ($width / 2));
-        $top = floor(($this->height / 2) - ($height / 2));
+
+        switch(strtolower($focal)) {
+            case 'top':
+                $left = floor(($this->width / 2) - ($width / 2));
+                $right = $width + $left;
+                $top = 0;
+                $bottom = $height;
+                break;
+            case 'bottom':
+                $left = floor(($this->width / 2) - ($width / 2));
+                $right = $width + $left;
+                $top = $this->height - $height;
+                $bottom = $this->height;
+                break;
+            case 'left':
+                $left = 0;
+                $right = $width;
+                $top = floor(($this->height / 2) - ($height / 2));
+                $bottom = $height + $top;
+                break;
+            case 'right':
+                $left = $this->width - $width;
+                $right = $this->width;
+                $top = floor(($this->height / 2) - ($height / 2));
+                $bottom = $height + $top;
+                break;
+            case 'top left':
+                $left = 0;
+                $right = $width;
+                $top = 0;
+                $bottom = $height;
+                break;
+            case 'top right':
+                $left = $this->width - $width;
+                $right = $this->width;
+                $top = 0;
+                $bottom = $height;
+                break;
+            case 'bottom left':
+                $left = 0;
+                $right = $width;
+                $top = $this->height - $height;
+                $bottom = $this->height;
+                break;
+            case 'bottom right':
+                $left = $this->width - $width;
+                $right = $this->width;
+                $top = $this->height - $height;
+                $bottom = $this->height;
+                break;
+            case 'center': 
+            default:
+                $left = floor(($this->width / 2) - ($width / 2));
+                $right = $width + $left;
+                $top = floor(($this->height / 2) - ($height / 2));
+                $bottom = $height + $top;
+                break;
+        }
 
         // Return trimmed image
-        return $this->crop($left, $top, $width + $left, $height + $top);
-
+        return $this->crop($left, $top, $right, $bottom);
     }
 
     /**
@@ -1084,6 +1242,8 @@ class SimpleImage {
     /**
      * Get meta data of image or base64 string
      *
+     * @param string|null       $imagestring    If omitted treat as a normal image
+     *
      * @return SimpleImage
      * @throws Exception
      *
@@ -1105,6 +1265,7 @@ class SimpleImage {
                     break;
                 default:
                     throw new Exception('Invalid image: '.$this->filename);
+                    break;
             }
         } elseif (function_exists('getimagesizefromstring')) {
             $info = getimagesizefromstring($this->imagestring);
@@ -1195,6 +1356,32 @@ class SimpleImage {
         imagealphablending($src_im, true);
         imagecopy($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h);
 
+    }
+
+    /**
+     *  Same as imagettftext(), but allows for a stroke color and size
+     *
+     * @param  object &$image       A GD image object
+     * @param  float $size          The font size
+     * @param  float $angle         The angle in degrees
+     * @param  int $x               X-coordinate of the starting position
+     * @param  int $y               Y-coordinate of the starting position
+     * @param  int &$textcolor      The color index of the text
+     * @param  int &$stroke_color   The color index of the stroke
+     * @param  int $stroke_size     The stroke size in pixels
+     * @param  string $fontfile     The path to the font to use
+     * @param  string $text         The text to output
+     *
+     * @return array                This method has the same return values as imagettftext()
+     *
+     */
+    protected function imagettfstroketext(&$image, $size, $angle, $x, $y, &$textcolor, &$strokecolor, $stroke_size, $fontfile, $text) {
+        for( $c1 = ($x - abs($stroke_size)); $c1 <= ($x + abs($stroke_size)); $c1++ ) {
+            for($c2 = ($y - abs($stroke_size)); $c2 <= ($y + abs($stroke_size)); $c2++) {
+                $bg = imagettftext($image, $size, $angle, $c1, $c2, $strokecolor, $fontfile, $text);
+            }
+        }
+        return imagettftext($image, $size, $angle, $x, $y, $textcolor, $fontfile, $text);
     }
 
     /**
