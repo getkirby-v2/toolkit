@@ -220,6 +220,26 @@ class Dimensions {
   }
 
   /**
+   * Crops the dimensions by width and height
+   * 
+   * @param int $width
+   * @param int $height
+   * @return object
+   */
+  public function crop($width, $height = null) {
+
+    $this->width  = $width;
+    $this->height = $width;
+
+    if($height) {
+      $this->height = $height;
+    }
+
+    return $this;
+
+  }
+
+  /**
    * Returns a string representation of the orientation
    *
    * @return string
