@@ -313,6 +313,7 @@ thumb::$drivers['im'] = function($thumb) {
     $command[] = '-blur 0x' . $thumb->options['blurpx'];
   }
 
+  $command[] = '-limit thread 1';
   $command[] = '"' . $thumb->destination->root . '"';
 
   exec(implode(' ', $command));
