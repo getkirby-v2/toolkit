@@ -187,6 +187,8 @@ class Html {
 
     if(empty($value) && $value !== '0' && $value !== 0) {
       return false;
+    } else if($value === ' ') {
+      return strtolower($name) . '=""';      
     } else if(is_bool($value)) {
       return $value === true ? strtolower($name) : '';
     } else {
