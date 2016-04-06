@@ -93,12 +93,12 @@ class Str {
 
   /**
    * Default options for string methods
-   * 
+   *
    * @var array
    */
   public static $defaults = array(
     'slug' => array(
-      'separator' => '-', 
+      'separator' => '-',
       'allowed'   => 'a-z0-9'
     )
   );
@@ -242,11 +242,11 @@ class Str {
     for($i = 0; $i < static::length($string); $i++) {
       $char = static::substr($string, $i, 1);
       if(MB) {
-        list(, $code) = unpack('N', mb_convert_encoding($char, 'UCS-4BE', 'UTF-8'));        
+        list(, $code) = unpack('N', mb_convert_encoding($char, 'UCS-4BE', 'UTF-8'));
       } else {
         $code = ord($char);
       }
-      
+
       $encoded .= rand(1, 2) == 1 ? '&#' . $code . ';' : '&#x' . dechex($code) . ';';
     }
     return $encoded;
@@ -315,7 +315,7 @@ class Str {
 
   /**
    * Checks if the given string is a URL
-   * 
+   *
    * @param string $string
    * @return boolean
    */
@@ -443,21 +443,40 @@ class Str {
   }
 
   /**
-   * Generates a random string
+   * Generates a random string that may be used for cryptographic purposes
    *
-   * @param  int  $length The length of the random string
+   * @param  int  $length The length of the random string (default is a value between 10 and 20)
+   * @param  int  $type Type of allowed characters (default is 'alphaNum')
    * @return string
    */
   public static function random($length = false, $type = 'alphaNum') {
-    $length = $length ? $length : rand(5,10);
-    $pool   = static::pool($type);
-    shuffle($pool);
-    $size   = count($pool) - 1;
-    $hash   = '';
-    for($x = 0; $x < $length; $x++) {
-      $hash .= $pool[rand(0, $size)];
+    $length = $length ? $length : random_int(10, 20);
+    // regex that matches all characters *not* in the pool of allowed characters
+    $regex = '/[^'.static::pool($type, false).']/';
+    $string = '';
+
+    while (($len = strlen($string)) < $length) {
+      $size = $length - $len;
+      $bytes = random_bytes($length);
+      $string .= substr(preg_replace($regex, '', base64_encode($bytes)), 0, $size);
     }
-    return $hash;
+
+    return $string;
+  }
+
+  /**
+   * Quickly generates a random string
+   *
+   * Should not be considered sufficient for cryptography, etc.
+   *
+   * @param  int  $length The length of the random string (default is a value between 10 and 20)
+   * @param  int  $type Type of allowed characters (default is 'alphaNum')
+   * @return string
+   */
+  public static function quickRandom($length = false, $type = 'alphaNum') {
+    $length = $length ? $length : random_int(10, 20);
+    $pool = static::pool($type, false);
+    return substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
   }
 
   /**

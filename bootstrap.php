@@ -13,7 +13,7 @@ function load($classmap, $base = null) {
     $class = strtolower($class);
     if(!isset($classmap[$class])) return false;
     if($base) {
-      include($base . DS . $classmap[$class]);      
+      include($base . DS . $classmap[$class]);
     } else {
       include($classmap[$class]);
     }
@@ -92,6 +92,9 @@ load(array(
   'mimereader'                  => __DIR__ . DS . 'vendors' . DS . 'mimereader' . DS . 'mimereader.php',
 
 ));
+
+// polyfill for random_bytes() and random_int() used for PHP < 7.0
+require_once(__DIR__ . DS . 'vendors' . DS . 'paragonie' . DS . 'random_compat' . DS . 'lib' . DS . 'random.php');
 
 // load all helpers
 include(__DIR__ . DS . 'helpers.php');
