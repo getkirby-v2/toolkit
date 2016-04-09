@@ -413,7 +413,7 @@ sql::registerMethod('createTable', function($sql, $table, $columns = array()) {
         $template = '{column.name} INT(11) UNSIGNED {column.null} {column.default}';
         break;
       case 'timestamp':
-        $template = '{column.name} INT(11) UNSIGNED {column.null} {column.default}';
+        $template = '{column.name} TIMESTAMP {column.null} {column.default}';
         break;
       default:
         throw new Error('Unsupported column type: ' . $column['type']);
