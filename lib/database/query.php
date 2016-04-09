@@ -197,11 +197,7 @@ class Query {
    * @return object
    */
   public function select($select) {
-    if(is_string($select)) {
-      $this->select = $select;
-    } else {
-      $this->select = implode(', ', $select);
-    }
+    $this->select = $select;
     return $this;
   }
 
@@ -332,7 +328,7 @@ class Query {
         // ->where(array('username' => 'myuser'));
         } else if(is_array($args[0])) {
 
-          $sql = new SQL($this->database);
+          $sql = new SQL($this->database, $this);
 
           // simple array mode (AND operator)
           $where = $sql->values($args[0], ' AND ');
@@ -520,7 +516,7 @@ class Query {
    */
   public function build($type) {
 
-    $sql = new SQL($this->database);
+    $sql = new SQL($this->database, $this);
 
     switch($type) {
       case 'select':

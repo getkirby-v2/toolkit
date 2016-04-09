@@ -117,6 +117,7 @@ class Database {
     // try to connect
     $this->connection = new PDO($this->dsn, $options['user'], $options['password']);
     $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $this->connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
     // store the connection
     static::$connections[$this->id] = $this;
@@ -357,7 +358,9 @@ class Database {
     $queries = str::split($query, ';');
 
     foreach($queries as $query) {
-      if(!$this->execute($query)) return false;
+      $query = trim($query);
+      
+      if(!$this->execute($query, $sql->bindings($query))) return false;
     }
 
     return true;
@@ -371,8 +374,9 @@ class Database {
    * @return boolean
    */
   public function dropTable($table) {
-    $sql = new SQL($this);
-    return $this->execute($sql->dropTable($table));
+    $sql   = new SQL($this);
+    $query = $sql->dropTable($table);
+    return $this->execute($query, $sql->bindings($query));
   }
 
   /**
