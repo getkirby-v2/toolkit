@@ -323,6 +323,7 @@ class Query {
         } else if(is_string($args[0])) {
 
           // simply add the entire string to the where clause
+          // escaping or using bindings has to be done before calling this method
           $where = $args[0];
 
         // ->where(array('username' => 'myuser'));
@@ -373,16 +374,45 @@ class Query {
           // ->where('username', 'in', array('myuser', 'myotheruser'));
           if(is_array($args[2])) {
 
-            // build a list of escaped values
-            $values = array();
-            foreach($args[2] as $value) $values[] = '"' . $this->database->escape($value) . '"';
+            $predicate = trim(strtoupper($args[1]));
+            if(!in_array($predicate, array(
+              'IN', 'NOT IN'
+            ))) throw new Error('Invalid predicate ' . $predicate);
+
+            // build a list of bound values
+            $values   = array();
+            $bindings = array();
+            foreach($args[2] as $value) {
+              $valueBinding = sql::generateBindingName('value');
+              $bindings[$valueBinding] = $value;
+              $values[] = $valueBinding;
+            }
 
             // add that to the where clause in parenthesis
-            $where = $args[0] . ' ' . trim($args[1]) . ' (' . implode(', ', $values) . ')';
+            $where = $args[0] . ' ' . $predicate . ' (' . implode(', ', $values) . ')';
+
+            $this->bindings($bindings);
 
           // ->where('username', 'like', 'myuser');
           } else {
-            $where = $args[0] . ' ' . trim($args[1]) . ' "' . $this->database->escape($args[2]) . '"';
+
+            $predicate = trim(strtoupper($args[1]));
+            if(!in_array($predicate, array(
+              '=', '>=', '>', '<=', '<', '<>', '!=', '<=>',
+              'IS', 'IS NOT',
+              'BETWEEN', 'NOT BETWEEN',
+              'LIKE', 'NOT LIKE',
+              'SOUNDS LIKE',
+              'REGEXP', 'NOT REGEXP'
+            ))) throw new Error('Invalid predicate/operator ' . $predicate);
+              
+            $valueBinding = sql::generateBindingName('value');
+            $bindings[$valueBinding] = $args[2];
+            
+            $where = $args[0] . ' ' . $predicate . ' ' . $valueBinding;
+            
+            $this->bindings($bindings);
+
           }
 
         }
@@ -625,7 +655,7 @@ class Query {
 
     $fetch  = $this->fetch;
     $row    = $this->select($method . '(' . $column . ') as aggregation')->fetch('Obj')->first();
-    $result =  $row ? $row->get('aggregation') : $default;
+    $result = $row ? $row->get('aggregation') : $default;
     $this->fetch($fetch);
     return $result;
   }
