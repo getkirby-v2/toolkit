@@ -12,7 +12,7 @@ use Sql;
  *
  * Database Query
  *
- * The query builder is used by the DB class
+ * The query builder is used by the Database class
  * to build SQL queries in a fluent, jquery-style way
  *
  * @package   Kirby Toolkit
@@ -25,7 +25,7 @@ class Query {
 
   const ERROR_INVALID_QUERY_METHOD = 0;
 
-  protected $db = null;
+  protected $database = null;
 
   // The object which should be fetched for each row
   protected $fetch = 'Obj';
@@ -84,11 +84,12 @@ class Query {
   /**
    * Constructor
    *
+   * @param Database $database Database object
    * @param string $table Optional name of the table, which should be queried
    */
-  public function __construct($db, $table) {
-    $this->db    = $db;
-    $this->table = $table;
+  public function __construct($database, $table) {
+    $this->database = $database;
+    $this->table    = $table;
   }
 
   /**
@@ -334,7 +335,7 @@ class Query {
         // ->where(array('username' => 'myuser'));
         } else if(is_array($args[0])) {
 
-          $sql = new SQL($this->db);
+          $sql = new SQL($this->database);
 
           // simple array mode (AND operator)
           $where = $sql->values($args[0], ' AND ');
@@ -381,14 +382,14 @@ class Query {
 
             // build a list of escaped values
             $values = array();
-            foreach($args[2] as $value) $values[] = '"' . $this->db->escape($value) . '"';
+            foreach($args[2] as $value) $values[] = '"' . $this->database->escape($value) . '"';
 
             // add that to the where clause in parenthesis
             $where = $args[0] . ' ' . trim($args[1]) . ' (' . implode(', ', $values) . ')';
 
           // ->where('username', 'like', 'myuser');
           } else {
-            $where = $args[0] . ' ' . trim($args[1]) . ' "' . $this->db->escape($args[2]) . '"';
+            $where = $args[0] . ' ' . trim($args[1]) . ' "' . $this->database->escape($args[2]) . '"';
           }
 
         }
@@ -522,7 +523,7 @@ class Query {
    */
   public function build($type) {
 
-    $sql = new SQL($this->db);
+    $sql = new SQL($this->database);
 
     switch($type) {
       case 'select':
@@ -651,9 +652,9 @@ class Query {
       'options'  => $params
     );
 
-    if($this->fail) $this->db->fail();
+    if($this->fail) $this->database->fail();
 
-    $result = $this->db->query($query, $this->bindings(), $params);
+    $result = $this->database->query($query, $this->bindings(), $params);
     $this->reset();
     return $result;
 
@@ -674,9 +675,9 @@ class Query {
       'options'  => $params
     );
 
-    if($this->fail) $this->db->fail();
+    if($this->fail) $this->database->fail();
 
-    $result = $this->db->execute($query, $this->bindings(), $params);
+    $result = $this->database->execute($query, $this->bindings(), $params);
     $this->reset();
     return $result;
 
@@ -813,7 +814,7 @@ class Query {
    */
   public function insert($values = null) {
     $query = $this->execute($this->values($values)->build('insert'));
-    return ($query) ? $this->db->lastId() : false;
+    return ($query) ? $this->database->lastId() : false;
   }
 
   /**
