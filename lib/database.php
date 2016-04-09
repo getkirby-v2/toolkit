@@ -165,6 +165,7 @@ class Database {
 
   /**
    * Escapes a value to be used for a safe query
+   * NOTE: Prepared statements using bound parameters are more secure and solid
    *
    * @param string $value
    * @return string
