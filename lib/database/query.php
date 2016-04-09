@@ -78,9 +78,6 @@ class Query {
   // Boolean to enable query debugging
   protected $debug = false;
 
-  // an array with reserved sql values
-  protected static $literals = array('NOW()');
-
   /**
    * Constructor
    *
