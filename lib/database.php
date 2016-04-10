@@ -37,6 +37,10 @@ class Database {
   // the PDO query statement
   protected $statement;
 
+  // whitelists for tables and their columns
+  protected $tableWhitelist;
+  protected $columnWhitelist = array();
+
   // the number of affected rows for the last query
   protected $affected;
 
@@ -93,6 +97,7 @@ class Database {
   public function connect($params = null) {
 
     $defaults = array(
+      'database' => null,
       'type'     => 'mysql',
       'prefix'   => null,
       'user'     => null,
@@ -102,10 +107,11 @@ class Database {
 
     $options = array_merge($defaults, $params);
 
-    // store the type and prefix
-    $this->type   = $options['type'];
-    $this->prefix = $options['prefix'];
-    $this->id     = $options['id'];
+    // store the database information
+    $this->database = $options['database'];
+    $this->type     = $options['type'];
+    $this->prefix   = $options['prefix'];
+    $this->id       = $options['id'];
 
     if(!isset(static::$connectors[$this->type])) {
       throw new Exception('Invalid database connector: ' . $this->type);
@@ -343,6 +349,58 @@ class Database {
    */
   public function table($table) {
     return new Database\Query($this, $this->prefix() . $table);
+  }
+
+  /**
+   * Checks if a table exists in the current database
+   *
+   * @param string $table
+   * @return boolean
+   */
+  public function validateTable($table) {
+    if(!$this->tableWhitelist) {
+      // Get the table whitelist from the database
+      $sql     = new SQL($this);
+      $query   = $sql->tableList($this->database);
+      $results = $this->query($query, $sql->bindings($query));
+      
+      if($results) {
+        $this->tableWhitelist = $results->pluck('name');
+      } else {
+        return false;
+      }
+    }
+    
+    return in_array($table, $this->tableWhitelist);
+  }
+  
+  /**
+   * Checks if a column exists in a specified table
+   *
+   * @param string $table
+   * @param string $column
+   * @return boolean
+   */
+  public function validateColumn($table, $column) {
+    if(!isset($this->columnWhitelist[$table])) {
+      if(!$this->validateTable($table)) {
+        $this->columnWhitelist[$table] = array();
+        return false;
+      }
+      
+      // Get the column whitelist from the database
+      $sql     = new SQL($this);
+      $query   = $sql->columnList($this->database, $table);
+      $results = $this->query($query, $sql->bindings($query));
+      
+      if($results) {
+        $this->columnWhitelist[$table] = $results->pluck('name');
+      } else {
+        return false;
+      }
+    }
+    
+    return in_array($column, $this->columnWhitelist[$table]);
   }
 
   /**

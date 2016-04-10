@@ -86,7 +86,9 @@ class Query {
    */
   public function __construct($database, $table) {
     $this->database = $database;
-    $this->table    = $table;
+    
+    $this->table($table);
+    if(!$this->table) throw new Error('Invalid table ' . $table);
   }
 
   /**
@@ -174,7 +176,7 @@ class Query {
    * @return object
    */
   public function table($table) {
-    if(!is_null($table)) $this->table = $table;
+    if(!is_null($table) && $this->database->validateTable($table)) $this->table = $table;
     return $this;
   }
 
@@ -332,7 +334,7 @@ class Query {
           $sql = new SQL($this->database, $this);
 
           // simple array mode (AND operator)
-          $where = $sql->values($args[0], ' AND ');
+          $where = $sql->values($this->table, $args[0], ' AND ');
 
         } else if(is_callable($args[0])) {
 
@@ -370,6 +372,13 @@ class Query {
 
         // ->where('username', 'like', 'myuser');
         if(is_string($args[0]) && is_string($args[1])) {
+          
+          // validate column
+          $sql = new SQL($this->database, $this);
+          list($table, $column) = $sql->splitIdentifier($this->table, $args[0]);
+          if(!$this->database->validateColumn($table, $column)) {
+            throw new Error('Invalid column ' . $args[0]);
+          }
 
           // ->where('username', 'in', array('myuser', 'myotheruser'));
           if(is_array($args[2])) {
@@ -389,7 +398,7 @@ class Query {
             }
 
             // add that to the where clause in parenthesis
-            $where = $args[0] . ' ' . $predicate . ' (' . implode(', ', $values) . ')';
+            $where = $table . '.' . $column . ' ' . $predicate . ' (' . implode(', ', $values) . ')';
 
             $this->bindings($bindings);
 
@@ -409,7 +418,7 @@ class Query {
             $valueBinding = sql::generateBindingName('value');
             $bindings[$valueBinding] = $args[2];
             
-            $where = $args[0] . ' ' . $predicate . ' ' . $valueBinding;
+            $where = $table . '.' . $column . ' ' . $predicate . ' ' . $valueBinding;
             
             $this->bindings($bindings);
 
@@ -652,6 +661,17 @@ class Query {
 
     // reset the sorting to avoid counting issues
     $this->order = null;
+
+    // validate column
+    if($column !== '*') {
+      $sql = new SQL($this->database, $this);
+      list($table, $columnPart) = $sql->splitIdentifier($this->table, $column);
+      if(!$this->database->validateColumn($table, $columnPart)) {
+        throw new Error('Invalid column ' . $column);
+      }
+      
+      $column = $table . '.' . $columnPart;
+    }
 
     $fetch  = $this->fetch;
     $row    = $this->select($method . '(' . $column . ') as aggregation')->fetch('Obj')->first();

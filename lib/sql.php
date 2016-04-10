@@ -20,8 +20,8 @@ class Sql {
   public static $methods = array();
   
   // the parent database connection and database query
-  protected $database;
-  protected $dbquery;
+  public $database;
+  public $dbquery;
   
   // list of bindings by sql query string that defines them
   protected $bindings = array();
@@ -139,11 +139,25 @@ sql::registerMethod('select', function($sql, $params = array()) {
   // select distinct values
   if($options['distinct']) $query[] = 'DISTINCT';
   
+  // validate table
+  if(!$sql->database->validateTable($options['table'])) throw new Error('Invalid table ' . $options['table']);
+  
   // columns
   if(empty($options['columns'])) {
     $query[] = '*';
   } else if(is_array($options['columns'])) {
-    $query[] = implode(', ', $options['columns']);
+    // validate columns
+    $columns = array();
+    foreach($options['columns'] as $column) {
+      list($table, $columnPart) = $sql->splitIdentifier($options['table'], $column);
+      if(!$sql->database->validateColumn($table, $columnPart)) {
+        throw new Error('Invalid column ' . $column);
+      }
+      
+      $columns[] = $table . '.' . $columnPart;
+    }
+    
+    $query[] = implode(', ', $columns);
   } else {
     $query[] = $options['columns'];
   }
@@ -165,6 +179,9 @@ sql::registerMethod('select', function($sql, $params = array()) {
         'CROSS JOIN',
         'SELF JOIN'
       ))) throw new Error('Invalid join type ' . $joinType);
+      
+      // validate table
+      if(!$sql->database->validateTable($join['table'])) throw new Error('Invalid table ' . $join['table']);
       
       // ON can't be escaped here
       $query[] = $joinType . ' ' . $join['table'] . ' ON ' . $join['on'];
@@ -230,9 +247,12 @@ sql::registerMethod('insert', function($sql, $params = array()) {
   $options  = array_merge($defaults, $params);
   $query    = array();
   $bindings = array();
-
+  
+  // validate table
+  if(!$sql->database->validateTable($options['table'])) throw new Error('Invalid table ' . $options['table']);
+  
   $query[] = 'INSERT INTO ' . $options['table'];
-  $query[] = $sql->values($options['values'], ', ', false);
+  $query[] = $sql->values($options['table'], $options['values'], ', ', false);
 
   $query = implode(' ', $query);
   
@@ -258,9 +278,12 @@ sql::registerMethod('update', function($sql, $params = array()) {
   $options  = array_merge($defaults, $params);
   $query    = array();
   $bindings = array();
-
+  
+  // validate table
+  if(!$sql->database->validateTable($options['table'])) throw new Error('Invalid table ' . $options['table']);
+  
   $query[] = 'UPDATE ' . $options['table'] . ' SET';
-  $query[] = $sql->values($options['values']);
+  $query[] = $sql->values($options['table'], $options['values']);
 
   if(!empty($options['where'])) {
     // WHERE can't be escaped here
@@ -290,7 +313,10 @@ sql::registerMethod('delete', function($sql, $params = array()) {
   $options  = array_merge($defaults, $params);
   $query    = array();
   $bindings = array();
-
+  
+  // validate table
+  if(!$sql->database->validateTable($options['table'])) throw new Error('Invalid table ' . $options['table']);
+  
   $query[] = 'DELETE FROM ' . $options['table'];
 
   if(!empty($options['where'])) {
@@ -308,12 +334,13 @@ sql::registerMethod('delete', function($sql, $params = array()) {
 /**
  * Builds a safe list of values for insert, select or update queries
  *
+ * @param string $table Table name
  * @param mixed $values A value string or array of values
  * @param string $separator A separator which should be used to join values
  * @param boolean $set If true builds a set list of values for update clauses
  * @return string
  */
-sql::registerMethod('values', function($sql, $values, $separator = ', ', $set = true) {
+sql::registerMethod('values', function($sql, $table, $values, $separator = ', ', $set = true) {
 
   if(!is_array($values)) return $values;
   
@@ -323,6 +350,13 @@ sql::registerMethod('values', function($sql, $values, $separator = ', ', $set = 
     $bindings = array();
 
     foreach($values as $key => $value) {
+      // validate column
+      list($table, $column) = $sql->splitIdentifier($table, $key);
+      if(!$sql->database->validateColumn($table, $column)) {
+        throw new Error('Invalid column ' . $key);
+      }
+      $key = $table . '.' . $column;
+      
       if(in_array($value, sql::$literals, true)) {
         $output[] = $key . ' = ' . (($value === null)? 'null' : $value);
         continue;
@@ -346,6 +380,13 @@ sql::registerMethod('values', function($sql, $values, $separator = ', ', $set = 
     $bindings = array();
 
     foreach($values as $key => $value) {
+      // validate column
+      list($table, $column) = $sql->splitIdentifier($table, $key);
+      if(!$sql->database->validateColumn($table, $column)) {
+        throw new Error('Invalid column ' . $key);
+      }
+      $key = $table . '.' . $column;
+      
       $fields[] = $key;
       
       if(in_array($value, sql::$literals, true)) {
@@ -375,7 +416,10 @@ sql::registerMethod('values', function($sql, $values, $separator = ', ', $set = 
  * @return string
  */
 sql::registerMethod('dropTable', function($sql, $table) {
-
+  
+  // validate table
+  if(!$sql->database->validateTable($table)) throw new Error('Invalid table ' . $table);
+  
   return 'DROP TABLE ' . $table;
 
 });
@@ -563,6 +607,129 @@ sql::registerMethod('createTable', function($sql, $table, $columns = array()) {
     $query .= ';' . PHP_EOL . $indexQuery;
   }
   
+  return $query;
+
+}, 'sqlite');
+
+/**
+ * Splits a (qualified) identifier into table and column
+ * 
+ * @param $table string Default table if the identifier is not qualified
+ * @param $identifier string
+ * @return array
+ */
+sql::registerMethod('splitIdentifier', function($sql, $table, $identifier) {
+
+  // split by dot, but only outside of quotes
+  $parts = preg_split('/(?:`[^`]*`|"[^"]*")(*SKIP)(*F)|\./', $identifier);
+  
+  switch(count($parts)) {
+    // non-qualified identifier
+    case 1:
+      return array($table, $sql->unquoteIdentifier($parts[0]));
+    
+    // qualified identifier
+    case 2:
+      return array($sql->unquoteIdentifier($parts[0]), $sql->unquoteIdentifier($parts[1]));
+    
+    // every other number is an error
+    default:
+      throw new Error('Invalid identifier ' . $identifier);
+  }
+
+});
+
+/**
+ * Unquotes an identifier (table *or* column)
+ * 
+ * @param $identifier string
+ * @return string
+ */
+sql::registerMethod('unquoteIdentifier', function($sql, $identifier) {
+
+  // remove quotes around the identifier
+  if(in_array(str::substr($identifier, 0, 1), array('"', '`'))) $identifier = str::substr($identifier, 1);
+  if(in_array(str::substr($identifier, -1),   array('"', '`'))) $identifier = str::substr($identifier, 0, -1);
+  
+  // unescape duplicated quotes
+  return str_replace(array('""', '``'), array('"', '`'), $identifier);
+
+});
+
+/**
+ * Returns a list of tables for a specified database
+ * MySQL version
+ *
+ * @param string $database The database name
+ * @return string
+ */
+sql::registerMethod('tableList', function($sql, $database) {
+
+  $bindings = array();
+  $databaseBinding = sql::generateBindingName('database');
+  $bindings[$databaseBinding] = $database;
+  
+  $query = 'SELECT TABLE_NAME AS name FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ' . $databaseBinding;
+  
+  $sql->bindings($query, $bindings);
+  return $query;
+
+}, 'mysql');
+
+/**
+ * Returns a list of tables of the database
+ * SQLite version
+ *
+ * @param string $database The database name
+ * @return string
+ */
+sql::registerMethod('tableList', function($sql, $database) {
+  
+  return 'SELECT name FROM sqlite_master WHERE type = "table"';
+
+}, 'sqlite');
+
+/**
+ * Returns a list of columns for a specified table
+ * MySQL version
+ *
+ * @param string $database The database name
+ * @param string $table The table name
+ * @return string
+ */
+sql::registerMethod('columnList', function($sql, $database, $table) {
+
+  $bindings = array();
+  $databaseBinding = sql::generateBindingName('database');
+  $bindings[$databaseBinding] = $database;
+  $tableBinding = sql::generateBindingName('table');
+  $bindings[$tableBinding] = $table;
+  
+  $query = 'SELECT COLUMN_NAME AS name FROM INFORMATION_SCHEMA.COLUMNS ';
+  $query .= 'WHERE TABLE_SCHEMA = ' . $databaseBinding . ' AND TABLE_NAME = ' . $tableBinding;
+  
+  $sql->bindings($query, $bindings);
+  return $query;
+
+}, 'mysql');
+
+/**
+ * Returns a list of columns for a specified table
+ * SQLite version
+ *
+ * @param string $database The database name
+ * @param string $table The table name
+ * @return string
+ */
+sql::registerMethod('columnList', function($sql, $database, $table) {
+
+  $bindings = array();
+  $tableBinding = sql::generateBindingName('table');
+  $bindings[$tableBinding] = $table;
+  
+  $query = 'PRAGMA table_info(' . $tableBinding . ')';
+  
+  $sql->bindings($query, $bindings);
   return $query;
 
 }, 'sqlite');
