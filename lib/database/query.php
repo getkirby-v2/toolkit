@@ -379,6 +379,7 @@ class Query {
           if(!$this->database->validateColumn($table, $column)) {
             throw new Error('Invalid column ' . $args[0]);
           }
+          $key = $sql->combineIdentifier($table, $column);
 
           // ->where('username', 'in', array('myuser', 'myotheruser'));
           if(is_array($args[2])) {
@@ -398,7 +399,7 @@ class Query {
             }
 
             // add that to the where clause in parenthesis
-            $where = $table . '.' . $column . ' ' . $predicate . ' (' . implode(', ', $values) . ')';
+            $where = $key . ' ' . $predicate . ' (' . implode(', ', $values) . ')';
 
             $this->bindings($bindings);
 
@@ -418,7 +419,7 @@ class Query {
             $valueBinding = sql::generateBindingName('value');
             $bindings[$valueBinding] = $args[2];
             
-            $where = $table . '.' . $column . ' ' . $predicate . ' ' . $valueBinding;
+            $where = $key . ' ' . $predicate . ' ' . $valueBinding;
             
             $this->bindings($bindings);
 
@@ -670,7 +671,7 @@ class Query {
         throw new Error('Invalid column ' . $column);
       }
       
-      $column = $table . '.' . $columnPart;
+      $column = $sql->combineIdentifier($table, $columnPart);
     }
 
     $fetch  = $this->fetch;
@@ -814,7 +815,10 @@ class Query {
    */
   public function column($column) {
 
-    $results = $this->query($this->select($column)->order($this->primaryKeyName . ' ASC')->build('select'), array(
+    $sql = new SQL($this->database, $this);
+    $primaryKey = $sql->combineIdentifier($this->table, $this->primaryKeyName);
+    
+    $results = $this->query($this->select(array($column))->order($primaryKey . ' ASC')->build('select'), array(
       'iterator' => 'array',
       'fetch'    => 'array',
     ));

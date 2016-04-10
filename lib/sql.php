@@ -154,7 +154,7 @@ sql::registerMethod('select', function($sql, $params = array()) {
         throw new Error('Invalid column ' . $column);
       }
       
-      $columns[] = $table . '.' . $columnPart;
+      $columns[] = $sql->combineIdentifier($table, $columnPart);
     }
     
     $query[] = implode(', ', $columns);
@@ -163,7 +163,7 @@ sql::registerMethod('select', function($sql, $params = array()) {
   }
   
   // table
-  $query[] = 'FROM ' . $options['table'];
+  $query[] = 'FROM ' . $sql->quoteIdentifier($options['table']);
   
   // join
   if(!empty($options['join'])) {
@@ -184,7 +184,7 @@ sql::registerMethod('select', function($sql, $params = array()) {
       if(!$sql->database->validateTable($join['table'])) throw new Error('Invalid table ' . $join['table']);
       
       // ON can't be escaped here
-      $query[] = $joinType . ' ' . $join['table'] . ' ON ' . $join['on'];
+      $query[] = $joinType . ' ' . $sql->quoteIdentifier($join['table']) . ' ON ' . $join['on'];
     }
   }
   
@@ -251,7 +251,7 @@ sql::registerMethod('insert', function($sql, $params = array()) {
   // validate table
   if(!$sql->database->validateTable($options['table'])) throw new Error('Invalid table ' . $options['table']);
   
-  $query[] = 'INSERT INTO ' . $options['table'];
+  $query[] = 'INSERT INTO ' . $sql->quoteIdentifier($options['table']);
   $query[] = $sql->values($options['table'], $options['values'], ', ', false);
 
   $query = implode(' ', $query);
@@ -282,7 +282,7 @@ sql::registerMethod('update', function($sql, $params = array()) {
   // validate table
   if(!$sql->database->validateTable($options['table'])) throw new Error('Invalid table ' . $options['table']);
   
-  $query[] = 'UPDATE ' . $options['table'] . ' SET';
+  $query[] = 'UPDATE ' . $sql->quoteIdentifier($options['table']) . ' SET';
   $query[] = $sql->values($options['table'], $options['values']);
 
   if(!empty($options['where'])) {
@@ -317,7 +317,7 @@ sql::registerMethod('delete', function($sql, $params = array()) {
   // validate table
   if(!$sql->database->validateTable($options['table'])) throw new Error('Invalid table ' . $options['table']);
   
-  $query[] = 'DELETE FROM ' . $options['table'];
+  $query[] = 'DELETE FROM ' . $sql->quoteIdentifier($options['table']);
 
   if(!empty($options['where'])) {
     // WHERE can't be escaped here
@@ -355,7 +355,7 @@ sql::registerMethod('values', function($sql, $table, $values, $separator = ', ',
       if(!$sql->database->validateColumn($table, $column)) {
         throw new Error('Invalid column ' . $key);
       }
-      $key = $table . '.' . $column;
+      $key = $sql->combineIdentifier($table, $column);
       
       if(in_array($value, sql::$literals, true)) {
         $output[] = $key . ' = ' . (($value === null)? 'null' : $value);
@@ -385,7 +385,7 @@ sql::registerMethod('values', function($sql, $table, $values, $separator = ', ',
       if(!$sql->database->validateColumn($table, $column)) {
         throw new Error('Invalid column ' . $key);
       }
-      $key = $table . '.' . $column;
+      $key = $sql->combineIdentifier($table, $column);
       
       $fields[] = $key;
       
@@ -420,7 +420,7 @@ sql::registerMethod('dropTable', function($sql, $table) {
   // validate table
   if(!$sql->database->validateTable($table)) throw new Error('Invalid table ' . $table);
   
-  return 'DROP TABLE ' . $table;
+  return 'DROP TABLE ' . $sql->quoteIdentifier($table);
 
 });
 
@@ -492,7 +492,7 @@ sql::registerMethod('createTable', function($sql, $table, $columns = array()) {
     }
 
     $output[] = trim(str::template($template, array(
-      'column.name'    => $name,
+      'column.name'    => $sql->quoteIdentifier($name),
       'column.null'    => $null,
       'column.default' => r(!is_null($defaultBinding), 'DEFAULT ' . $defaultBinding),
     )));
@@ -504,11 +504,11 @@ sql::registerMethod('createTable', function($sql, $table, $columns = array()) {
 
   // add keys
   foreach($keys as $name => $key) {
-    $inner .= ',' . PHP_EOL . $key . ' (' . $name . ')';
+    $inner .= ',' . PHP_EOL . $key . ' (' . $sql->quoteIdentifier($name) . ')';
   }
 
   // make it a string
-  $query = 'CREATE TABLE ' . $table . ' (' . PHP_EOL . $inner . PHP_EOL . ')';
+  $query = 'CREATE TABLE ' . $sql->quoteIdentifier($table) . ' (' . PHP_EOL . $inner . PHP_EOL . ')';
 
   $sql->bindings($query, $bindings);
   return $query;
@@ -582,7 +582,7 @@ sql::registerMethod('createTable', function($sql, $table, $columns = array()) {
     }
 
     $output[] = trim(str::template($template, array(
-      'column.name'    => $name,
+      'column.name'    => $sql->quoteIdentifier($name),
       'column.null'    => $null,
       'column.key'     => r($key && $key != 'INDEX', $key),
       'column.default' => r(!is_null($defaultBinding), 'DEFAULT ' . $defaultBinding),
@@ -594,7 +594,7 @@ sql::registerMethod('createTable', function($sql, $table, $columns = array()) {
   $inner = implode(',' . PHP_EOL, $output);
 
   // make it a string
-  $query = 'CREATE TABLE "' . $table . '" (' . PHP_EOL . $inner . PHP_EOL . ')';
+  $query = 'CREATE TABLE ' . $sql->quoteIdentifier($table) . ' (' . PHP_EOL . $inner . PHP_EOL . ')';
 
   // set bindings for our first query
   $sql->bindings($query, $bindings);
@@ -603,7 +603,7 @@ sql::registerMethod('createTable', function($sql, $table, $columns = array()) {
   foreach($keys as $name => $key) {
     if($key != 'INDEX') continue;
   
-    $indexQuery = 'CREATE INDEX ' . $name . ' ON "' . $table . '" (' . $name . ')';
+    $indexQuery = 'CREATE INDEX ' . $sql->quoteIdentifier($name) . ' ON ' . $sql->quoteIdentifier($table) . ' (' . $sql->quoteIdentifier($name) . ')';
     $query .= ';' . PHP_EOL . $indexQuery;
   }
   
@@ -655,6 +655,59 @@ sql::registerMethod('unquoteIdentifier', function($sql, $identifier) {
   return str_replace(array('""', '``'), array('"', '`'), $identifier);
 
 });
+
+/**
+ * Combines an identifier (table and column)
+ * 
+ * @param $table string
+ * @param $column string
+ * @return string
+ */
+sql::registerMethod('combineIdentifier', function($sql, $table, $column) {
+
+  return $sql->quoteIdentifier($table) . '.' . $sql->quoteIdentifier($column);
+
+});
+
+/**
+ * Quotes an identifier (table *or* column)
+ * MySQL version
+ * 
+ * @param $identifier string
+ * @return string
+ */
+sql::registerMethod('quoteIdentifier', function($sql, $identifier) {
+
+  // * is special
+  if($identifier === '*') return $identifier;
+
+  // replace every backtick with two backticks
+  $identifier = str_replace('`', '``', $identifier);
+  
+  // wrap in backticks
+  return '`' . $identifier . '`';
+
+}, 'mysql');
+
+/**
+ * Quotes an identifier (table *or* column)
+ * SQLite version
+ * 
+ * @param $identifier string
+ * @return string
+ */
+sql::registerMethod('quoteIdentifier', function($sql, $identifier) {
+
+  // * is special
+  if($identifier === '*') return $identifier;
+
+  // replace every quote with two quotes
+  $identifier = str_replace('"', '""', $identifier);
+  
+  // wrap in quotes
+  return '"' . $identifier . '"';
+
+}, 'sqlite');
 
 /**
  * Returns a list of tables for a specified database
