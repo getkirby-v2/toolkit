@@ -301,145 +301,8 @@ class Query {
    * @return object
    */
   public function where() {
-
-    $args  = func_get_args();
-    $mode  = a::last($args);
-    $where = '';
-
-    // if there's a where clause mode attribute attached…
-    if(in_array($mode, array('AND', 'OR'))) {
-      // remove that from the list of arguments
-      array_pop($args);
-    } else {
-      $mode = 'AND';
-    }
-
-    switch(count($args)) {
-      case 1:
-
-        if(is_null($args[0])) {
-
-          return $this;
-
-        // ->where('username like "myuser"');
-        } else if(is_string($args[0])) {
-
-          // simply add the entire string to the where clause
-          // escaping or using bindings has to be done before calling this method
-          $where = $args[0];
-
-        // ->where(array('username' => 'myuser'));
-        } else if(is_array($args[0])) {
-
-          $sql = new SQL($this->database, $this);
-
-          // simple array mode (AND operator)
-          $where = $sql->values($this->table, $args[0], ' AND ');
-
-        } else if(is_callable($args[0])) {
-
-          $query = clone $this;
-          call_user_func($args[0], $query);
-          $where = '(' . $query->where . ')';
-
-        }
-
-        break;
-      case 2:
-
-        // ->where('username like :username', array('username' => 'myuser'))
-        if(is_string($args[0]) && is_array($args[1])) {
-
-          // prepared where clause
-          $where = $args[0];
-
-          // store the bindings
-          $this->bindings($args[1]);
-
-        // ->where('username like ?', 'myuser')
-        } else if(is_string($args[0]) && is_string($args[1])) {
-
-          // prepared where clause
-          $where = $args[0];
-
-          // store the bindings
-          $this->bindings(array($args[1]));
-
-        }
-
-        break;
-      case 3:
-
-        // ->where('username', 'like', 'myuser');
-        if(is_string($args[0]) && is_string($args[1])) {
-          
-          // validate column
-          $sql = new SQL($this->database, $this);
-          list($table, $column) = $sql->splitIdentifier($this->table, $args[0]);
-          if(!$this->database->validateColumn($table, $column)) {
-            throw new Error('Invalid column ' . $args[0]);
-          }
-          $key = $sql->combineIdentifier($table, $column);
-
-          // ->where('username', 'in', array('myuser', 'myotheruser'));
-          if(is_array($args[2])) {
-
-            $predicate = trim(strtoupper($args[1]));
-            if(!in_array($predicate, array(
-              'IN', 'NOT IN'
-            ))) throw new Error('Invalid predicate ' . $predicate);
-
-            // build a list of bound values
-            $values   = array();
-            $bindings = array();
-            foreach($args[2] as $value) {
-              $valueBinding = sql::generateBindingName('value');
-              $bindings[$valueBinding] = $value;
-              $values[] = $valueBinding;
-            }
-
-            // add that to the where clause in parenthesis
-            $where = $key . ' ' . $predicate . ' (' . implode(', ', $values) . ')';
-
-            $this->bindings($bindings);
-
-          // ->where('username', 'like', 'myuser');
-          } else {
-
-            $predicate = trim(strtoupper($args[1]));
-            if(!in_array($predicate, array(
-              '=', '>=', '>', '<=', '<', '<>', '!=', '<=>',
-              'IS', 'IS NOT',
-              'BETWEEN', 'NOT BETWEEN',
-              'LIKE', 'NOT LIKE',
-              'SOUNDS LIKE',
-              'REGEXP', 'NOT REGEXP'
-            ))) throw new Error('Invalid predicate/operator ' . $predicate);
-              
-            $valueBinding = sql::generateBindingName('value');
-            $bindings[$valueBinding] = $args[2];
-            
-            $where = $key . ' ' . $predicate . ' ' . $valueBinding;
-            
-            $this->bindings($bindings);
-
-          }
-
-        }
-
-        break;
-
-    }
-
-    // attach the where clause
-    if(!empty($this->where)) {
-      $this->where = $this->where . ' ' . $mode . ' ' . $where;
-    } else {
-      $this->where = $where;
-    }
-
+    $this->where = $this->filterQuery(func_get_args(), $this->where);
     return $this;
-
   }
 
   /**
@@ -504,13 +367,21 @@ class Query {
   }
 
   /**
-   * Attaches a having clause
+   * Attaches an additional having clause
    *
-   * @param string $having
+   * All available ways to add having clauses
+   *
+   * ->having('username like "myuser"');                           (args: 1)
+   * ->having(array('username' => 'myuser'));                      (args: 1)
+   * ->having(function($having) { $having->having('id', '=', 1) }) (args: 1)
+   * ->having('username like ?', 'myuser')                         (args: 2)
+   * ->having('username', 'like', 'myuser');                       (args: 3)
+   *
+   * @param list
    * @return object
    */
-  public function having($having) {
-    $this->having = $having;
+  public function having() {
+    $this->having = $this->filterQuery(func_get_args(), $this->having);
     return $this;
   }
 
@@ -902,7 +773,151 @@ class Query {
     }
 
   }
+  
+  /**
+   * Builder for where and having clauses
+   *
+   * @param array $args Arguments, see where() description
+   * @param string $current Current value (like $this->where)
+   * @return string
+   */
+  protected function filterQuery($args, $current) {
+
+    $mode  = a::last($args);
+    $result = '';
+
+    // if there's a where clause mode attribute attached…
+    if(in_array($mode, array('AND', 'OR'))) {
+      // remove that from the list of arguments
+      array_pop($args);
+    } else {
+      $mode = 'AND';
+    }
+
+    switch(count($args)) {
+      case 1:
+
+        if(is_null($args[0])) {
+
+          return $current;
+
+        // ->where('username like "myuser"');
+        } else if(is_string($args[0])) {
+
+          // simply add the entire string to the where clause
+          // escaping or using bindings has to be done before calling this method
+          $result = $args[0];
+
+        // ->where(array('username' => 'myuser'));
+        } else if(is_array($args[0])) {
+
+          $sql = new SQL($this->database, $this);
+
+          // simple array mode (AND operator)
+          $result = $sql->values($this->table, $args[0], ' AND ');
+
+        } else if(is_callable($args[0])) {
+
+          $query = clone $this;
+          call_user_func($args[0], $query);
+          $result = '(' . $query->where . ')';
+
+        }
+
+        break;
+      case 2:
+
+        // ->where('username like :username', array('username' => 'myuser'))
+        if(is_string($args[0]) && is_array($args[1])) {
+
+          // prepared where clause
+          $result = $args[0];
+
+          // store the bindings
+          $this->bindings($args[1]);
+
+        // ->where('username like ?', 'myuser')
+        } else if(is_string($args[0]) && is_string($args[1])) {
+
+          // prepared where clause
+          $result = $args[0];
+
+          // store the bindings
+          $this->bindings(array($args[1]));
+
+        }
+
+        break;
+      case 3:
+
+        // ->where('username', 'like', 'myuser');
+        if(is_string($args[0]) && is_string($args[1])) {
+          
+          // validate column
+          $sql = new SQL($this->database, $this);
+          list($table, $column) = $sql->splitIdentifier($this->table, $args[0]);
+          if(!$this->database->validateColumn($table, $column)) {
+            throw new Error('Invalid column ' . $args[0]);
+          }
+          $key = $sql->combineIdentifier($table, $column);
+
+          // ->where('username', 'in', array('myuser', 'myotheruser'));
+          if(is_array($args[2])) {
+
+            $predicate = trim(strtoupper($args[1]));
+            if(!in_array($predicate, array(
+              'IN', 'NOT IN'
+            ))) throw new Error('Invalid predicate ' . $predicate);
+
+            // build a list of bound values
+            $values   = array();
+            $bindings = array();
+            foreach($args[2] as $value) {
+              $valueBinding = sql::generateBindingName('value');
+              $bindings[$valueBinding] = $value;
+              $values[] = $valueBinding;
+            }
+
+            // add that to the where clause in parenthesis
+            $result = $key . ' ' . $predicate . ' (' . implode(', ', $values) . ')';
+
+            $this->bindings($bindings);
+
+          // ->where('username', 'like', 'myuser');
+          } else {
+
+            $predicate = trim(strtoupper($args[1]));
+            if(!in_array($predicate, array(
+              '=', '>=', '>', '<=', '<', '<>', '!=', '<=>',
+              'IS', 'IS NOT',
+              'BETWEEN', 'NOT BETWEEN',
+              'LIKE', 'NOT LIKE',
+              'SOUNDS LIKE',
+              'REGEXP', 'NOT REGEXP'
+            ))) throw new Error('Invalid predicate/operator ' . $predicate);
+              
+            $valueBinding = sql::generateBindingName('value');
+            $bindings[$valueBinding] = $args[2];
+            
+            $result = $key . ' ' . $predicate . ' ' . $valueBinding;
+            
+            $this->bindings($bindings);
+
+          }
+
+        }
+
+        break;
+
+    }
+
+    // attach the where clause
+    if(!empty($current)) {
+      return $current . ' ' . $mode . ' ' . $result;
+    } else {
+      return $result;
+    }
+
+  }
 
 }
-
-
