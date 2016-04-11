@@ -338,9 +338,10 @@ sql::registerMethod('delete', function($sql, $params = array()) {
  * @param mixed $values A value string or array of values
  * @param string $separator A separator which should be used to join values
  * @param boolean $set If true builds a set list of values for update clauses
+ * @param boolean $enforceQualified Always use fully qualified column names
  * @return string
  */
-sql::registerMethod('values', function($sql, $table, $values, $separator = ', ', $set = true) {
+sql::registerMethod('values', function($sql, $table, $values, $separator = ', ', $set = true, $enforceQualified = false) {
 
   if(!is_array($values)) return $values;
   
@@ -355,7 +356,7 @@ sql::registerMethod('values', function($sql, $table, $values, $separator = ', ',
       if(!$sql->database->validateColumn($table, $column)) {
         throw new Error('Invalid column ' . $key);
       }
-      $key = $sql->combineIdentifier($table, $column);
+      $key = $sql->combineIdentifier($table, $column, $enforceQualified !== true);
       
       if(in_array($value, sql::$literals, true)) {
         $output[] = $key . ' = ' . (($value === null)? 'null' : $value);
@@ -385,7 +386,7 @@ sql::registerMethod('values', function($sql, $table, $values, $separator = ', ',
       if(!$sql->database->validateColumn($table, $column)) {
         throw new Error('Invalid column ' . $key);
       }
-      $key = $sql->combineIdentifier($table, $column);
+      $key = $sql->combineIdentifier($table, $column, $enforceQualified !== true);
       
       $fields[] = $key;
       
@@ -575,17 +576,17 @@ sql::registerMethod('createTable', function($sql, $table, $columns = array()) {
     }
 
     // default value
-    $defaultBinding = null;
+    $default = null;
     if(isset($column['default'])) {
-      $defaultBinding = sql::generateBindingName('default');
-      $bindings[$defaultBinding] = $column['default'];
+      // Apparently SQLite doesn't support bindings for default values
+      $default = "'" . $sql->database->escape($column['default']) . "'";
     }
 
     $output[] = trim(str::template($template, array(
       'column.name'    => $sql->quoteIdentifier($name),
       'column.null'    => $null,
       'column.key'     => r($key && $key != 'INDEX', $key),
-      'column.default' => r(!is_null($defaultBinding), 'DEFAULT ' . $defaultBinding),
+      'column.default' => r(!is_null($default), 'DEFAULT ' . $default),
     )));
 
   }
@@ -603,7 +604,7 @@ sql::registerMethod('createTable', function($sql, $table, $columns = array()) {
   foreach($keys as $name => $key) {
     if($key != 'INDEX') continue;
   
-    $indexQuery = 'CREATE INDEX ' . $sql->quoteIdentifier($name) . ' ON ' . $sql->quoteIdentifier($table) . ' (' . $sql->quoteIdentifier($name) . ')';
+    $indexQuery = 'CREATE INDEX ' . $sql->quoteIdentifier($table . '_' . $name) . ' ON ' . $sql->quoteIdentifier($table) . ' (' . $sql->quoteIdentifier($name) . ')';
     $query .= ';' . PHP_EOL . $indexQuery;
   }
   
@@ -658,16 +659,37 @@ sql::registerMethod('unquoteIdentifier', function($sql, $identifier) {
 
 /**
  * Combines an identifier (table and column)
+ * MySQL version
  * 
  * @param $table string
  * @param $column string
+ * @param $values boolean Whether the identifier is going to be used for a values clause
+ *                        Only relevant for SQLite
  * @return string
  */
-sql::registerMethod('combineIdentifier', function($sql, $table, $column) {
+sql::registerMethod('combineIdentifier', function($sql, $table, $column, $values = false) {
 
   return $sql->quoteIdentifier($table) . '.' . $sql->quoteIdentifier($column);
 
-});
+}, 'mysql');
+
+/**
+ * Combines an identifier (table and column)
+ * SQLite version
+ * 
+ * @param $table string
+ * @param $column string
+ * @param $values boolean Whether the identifier is going to be used for a values clause
+ *                        Only relevant for SQLite
+ * @return string
+ */
+sql::registerMethod('combineIdentifier', function($sql, $table, $column, $values = false) {
+  
+  // SQLite doesn't support qualified column names for VALUES clauses
+  if($values) return $sql->quoteIdentifier($column);
+  return $sql->quoteIdentifier($table) . '.' . $sql->quoteIdentifier($column);
+
+}, 'sqlite');
 
 /**
  * Quotes an identifier (table *or* column)
@@ -776,13 +798,9 @@ sql::registerMethod('columnList', function($sql, $database, $table) {
  */
 sql::registerMethod('columnList', function($sql, $database, $table) {
 
-  $bindings = array();
-  $tableBinding = sql::generateBindingName('table');
-  $bindings[$tableBinding] = $table;
+  // validate table
+  if(!$sql->database->validateTable($table)) throw new Error('Invalid table ' . $table);
   
-  $query = 'PRAGMA table_info(' . $tableBinding . ')';
-  
-  $sql->bindings($query, $bindings);
-  return $query;
+  return 'PRAGMA table_info(' . $sql->quoteIdentifier($table) . ')';
 
 }, 'sqlite');

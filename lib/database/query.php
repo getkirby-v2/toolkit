@@ -814,7 +814,7 @@ class Query {
           $sql = new SQL($this->database, $this);
 
           // simple array mode (AND operator)
-          $result = $sql->values($this->table, $args[0], ' AND ');
+          $result = $sql->values($this->table, $args[0], ' AND ', true, true);
 
         } else if(is_callable($args[0])) {
 
