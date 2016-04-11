@@ -122,7 +122,7 @@ class DbTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testLastError() {
-    $result = db::select('nonexisting', '*');
+    $result = db::select('users', 'nonexisting');
     $this->assertInstanceOf('PDOException', db::lastError());
   }
 
