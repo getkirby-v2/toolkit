@@ -294,12 +294,12 @@ class Dimensions {
   }
 
   /**
-   * Echos the dimensions as width x height
+   * Echos the dimensions as width × height
    *
    * @return string
    */
   public function __toString() {
-    return $this->width . ' x ' . $this->height;
+    return $this->width . ' × ' . $this->height;
   }
 
 }
