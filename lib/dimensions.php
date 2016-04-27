@@ -220,6 +220,16 @@ class Dimensions {
   }
 
   /**
+   * @param int $width
+   * @param int $height
+   * @return Dimensions
+   */
+  public function resize($width, $height) {
+    $this->fitWidthAndHeight($width, $height);
+    return $this;
+  }
+
+  /**
    * Crops the dimensions by width and height
    * 
    * @param int $width
