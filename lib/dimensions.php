@@ -222,10 +222,11 @@ class Dimensions {
   /**
    * @param int $width
    * @param int $height
+   * @param boolean $force
    * @return Dimensions
    */
-  public function resize($width, $height) {
-    $this->fitWidthAndHeight($width, $height);
+  public function resize($width, $height, $force = false) {
+    $this->fitWidthAndHeight($width, $height, $force);
     return $this;
   }
 
