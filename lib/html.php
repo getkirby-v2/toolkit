@@ -190,7 +190,7 @@ class Html {
     } else if(is_bool($value)) {
       return $value === true ? strtolower($name) : '';
     } else {
-      return strtolower($name) . '="' . $value . '"';      
+      return strtolower($name) . '="' . ( is_array($value) ? implode(' ', $value) : $value ) . '"';      
     }
 
   }
