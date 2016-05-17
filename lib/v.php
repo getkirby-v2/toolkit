@@ -102,6 +102,12 @@ v::$validators = array(
   'min' => function($value, $min) {
     return size($value) >= $min;
   },
+  'maxWords' => function($value, $max) {
+    return v::max(explode(' ', $value), $max);
+  },
+  'minWords' => function($value, $min) {
+    return v::min(explode(' ', $value), $min);
+  },
   'notIn' => function($value, $notIn) {
     return !v::in($value, $notIn);
   },
