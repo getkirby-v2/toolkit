@@ -17,9 +17,6 @@
     "forum": "http://forum.getkirby.com",
     "source": "https://github.com/getkirby/toolkit"
   },
-  "autoload": {
-    "files": ["bootstrap.php"]
-  },
   "require": {
     "php": ">=5.4.0"
   }
