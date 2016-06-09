@@ -27,6 +27,7 @@ class Silo {
 
   public static function get($key = null, $default = null) {
     if(empty($key)) return static::$data;
+    $default = isset($default) ? $default : $key;
     return isset(static::$data[$key]) ? static::$data[$key] : $default;
   }
 
