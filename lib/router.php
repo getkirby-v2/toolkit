@@ -140,7 +140,7 @@ class Router {
     }
 
     foreach($route->method as $method) {
-      $this->routes[strtoupper($method)][$route->pattern] = $route;
+      $this->routes[strtoupper($method)][$route->host . $route->pattern] = $route;
     }
 
     return $route;
