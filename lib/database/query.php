@@ -95,6 +95,7 @@ class Query {
    * Reset the query class after each db hit
    */
   protected function reset() {
+    $this->bindings = array();
     $this->join     = null;
     $this->select   = null;
     $this->distinct = null;
@@ -104,9 +105,9 @@ class Query {
     $this->group    = null;
     $this->having   = null;
     $this->order    = null;
-    $this->offset   = null;
+    $this->offset   = 0;
     $this->limit    = null;
-    $this->debug    = null;
+    $this->debug    = false;
   }
 
   /**
