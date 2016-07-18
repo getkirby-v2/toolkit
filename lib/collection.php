@@ -9,7 +9,7 @@
  * @copyright Bastian Allgeier
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
-class Collection extends I {
+class Collection extends I implements Countable {
 
   public static $filters = array();
 
