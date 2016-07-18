@@ -497,6 +497,34 @@ class Collection extends I implements Countable {
 
   }
 
+  /**
+   * Creates chunks of the same size
+   * The last chunk may be smaller
+   *
+   * @param int $size Number of items per chunk
+   * @return object A new collection with an item for each chunk and a subcollection in each chunk
+   */
+  public function chunk($size) {
+
+    // create a multidimensional array that is chunked with the given chunk size
+    // keep keys of the items
+    $chunks = array_chunk($this->data, $size, true);
+
+    // convert each subcollection to a collection object
+    $chunkCollections = array();
+    foreach($chunks as $items) {
+      // we clone $this instead of creating a new object because
+      // different collections may have different constructors
+      $collection = clone $this;
+      $collection->data = $items;
+      $chunkCollections[] = $collection;
+    }
+
+    // convert the array of chunks to a collection object
+    return new Collection($chunkCollections);
+
+  }
+
   public function set($key, $value) {
     if(is_array($key)) {
       $this->data = array_merge($this->data, $key);
