@@ -599,6 +599,30 @@ collection::$filters['=='] = function($collection, $field, $value, $split = fals
 
 };
 
+// take all elements that match one element from the passed array
+collection::$filters['in'] = function($collection, $field, $value, $split = false) {
+  if(!is_array($value)) $value = [$value];
+
+  foreach($collection->data as $key => $item) {
+
+    if($split) {
+      $values = str::split((string)collection::extractValue($item, $field), $split);
+
+      $match = false;
+      foreach($value as $v) {
+        if(in_array($v, $values)) $match = true;
+      }
+      if(!$match) unset($collection->$key);
+    } else if(!in_array(collection::extractValue($item, $field), $value)) {
+      unset($collection->$key);
+    }
+
+  }
+
+  return $collection;
+
+};
+
 // take all elements that won't match
 collection::$filters['!='] = function($collection, $field, $value, $split = false) {
 
@@ -609,6 +633,31 @@ collection::$filters['!='] = function($collection, $field, $value, $split = fals
     } else if(collection::extractValue($item, $field) == $value) {
       unset($collection->$key);
     }
+  }
+
+  return $collection;
+
+};
+
+// take all elements that don't match an element from the passed array
+collection::$filters['not in'] = function($collection, $field, $value, $split = false) {
+  if(!is_array($value)) $value = [$value];
+
+  foreach($collection->data as $key => $item) {
+
+    if($split) {
+      $values = str::split((string)collection::extractValue($item, $field), $split);
+
+      foreach($value as $v) {
+        if(in_array($v, $values)) {
+          unset($collection->$key);
+          break;
+        }
+      }
+    } else if(in_array(collection::extractValue($item, $field), $value)) {
+      unset($collection->$key);
+    }
+
   }
 
   return $collection;
