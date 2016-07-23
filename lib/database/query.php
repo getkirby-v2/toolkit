@@ -657,7 +657,9 @@ class Query {
     $pagination = new Pagination($count, $limit, $options);
 
     // apply it to the dataset and retrieve all rows. make sure to use Collection as the iterator to be able to attach the pagination object
-    $collection = $this->offset($pagination->offset())->limit($pagination->limit())->all();
+    $iterator = $this->iterator;
+    $collection = $this->offset($pagination->offset())->limit($pagination->limit())->iterator('Collection')->all();
+    $this->iterator($iterator);
 
     // return debug information if debug mode is active
     if($this->debug) {
