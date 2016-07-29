@@ -109,7 +109,7 @@ class StrTest extends PHPUnit_Framework_TestCase {
 
   public function testRandom() {
     // choose a high length for a high probability of occurrence of a character of any type
-    $length = random_int(30, 100);
+    $length = rand(30, 100);
 
     $this->assertRegexp("/^[[:alnum:]]+$/", str::random());
     $this->assertInternalType('string', str::random());
@@ -126,7 +126,7 @@ class StrTest extends PHPUnit_Framework_TestCase {
 
   public function testQuickRandom() {
     // choose a high length for a high probability of occurrence of a character of any type
-    $length = random_int(30, 100);
+    $length = rand(30, 100);
 
     $this->assertRegexp("/^[[:alnum:]]+$/", str::quickRandom());
     $this->assertInternalType('string', str::quickRandom());

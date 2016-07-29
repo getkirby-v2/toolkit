@@ -443,13 +443,19 @@ class Str {
   }
 
   /**
-   * Generates a random string that may be used for cryptographic purposes
+   * Generates a random string that may be used for cryptographic purposes.
+   *
+   * CAUTION: This function does *not* produce secure random strings and falls back to str::quickRandom with PHP <7.0!
    *
    * @param  int  $length The length of the random string (default is a value between 10 and 20)
    * @param  int  $type Type of allowed characters (default is 'alphaNum')
    * @return string
    */
   public static function random($length = false, $type = 'alphaNum') {
+    if (!function_exists('random_int') || !function_exists('random_bytes')) {
+      return static::quickRandom($length, $type);
+    }
+
     $length = $length ? $length : random_int(10, 20);
     // regex that matches all characters *not* in the pool of allowed characters
     $regex = '/[^'.static::pool($type, false).']/';
@@ -465,7 +471,7 @@ class Str {
   }
 
   /**
-   * Quickly generates a random string
+   * Quickly generates a random string.
    *
    * Should not be considered sufficient for cryptography, etc.
    *
@@ -474,8 +480,9 @@ class Str {
    * @return string
    */
   public static function quickRandom($length = false, $type = 'alphaNum') {
-    $length = $length ? $length : random_int(10, 20);
+    $length = $length ? $length : rand(10, 20);
     $pool = static::pool($type, false);
+
     return substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
   }
 
