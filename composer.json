@@ -22,5 +22,8 @@
   },
   "require": {
     "php": ">=5.4.0"
+  },
+  "archive": {
+    "exclude": ["/.travis.yml", "/.gitignore", "/phpunit.xml", "/tests"]
   }
 }
