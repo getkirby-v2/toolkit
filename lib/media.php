@@ -589,23 +589,26 @@ class Media {
    */
   public function toArray($callback = null) {
 
-    $data = array(
-      'root'       => $this->root(),
-      'url'        => $this->url(),
-      'hash'       => $this->hash(),
-      'dir'        => $this->dir(),
-      'filename'   => $this->filename(),
-      'name'       => $this->name(),
-      'safeName'   => $this->safeName(),
-      'extension'  => $this->extension(),
-      'size'       => $this->size(),
-      'niceSize'   => $this->niceSize(),
-      'modified'   => $this->modified(),
-      'mime'       => $this->mime(),
-      'type'       => $this->type(),
-      'dimensions' => $this->dimensions()->toArray()
-    );
-
+    $data = [
+      'root'         => $this->root(),
+      'url'          => $this->url(),
+      'hash'         => $this->hash(),
+      'dir'          => $this->dir(),
+      'filename'     => $this->filename(),
+      'name'         => $this->name(),
+      'safeName'     => $this->safeName(),
+      'extension'    => $this->extension(),
+      'size'         => $this->size(),
+      'niceSize'     => $this->niceSize(),
+      'modified'     => $this->modified('c'),
+      'mime'         => $this->mime(),
+      'type'         => $this->type(),
+      'dimensions'   => $this->dimensions()->toArray(),
+      'isWritable'   => $this->isWritable(),
+      'isReadable'   => $this->isReadable(),
+      'isExecutable' => $this->isExecutable(),
+      'header'       => $this->header(false),
+    ];
 
     if(is_null($callback)) {
       return $data;
@@ -634,6 +637,18 @@ class Media {
    */
   public function __toString() {
     return $this->root;
+  }
+
+  /**
+   * Improved var_dump() output
+   * 
+   * @return array
+   */
+  public function __debuginfo() {
+    return array_merge($this->toArray(), [
+      'dimensions' => $this->dimensions(),
+      'exif'       => $this->exif(),
+    ]);
   }
 
 }
