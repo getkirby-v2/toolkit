@@ -218,4 +218,16 @@ class Exif {
 
   }
 
+  /**
+   * Improved var_dump() output
+   * 
+   * @return array
+   */
+  public function __debuginfo() {
+    return array_merge($this->toArray(), [
+      'camera'   => $this->camera(),
+      'location' => $this->location()
+    ]);    
+  }
+
 }
