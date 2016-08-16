@@ -14,7 +14,7 @@
   "support": {
     "email": "support@getkirby.com",
     "issues": "https://github.com/getkirby/toolkit/issues",
-    "forum": "http://forum.getkirby.com",
+    "forum": "https://forum.getkirby.com",
     "source": "https://github.com/getkirby/toolkit"
   },
   "autoload": {
@@ -22,5 +22,8 @@
   },
   "require": {
     "php": ">=5.4.0"
+  },
+  "archive": {
+    "exclude": ["/.gitignore", "/.travis.yml", "/phpunit.xml", "/test"]
   }
 }
