@@ -570,6 +570,15 @@ class Collection extends I implements Countable {
     }, $this->data));
   }
 
+  /**
+   * Improved var_dump() output
+   * 
+   * @return array
+   */
+  public function __debuginfo() {
+    return $this->data;
+  }
+
 }
 
 
