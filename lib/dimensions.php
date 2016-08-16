@@ -313,4 +313,13 @@ class Dimensions {
     return $this->width . ' × ' . $this->height;
   }
 
+  /**
+   * Improved var_dump() output
+   * 
+   * @return array
+   */
+  public function __debuginfo() {
+    return $this->toArray();
+  }
+
 }
