@@ -185,7 +185,7 @@ class Html {
       return implode(' ', $attributes);
     }
 
-    if(empty($value) && $value !== '0' && $value !== 0) {
+    if($value === null || $value === '' || $value === []) {
       return false;
     } else if($value === ' ') {
       return strtolower($name) . '=""';      
