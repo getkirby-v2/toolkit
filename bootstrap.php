@@ -13,7 +13,7 @@ function load($classmap, $base = null) {
     $class = strtolower($class);
     if(!isset($classmap[$class])) return false;
     if($base) {
-      include($base . DS . $classmap[$class]);      
+      include($base . DS . $classmap[$class]);
     } else {
       include($classmap[$class]);
     }
