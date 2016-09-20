@@ -192,7 +192,7 @@ class Html {
     } else if(is_bool($value)) {
       return $value === true ? strtolower($name) : '';
     } else {
-      return strtolower($name) . '="' . ( is_array($value) ? implode(' ', $value) : $value ) . '"';      
+      return strtolower($name) . '="' . htmlspecialchars(is_array($value) ? implode(' ', $value) : $value) . '"';      
     }
 
   }
