@@ -782,5 +782,17 @@ class Str {
     return static::substr($string, $pos);
   }
 
+  /**
+   * Returns everything between two strings from the first occurrence of a given string
+   * 
+   * @param string $string
+   * @param string $start
+   * @param string $end
+   * @return string
+   */
+  public static function between($string, $start, $end) {
+    return static::before(static::after($string, $start), $end);
+  }
+
 
 }
