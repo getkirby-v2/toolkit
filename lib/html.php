@@ -256,4 +256,18 @@ class Html {
            '<![endif]-->' . PHP_EOL;
   }
 
+  /**
+   * Generates a Google Analytics code snippet based on HTML5 boilerplate
+   * 
+   * @param string $id The Google Analytics tracking ID
+   * @return string the generated html
+   */
+  public static function ga($id) {
+    return '<script>' . PHP_EOL .
+           'window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;' . PHP_EOL .
+           "ga('create','$id','auto');ga('send','pageview')" . PHP_EOL .
+           '</script>' . PHP_EOL .
+           '<script src="https://www.google-analytics.com/analytics.js" async defer></script>' . PHP_EOL;
+  }
+
 }
