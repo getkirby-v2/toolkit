@@ -192,7 +192,16 @@ class Html {
     } else if(is_bool($value)) {
       return $value === true ? strtolower($name) : '';
     } else {
-      return strtolower($name) . '="' . htmlspecialchars(is_array($value) ? implode(' ', $value) : $value) . '"';      
+      if(is_array($value)) {
+        if(isset($value['value']) && isset($value['escape'])) {
+          $value = $value['escape'] === true ? htmlspecialchars($value['value']) : $value['value'];
+        } else {
+          $value = implode(' ', $value);
+        }
+      } else {
+        $value = htmlspecialchars($value);
+      }
+      return strtolower($name) . '="' . $value . '"';      
     }
 
   }
