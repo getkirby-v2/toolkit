@@ -238,7 +238,12 @@ class Html {
       $text = str::encode(a::first(str::split($email, '?'))); 
     }
     $email = str::encode($email);
-    $attr  = array_merge(array('href' => 'mailto:' . $email), $attr);
+    $attr  = array_merge([
+      'href' => [
+        'value'  => 'mailto:' . $email,
+        'escape' => false
+      ]
+    ], $attr);
     return static::tag('a', $text, $attr);
   }
 
