@@ -10,12 +10,14 @@ class HelpersTest extends PHPUnit_Framework_TestCase {
       'username' => 123,
       'email' => 'homersimpson.com',
       'zip' => 'abc',
+      'website' => '',
     ];
 
     $rules = [
       'username' => ['alpha'],
       'email' => ['required', 'email'],
       'zip' => ['integer'],
+      'website' => ['url'],
     ];
 
     $messages = [
@@ -31,6 +33,7 @@ class HelpersTest extends PHPUnit_Framework_TestCase {
       'username' => 'homer',
       'email' => 'homer@simpson.com',
       'zip' => 123,
+      'website' => 'http://example.com',
     ];
 
     $result  = invalid($data, $rules, $messages);
@@ -100,6 +103,39 @@ class HelpersTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($messages, $result);
 
     $result  = invalid(['username' => 'homer'], $rules, $messages);
+    $this->assertEquals([], $result);
+  }
+
+  public function testMultipleMessages()
+  {
+    $data = ['username' => ''];
+    $rules = ['username' => ['required', 'alpha', 'min' => 4]];
+    $messages = ['username' => [
+      'The username is required',
+      'The username must contain only letters',
+      'The username must be at least 4 characters long',
+    ]];
+
+    $result = invalid(['username' => ''], $rules, $messages);
+    $expected = ['username' => [
+      'The username is required',
+    ]];
+    $this->assertEquals($expected, $result);
+
+    $result = invalid(['username' => 'a1'], $rules, $messages);
+    $expected = ['username' => [
+      'The username must contain only letters',
+      'The username must be at least 4 characters long',
+    ]];
+    $this->assertEquals($expected, $result);
+
+    $result = invalid(['username' => 'ab'], $rules, $messages);
+    $expected = ['username' => [
+      'The username must be at least 4 characters long',
+    ]];
+    $this->assertEquals($expected, $result);
+
+    $result = invalid(['username' => 'abcd'], $rules, $messages);
     $this->assertEquals([], $result);
   }
 }

@@ -313,28 +313,50 @@ function invalid($data, $rules, $messages = []) {
   $errors = [];
 
   foreach ($rules as $field => $validations) {
-    foreach ($validations as $method => $options) {
+    $validationIndex = -1;
+    // See: http://php.net/manual/en/types.comparisons.php
+    // only false for: null, undefined variable, '', []
+    $filled = isset($data[$field]) && $data[$field] !== '' && $data[$field] !== [];
 
-      if (is_numeric($method)) $method = $options;
-      // See: http://php.net/manual/en/types.comparisons.php
-      // only false for: null, undefined variable, '', []
-      $filled = isset($data[$field]) && $data[$field] !== '' && $data[$field] !== [];
+    $message = a::get($messages, $field, $field);
+    // True if there is an error message for each validation method.
+    $messageArray = is_array($message);
+
+    foreach ($validations as $method => $options) {
+      if (is_numeric($method)) {
+        $method = $options;
+      }
+      $validationIndex++;
 
       if ($method === 'required') {
-        if (!$filled) {
-          $errors[$field] = a::get($messages, $field, $field);
+        if ($filled) {
+          // Field is required and filled.
+          continue;
         }
       } else if ($filled) {
-        if (!is_array($options)) $options = [$options];
-        array_unshift($options, a::get($data, $field));
-        if (!call(['v', $method], $options)) {
-          $errors[$field] = a::get($messages, $field, $field);
+        if (!is_array($options)) {
+            $options = [$options];
         }
+        array_unshift($options, a::get($data, $field));
+        if (call(['v', $method], $options)) {
+          // Field is filled and passes validation method.
+          continue;
+        }
+      } else {
+        // If a field is not required and not filled, no validation should be done.
+        continue;
+      }
+
+      // If no continue was called we have a failed validation.
+      if ($messageArray) {
+        $errors[$field][] = a::get($message, $validationIndex, $field);
+      } else {
+        $errors[$field] = $message;
       }
     }
   }
 
-  return array_unique($errors);
+  return $errors;
 }
 
 
