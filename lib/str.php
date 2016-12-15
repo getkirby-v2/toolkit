@@ -17,7 +17,6 @@ class Str {
   public static $ascii = array(
     '/Ä/' => 'Ae',
     '/æ|ǽ|ä/' => 'ae',
-    '/œ|ö/' => 'oe',
     '/À|Á|Â|Ã|Å|Ǻ|Ā|Ă|Ą|Ǎ|А/' => 'A',
     '/à|á|â|ã|å|ǻ|ā|ă|ą|ǎ|ª|а/' => 'a',
     '/Б/' => 'B',
@@ -49,7 +48,7 @@ class Str {
     '/Ñ|Ń|Ņ|Ň|Н/' => 'N',
     '/ñ|ń|ņ|ň|ŉ|н/' => 'n',
     '/Ö/' => 'Oe',
-    '/ö/' => 'oe',
+    '/œ|ö/' => 'oe',
     '/Ò|Ó|Ô|Õ|Ō|Ŏ|Ǒ|Ő|Ơ|Ø|Ǿ|О/' => 'O',
     '/ò|ó|ô|õ|ō|ŏ|ǒ|ő|ơ|ø|ǿ|º|о/' => 'o',
     '/П/' => 'P',
@@ -89,6 +88,18 @@ class Str {
     '/щ/' => 'shch',
     '/Ж/' => 'Zh',
     '/ж/' => 'zh',
+  );
+
+  /**
+   * Default options for string methods
+   * 
+   * @var array
+   */
+  public static $defaults = array(
+    'slug' => array(
+      'separator' => '-', 
+      'allowed'   => 'a-z0-9'
+    )
   );
 
   /**
@@ -227,8 +238,15 @@ class Str {
   public static function encode($string) {
     $string  = (string)$string;
     $encoded = '';
-    for($i=0; $i < static::length($string); $i++) {
-      $encoded .= rand(1, 2) == 1 ? '&#' . ord($string[$i]) . ';' : '&#x' . dechex(ord($string[$i])) . ';';
+    for($i = 0; $i < static::length($string); $i++) {
+      $char = static::substr($string, $i, 1);
+      if(MB) {
+        list(, $code) = unpack('N', mb_convert_encoding($char, 'UCS-4BE', 'UTF-8'));        
+      } else {
+        $code = ord($char);
+      }
+      
+      $encoded .= rand(1, 2) == 1 ? '&#' . $code . ';' : '&#x' . dechex($code) . ';';
     }
     return $encoded;
   }
@@ -373,7 +391,8 @@ class Str {
    * @return string
    */
   public static function substr($str, $start, $length = null) {
-    return MB ? mb_substr($str, $start, $length === null ? static::length($str) : $length, 'UTF-8') : substr($str, $start, $length);
+    $length = $length === null ? static::length($str) : $length;
+    return MB ? mb_substr($str, $start, $length, 'UTF-8') : substr($str, $start, $length);
   }
 
   /**
@@ -423,21 +442,58 @@ class Str {
   }
 
   /**
-   * Generates a random string
+   * Generates a random string that may be used for cryptographic purposes
+   * 
+   * WARNING (PHP < 7.0): This function does *not* produce secure random
+   * strings and falls back to str::quickRandom with PHP < 7.0!
    *
-   * @param  int  $length The length of the random string
+   * @param int $length The length of the random string
+   * @param string $type Pool type (type of allowed characters)
    * @return string
    */
   public static function random($length = false, $type = 'alphaNum') {
-    $length = $length ? $length : rand(5,10);
-    $pool   = static::pool($type);
-    shuffle($pool);
-    $size   = count($pool) - 1;
-    $hash   = '';
-    for($x = 0; $x < $length; $x++) {
-      $hash .= $pool[rand(0, $size)];
+    // fall back to insecure str::quickRandom() on PHP < 7
+    if(!function_exists('random_int') || !function_exists('random_bytes')) {
+      return static::quickRandom($length, $type);
     }
-    return $hash;
+
+    if(!$length) $length = random_int(5, 10);
+    $pool = static::pool($type, false);
+
+    // catch invalid pools
+    if(!$pool) return false;
+
+    // regex that matches all characters *not* in the pool of allowed characters
+    $regex = '/[^' . $pool . ']/';
+
+    // collect characters until we have our required length
+    $result = '';
+    while(($currentLength = strlen($result)) < $length) {
+      $missing = $length - $currentLength;
+      $bytes = random_bytes($missing);
+      $result .= substr(preg_replace($regex, '', base64_encode($bytes)), 0, $missing);
+    }
+
+    return $result;
+  }
+
+  /**
+   * Quickly generates a random string
+   *
+   * WARNING: Should not be considered sufficient for cryptography, etc.
+   *
+   * @param int $length The length of the random string
+   * @param string $type Pool type (type of allowed characters)
+   * @return string
+   */
+  public static function quickRandom($length = false, $type = 'alphaNum') {
+    if(!$length) $length = rand(5, 10);
+    $pool = static::pool($type, false);
+
+    // catch invalid pools
+    if(!$pool) return false;
+
+    return substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
   }
 
   /**
@@ -447,7 +503,10 @@ class Str {
    * @param  string  $separator To be used instead of space and other non-word characters.
    * @return string  The safe string
    */
-  public static function slug($string, $separator = '-', $allowed = 'a-z0-9') {
+  public static function slug($string, $separator = null, $allowed = null) {
+
+    $separator = $separator !== null ? $separator : static::$defaults['slug']['separator'];
+    $allowed   = $allowed   !== null ? $allowed   : static::$defaults['slug']['allowed'];
 
     $string = trim($string);
     $string = static::lower($string);
@@ -455,10 +514,15 @@ class Str {
 
     // replace spaces with simple dashes
     $string = preg_replace('![^' . $allowed . ']!i', $separator, $string);
-    // remove double dashes
-    $string = preg_replace('![' . preg_quote($separator) . ']{2,}!', $separator, $string);
+    
+    if(strlen($separator) > 0) {
+      // remove double separators
+      $string = preg_replace('![' . preg_quote($separator) . ']{2,}!', $separator, $string);
+    }
+
     // trim trailing and leading dashes
     $string = trim($string, $separator);
+
     // replace slashes with dashes
     $string = str_replace('/', $separator, $string);
 
@@ -674,5 +738,54 @@ class Str {
     return $array ? $pool : implode('', $pool);
 
   }
+
+  /**
+   * Returns the beginning of a string before the given character
+   * 
+   * @param string $string
+   * @param string $char
+   * @return string
+   */
+  public static function before($string, $char) {
+    $pos = strpos($string, $char);
+    return static::substr($string, 0, $pos);
+  }
+
+  /**
+   * Returns the beginning of a string until the given character
+   * 
+   * @param string $string
+   * @param string $char
+   * @return string
+   */
+  public static function until($string, $char) {
+    $pos = strpos($string, $char);
+    return static::substr($string, 0, $pos + str::length($char));
+  }
+
+  /**
+   * Returns the rest of the string after the given character
+   * 
+   * @param string $string
+   * @param string $char
+   * @return string
+   */
+  public static function after($string, $char) {
+    $pos = strpos($string, $char);
+    return static::substr($string, $pos+1);
+  }
+
+  /**
+   * Returns the rest of the string starting from the given character
+   * 
+   * @param string $string
+   * @param string $char
+   * @return string
+   */
+  public static function from($string, $char) {
+    $pos = strpos($string, $char);
+    return static::substr($string, $pos);
+  }
+
 
 }

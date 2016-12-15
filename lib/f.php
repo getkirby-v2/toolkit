@@ -61,6 +61,7 @@ class F {
     'mpga'  => 'audio/mpeg',
     'mp2'   => 'audio/mpeg',
     'mp3'   => array('audio/mpeg', 'audio/mpg', 'audio/mpeg3', 'audio/mp3'),
+    'm4a'   => 'audio/mp4',    
     'aif'   => 'audio/x-aiff',
     'aiff'  => 'audio/x-aiff',
     'aifc'  => 'audio/x-aiff',
@@ -94,6 +95,8 @@ class F {
     'mpeg'  => 'video/mpeg',
     'mpg'   => 'video/mpeg',
     'mpe'   => 'video/mpeg',
+    'mp4'   => 'video/mp4',
+    'm4v'   => 'video/mp4',
     'qt'    => 'video/quicktime',
     'mov'   => 'video/quicktime',
     'avi'   => 'video/x-msvideo',
@@ -114,6 +117,7 @@ class F {
     'odt'   => 'application/vnd.oasis.opendocument.text',
     'odc'   => 'application/vnd.oasis.opendocument.chart',
     'odp'   => 'application/vnd.oasis.opendocument.presentation',
+    'webm'  => 'video/webm'
   );
 
   public static $types = array(
@@ -515,7 +519,11 @@ class F {
    * @return int
    */
   public static function modified($file, $format = null, $handler = 'date') {
-    return !is_null($format) ? $handler($format, filemtime($file)) : filemtime($file);
+    if(file_exists($file)) {
+      return !is_null($format) ? $handler($format, filemtime($file)) : filemtime($file);      
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -785,6 +793,31 @@ class F {
       if(file_exists($file)) return $file;
     }
     return false;
+  }
+
+  /**
+   * Unzips a zip file 
+   * 
+   * @param string $file
+   * @param string $to
+   * @return boolean
+   */
+  public static function unzip($file, $to) {
+
+    if(!class_exists('ZipArchive')) {
+      throw new Exception('The ZipArchive class is not available');
+    }
+
+    $zip = new ZipArchive;
+
+    if($zip->open($file) === true) {
+      $zip->extractTo($to);
+      $zip->close();
+      return true;
+    } else {
+      return false;
+    }
+
   }
 
 }

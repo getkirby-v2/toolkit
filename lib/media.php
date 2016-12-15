@@ -39,7 +39,7 @@ class Media {
    */
   public function __construct($root, $url = null) {
     $this->url       = $url;
-    $this->root      = realpath($root);
+    $this->root      = $root === null ? $root : realpath($root);
     $this->filename  = basename($root);
     $this->name      = pathinfo($root, PATHINFO_FILENAME);
     $this->extension = strtolower(pathinfo($root, PATHINFO_EXTENSION));
@@ -401,6 +401,22 @@ class Media {
   }
 
   /**
+   * Unzip the current file to the given directory
+   * 
+   * @param string $dir
+   * @return boolean
+   */
+  public function unzip($dir) {
+
+    if(strtolower($this->extension()) !== 'zip') {
+      return false;
+    }
+
+    f::unzip($this->root(), $dir);
+
+  }
+
+  /**
    * Returns the exif object for this file (if image)
    *
    * @return Exif
@@ -526,6 +542,7 @@ class Media {
 
     $img = new Brick('img');
     $img->attr('src', $this->url());
+    $img->attr('alt', ' ');
 
     if(is_string($attr) || (is_object($attr) && method_exists($attr, '__toString'))) {
       $img->attr('alt', (string)$attr);
@@ -588,23 +605,26 @@ class Media {
    */
   public function toArray($callback = null) {
 
-    $data = array(
-      'root'       => $this->root(),
-      'url'        => $this->url(),
-      'hash'       => $this->hash(),
-      'dir'        => $this->dir(),
-      'filename'   => $this->filename(),
-      'name'       => $this->name(),
-      'safeName'   => $this->safeName(),
-      'extension'  => $this->extension(),
-      'size'       => $this->size(),
-      'niceSize'   => $this->niceSize(),
-      'modified'   => $this->modified(),
-      'mime'       => $this->mime(),
-      'type'       => $this->type(),
-      'dimensions' => $this->dimensions()->toArray()
-    );
-
+    $data = [
+      'root'         => $this->root(),
+      'url'          => $this->url(),
+      'hash'         => $this->hash(),
+      'dir'          => $this->dir(),
+      'filename'     => $this->filename(),
+      'name'         => $this->name(),
+      'safeName'     => $this->safeName(),
+      'extension'    => $this->extension(),
+      'size'         => $this->size(),
+      'niceSize'     => $this->niceSize(),
+      'modified'     => $this->modified('c'),
+      'mime'         => $this->mime(),
+      'type'         => $this->type(),
+      'dimensions'   => $this->dimensions()->toArray(),
+      'isWritable'   => $this->isWritable(),
+      'isReadable'   => $this->isReadable(),
+      'isExecutable' => $this->isExecutable(),
+      'header'       => $this->header(false),
+    ];
 
     if(is_null($callback)) {
       return $data;
@@ -633,6 +653,18 @@ class Media {
    */
   public function __toString() {
     return $this->root;
+  }
+
+  /**
+   * Improved var_dump() output
+   * 
+   * @return array
+   */
+  public function __debuginfo() {
+    return array_merge($this->toArray(), [
+      'dimensions' => $this->dimensions(),
+      'exif'       => $this->exif(),
+    ]);
   }
 
 }

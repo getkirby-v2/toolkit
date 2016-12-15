@@ -66,6 +66,8 @@ class StrTest extends PHPUnit_Framework_TestCase {
 
   public function testSubstr() {
 
+    $this->assertEquals($this->sample, str::substr($this->sample, 0));
+
     $this->assertEquals('Super', str::substr($this->sample, 0, 5));
 
     $this->assertEquals(' Äwes', str::substr($this->sample, 5, 5));
@@ -106,11 +108,85 @@ class StrTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRandom() {
-    // no test yet
+    // choose a high length for a high probability of occurrence of a character of any type
+    $length = 200;
+
+    $this->assertRegexp("/^[[:alnum:]]+$/", str::random());
+    $this->assertInternalType('string', str::random());
+    $this->assertEquals($length, strlen(str::random($length)));
+
+    $this->assertRegexp("/^[[:alpha:]]+$/", str::random($length, 'alpha'));
+
+    $this->assertRegexp("/^[[:upper:]]+$/", str::random($length, 'alphaUpper'));
+
+    $this->assertRegexp("/^[[:lower:]]+$/", str::random($length, 'alphaLower'));
+
+    $this->assertRegexp("/^[[:digit:]]+$/", str::random($length, 'num'));
+
+    $this->assertFalse(str::random($length, 'something invalid'));
+  }
+
+  public function testQuickRandom() {
+    // choose a high length for a high probability of occurrence of a character of any type
+    $length = 200;
+
+    $this->assertRegexp("/^[[:alnum:]]+$/", str::quickRandom());
+    $this->assertInternalType('string', str::quickRandom());
+    $this->assertEquals($length, strlen(str::quickRandom($length)));
+
+    $this->assertRegexp("/^[[:alpha:]]+$/", str::quickRandom($length, 'alpha'));
+
+    $this->assertRegexp("/^[[:upper:]]+$/", str::quickRandom($length, 'alphaUpper'));
+
+    $this->assertRegexp("/^[[:lower:]]+$/", str::quickRandom($length, 'alphaLower'));
+
+    $this->assertRegexp("/^[[:digit:]]+$/", str::quickRandom($length, 'num'));
+
+    $this->assertFalse(str::quickRandom($length, 'something invalid'));
   }
 
   public function testSlug() {
-    // no test yet
+
+    // Double dashes
+    $this->assertEquals('a-b', str::slug('a--b'));
+
+    // Dashes at the end of the line
+    $this->assertEquals('a', str::slug('a-'));
+
+    // Dashes at the beginning of the line
+    $this->assertEquals('a', str::slug('-a'));
+
+    // Underscores converted to dashes
+    $this->assertEquals('a-b', str::slug('a_b'));
+
+    // Unallowed characters
+    $this->assertEquals('a-b', str::slug('a@b'));
+
+    // Spaces characters
+    $this->assertEquals('a-b', str::slug('a b'));
+
+    // Double Spaces characters
+    $this->assertEquals('a-b', str::slug('a  b'));
+
+    // Custom separator
+    $this->assertEquals('a+b', str::slug('a-b', '+'));
+
+    // Allow underscores
+    $this->assertEquals('a_b', str::slug('a_b', '-', 'a-z0-9_'));
+
+    // store default defaults
+    $defaults = str::$defaults['slug'];
+
+    // Custom str defaults
+    str::$defaults['slug']['separator'] = '+';
+    str::$defaults['slug']['allowed']   = 'a-z0-9_';
+
+    $this->assertEquals('a+b', str::slug('a-b'));
+    $this->assertEquals('a_b', str::slug('a_b'));
+
+    // Reset str defaults
+    str::$defaults['slug'] = $defaults;
+
   }
 
   public function testSplit() {

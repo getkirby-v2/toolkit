@@ -14,10 +14,11 @@
  */
 class S {
 
-  public static $started = false;
-  public static $name    = 'kirby_session';
-  public static $timeout = 30;
-  public static $cookie  = array();
+  public static $started     = false;
+  public static $name        = 'kirby_session';
+  public static $timeout     = 30;
+  public static $cookie      = array();
+  public static $fingerprint = null;
 
   /**
    * Starts a new session
@@ -109,8 +110,14 @@ class S {
    * @return string
    */
   public static function fingerprint() {
+
+    // custom fingerprint callback
+    if(is_callable(static::$fingerprint)) {
+      return call(static::$fingerprint);
+    } 
+
     if(!r::cli()) {
-      return sha1($_SERVER['HTTP_USER_AGENT'] . (ip2long($_SERVER['REMOTE_ADDR']) & ip2long('255.255.0.0')));      
+      return sha1(Visitor::ua() . (ip2long($_SERVER['REMOTE_ADDR']) & ip2long('255.255.0.0')));      
     } else {
       return '';
     }

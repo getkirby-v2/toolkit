@@ -33,6 +33,7 @@ class Thumb extends Obj {
     'grayscale'   => false,
     'overwrite'   => false,
     'autoOrient'  => false,
+    'interlace'   => false
   );
 
   public $source      = null;
@@ -58,6 +59,9 @@ class Thumb extends Obj {
 
     // don't create the thumbnail if it exists
     if(!$this->isThere()) {
+
+      // try to create the thumb folder if it is not there yet
+      dir::make(dirname($this->destination->root));
 
       // check for a valid image
       if(!$this->source->exists() || $this->source->type() != 'image') {
@@ -248,7 +252,7 @@ class Thumb extends Obj {
     if(!$this->result->url()) return false;
 
     return html::img($this->result->url(), array_merge(array(
-      'alt'    => isset($this->options['alt'])   ? $this->options['alt']   : $this->result->name(),
+      'alt'    => isset($this->options['alt'])   ? $this->options['alt']   : ' ',
       'class'  => isset($this->options['class']) ? $this->options['class'] : null,
     ), $attr));
 
@@ -276,6 +280,10 @@ thumb::$drivers['im'] = function($thumb) {
   $command[] = '"' . $thumb->source->root() . '"';
   $command[] = '-strip';
 
+  if($thumb->options['interlace']) {
+    $command[] = '-interlace line';
+  }
+
   if($thumb->source->extension() === 'gif') {
     $command[] = '-coalesce';
   }
@@ -291,6 +299,9 @@ thumb::$drivers['im'] = function($thumb) {
   $command[] = '-resize';
 
   if($thumb->options['crop']) {
+    if(empty($thumb->options['height'])) {
+      $thumb->options['height'] = $thumb->options['width'];
+    }
     $command[] = $thumb->options['width'] . 'x' . $thumb->options['height'] . '^';
     $command[] = '-gravity Center -crop ' . $thumb->options['width'] . 'x' . $thumb->options['height'] . '+0+0';
   } else {
@@ -305,6 +316,7 @@ thumb::$drivers['im'] = function($thumb) {
     $command[] = '-blur 0x' . $thumb->options['blurpx'];
   }
 
+  $command[] = '-limit thread 1';
   $command[] = '"' . $thumb->destination->root . '"';
 
   exec(implode(' ', $command));

@@ -65,4 +65,13 @@ class Camera {
     return trim($this->make . ' ' . $this->model);
   }
 
+  /**
+   * Improved var_dump() output
+   * 
+   * @return array
+   */
+  public function __debuginfo() {
+    return $this->toArray();
+  }
+
 }

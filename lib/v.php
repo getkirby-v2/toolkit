@@ -66,7 +66,7 @@ v::$validators = array(
   },
   'date' => function($value) {
     $time = strtotime($value);
-    if(!$time) return false;
+    if(!is_int($time)) return false;
 
     $year  = date('Y', $time);
     $month = date('m', $time);
@@ -101,6 +101,18 @@ v::$validators = array(
   },
   'min' => function($value, $min) {
     return size($value) >= $min;
+  },
+  'maxLength' => function($value, $max) {
+    return str::length(trim($value)) <= $max;
+  },
+  'minLength' => function($value, $min) {
+    return str::length(trim($value)) >= $min;
+  },
+  'maxWords' => function($value, $max) {
+    return v::max(explode(' ', $value), $max);
+  },
+  'minWords' => function($value, $min) {
+    return v::min(explode(' ', $value), $min);
   },
   'notIn' => function($value, $notIn) {
     return !v::in($value, $notIn);

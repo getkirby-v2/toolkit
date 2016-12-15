@@ -88,9 +88,13 @@ class Router {
    */
   public function register($pattern, $params = array(), $optional = array()) {
 
-    if(is_array($pattern)) {
+    if($pattern === false) {
+      return false;
+    } else if(is_array($pattern)) {
       foreach($pattern as $v) {
-        if(is_array($v['pattern'])) {
+        if($v === false || empty($v['pattern'])) {
+          continue;
+        } else if(is_array($v['pattern'])) {
           foreach($v['pattern'] as $p) {
             $v['pattern'] = $p;
             $this->register($p, $v);
@@ -104,6 +108,7 @@ class Router {
 
     $defaults = array(
       'pattern'   => $pattern,
+      'host'      => false,
       'https'     => false,
       'ajax'      => false,
       'filter'    => null,
@@ -135,7 +140,7 @@ class Router {
     }
 
     foreach($route->method as $method) {
-      $this->routes[strtoupper($method)][$route->pattern] = $route;
+      $this->routes[strtoupper($method)][$route->host . $route->pattern] = $route;
     }
 
     return $route;
@@ -166,10 +171,10 @@ class Router {
    *
    * @param mixed $filters
    */
-  protected function filterer($filters) {
+  protected function filterer($filters, $route) {
     foreach((array)$filters as $filter) {
       if(array_key_exists($filter, $this->filters) && is_callable($this->filters[$filter])) {
-        call_user_func($this->filters[$filter]);
+        call_user_func($this->filters[$filter], $route);
       }
     }
   }
@@ -188,23 +193,26 @@ class Router {
    * Iterate through every route to find a matching route.
    *
    * @param  string $path Optional path to match against
+   * @param  string $host Optional host to match against
    * @return Route
    */
-  public function run($path = null) {
+  public function run($path = null, $host = null) {
 
     $method = r::method();
     $ajax   = r::ajax();
     $https  = r::ssl();
     $routes = a::get($this->routes, $method, array());
 
-    // detect path if not set manually
+    // detect path and host if not set manually
     if($path === null) $path = implode('/', (array)url::fragments(detect::path()));
+    if($host === null) $host = url::host();
 
     // empty urls should never happen
     if(empty($path)) $path = '/';
 
     foreach($routes as $route) {
 
+      if($route->host  && $route->host !== $host) continue;
       if($route->https && !$https) continue;
       if($route->ajax  && !$ajax)  continue;
 
@@ -232,7 +240,7 @@ class Router {
 
     }
 
-    if($this->route && $this->filterer($this->route->filter) !== false) {
+    if($this->route && $this->filterer($this->route->filter, $this->route) !== false) {
       return $this->route;
     } else {
       return null;

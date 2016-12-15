@@ -144,10 +144,10 @@ class Dir {
    * @param   string   $format
    * @return  int
    */
-  public static function modified($dir, $format = null) {
+  public static function modified($dir, $format = null, $handler = 'date') {
     // It's easier to handle this with the Folder class
     $object = new Folder($dir);
-    return $object->modified($format);
+    return $object->modified($format, $handler);
   }
 
   /**
@@ -204,6 +204,54 @@ class Dir {
     // It's easier to handle this with the Folder class
     $object = new Folder($dir);
     return $object->copy($to);
+  }
+
+  /**
+   * Zip a directory 
+   * 
+   * @param string $dir path to the directory
+   * @param string $to path to the zip file
+   * @return boolean
+   */
+  public static function zip($dir, $to) {
+
+    if(!class_exists('ZipArchive')) {
+      throw new Exception('The ZipArchive class is not available');
+    }
+
+    if(!is_dir($dir)) {
+      return false;      
+    }
+
+    $zip = new ZipArchive;
+
+    // remove any existing zip
+    f::remove($to);
+
+    if($zip->open($to, ZipArchive::CREATE) === false) {
+      return false;
+    }
+
+    $dirs  = new RecursiveDirectoryIterator($dir);
+    $files = new RecursiveIteratorIterator($dirs, RecursiveIteratorIterator::LEAVES_ONLY);
+
+    foreach($files as $name => $file) {
+
+      if($file->isDir()) continue;
+
+      // Get real and relative path for current file
+      $filePath     = $file->getRealPath();
+      $relativePath = substr($filePath, strlen($dir) + 1);
+
+      // Add current file to archive
+      $zip->addFile($filePath, $relativePath);
+
+    }
+
+    $zip->close();
+
+    return true;
+
   }
 
 }

@@ -9,7 +9,7 @@
  * @copyright Bastian Allgeier
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
-class Collection extends I {
+class Collection extends I implements Countable {
 
   public static $filters = array();
 
@@ -89,6 +89,16 @@ class Collection extends I {
   public function first() {
     $array = $this->data;
     return array_shift($array);
+  }
+
+  /**
+   * Checks if an element is in the collection by key. 
+   * 
+   * @param string $key
+   * @return boolean
+   */
+  public function has($key) {
+    return isset($this->data[$key]);
   }
 
   /**
@@ -184,10 +194,15 @@ class Collection extends I {
    * @return object a new shuffled collection
    */
   public function shuffle() {
-    $collection = clone $this;
-    $keys = array_keys($collection->data);
+    $keys = array_keys($this->data);
     shuffle($keys);
-    $collection->data = array_merge(array_flip($keys), $collection->data);
+    
+    $collection = clone $this;
+    $collection->data = array();
+    foreach($keys as $key) {
+      $collection->data[$key] = $this->data[$key];
+    }
+    
     return $collection;
   }
 
@@ -417,19 +432,21 @@ class Collection extends I {
   }
 
   /**
-   * Groups the collection by a given field
+   * Groups the collection by a given callback
    *
-   * @param string $field
+   * @param callable $callback
    * @return object A new collection with an item for each group and a subcollection in each group
    */
-  public function groupBy($field, $i = true) {
+  public function group($callback) {
+
+    if (!is_callable($callback)) throw new Exception($callback . ' is not callable. Did you mean to use groupBy()?');
 
     $groups = array();
 
     foreach($this->data as $key => $item) {
 
       // get the value to group by
-      $value = $this->extractValue($item, $field);
+      $value = call_user_func($callback, $item);
 
       // make sure that there's always a proper value to group by
       if(!$value) throw new Exception('Invalid grouping value for key: ' . $key);
@@ -445,9 +462,6 @@ class Collection extends I {
         }
       }
 
-      // ignore upper/lowercase for group names
-      if($i) $value = str::lower($value);
-
       if(!isset($groups[$value])) {
         // create a new entry for the group if it does not exist yet
         $groups[$value] = new static(array($key => $item));
@@ -458,7 +472,56 @@ class Collection extends I {
 
     }
 
-    return new static($groups);
+    return new Collection($groups);
+
+  }
+
+  /**
+   * Groups the collection by a given field
+   *
+   * @param string $field
+   * @return object A new collection with an item for each group and a subcollection in each group
+   */
+  public function groupBy($field, $i = true) {
+
+    if (!is_string($field)) throw new Exception('Cannot group by non-string values. Did you mean to call group()?');
+
+    return $this->group(function($item) use ($field, $i) {
+
+      $value = $this->extractValue($item, $field);
+
+      // ignore upper/lowercase for group names
+      return ($i == true) ? str::lower($value) : $value;
+
+    });
+
+  }
+
+  /**
+   * Creates chunks of the same size
+   * The last chunk may be smaller
+   *
+   * @param int $size Number of items per chunk
+   * @return object A new collection with an item for each chunk and a subcollection in each chunk
+   */
+  public function chunk($size) {
+
+    // create a multidimensional array that is chunked with the given chunk size
+    // keep keys of the items
+    $chunks = array_chunk($this->data, $size, true);
+
+    // convert each subcollection to a collection object
+    $chunkCollections = array();
+    foreach($chunks as $items) {
+      // we clone $this instead of creating a new object because
+      // different collections may have different constructors
+      $collection = clone $this;
+      $collection->data = $items;
+      $chunkCollections[] = $collection;
+    }
+
+    // convert the array of chunks to a collection object
+    return new Collection($chunkCollections);
 
   }
 
@@ -507,6 +570,15 @@ class Collection extends I {
     }, $this->data));
   }
 
+  /**
+   * Improved var_dump() output
+   * 
+   * @return array
+   */
+  public function __debuginfo() {
+    return $this->data;
+  }
+
 }
 
 
@@ -536,6 +608,30 @@ collection::$filters['=='] = function($collection, $field, $value, $split = fals
 
 };
 
+// take all elements that match one element from the passed array
+collection::$filters['in'] = function($collection, $field, $value, $split = false) {
+  if(!is_array($value)) $value = [$value];
+
+  foreach($collection->data as $key => $item) {
+
+    if($split) {
+      $values = str::split((string)collection::extractValue($item, $field), $split);
+
+      $match = false;
+      foreach($value as $v) {
+        if(in_array($v, $values)) $match = true;
+      }
+      if(!$match) unset($collection->$key);
+    } else if(!in_array(collection::extractValue($item, $field), $value)) {
+      unset($collection->$key);
+    }
+
+  }
+
+  return $collection;
+
+};
+
 // take all elements that won't match
 collection::$filters['!='] = function($collection, $field, $value, $split = false) {
 
@@ -546,6 +642,31 @@ collection::$filters['!='] = function($collection, $field, $value, $split = fals
     } else if(collection::extractValue($item, $field) == $value) {
       unset($collection->$key);
     }
+  }
+
+  return $collection;
+
+};
+
+// take all elements that don't match an element from the passed array
+collection::$filters['not in'] = function($collection, $field, $value, $split = false) {
+  if(!is_array($value)) $value = [$value];
+
+  foreach($collection->data as $key => $item) {
+
+    if($split) {
+      $values = str::split((string)collection::extractValue($item, $field), $split);
+
+      foreach($value as $v) {
+        if(in_array($v, $values)) {
+          unset($collection->$key);
+          break;
+        }
+      }
+    } else if(in_array(collection::extractValue($item, $field), $value)) {
+      unset($collection->$key);
+    }
+
   }
 
   return $collection;

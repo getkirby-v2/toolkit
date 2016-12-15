@@ -68,6 +68,53 @@ class Visitor {
   }
 
   /**
+   * Returns a number between 0 and 1 that defines how "accepted"
+   * a specified MIME type is for the visitor's browser using the
+   * HTTP Accept header
+   *
+   * @param  string $type MIME type like "text/html"
+   * @return float        Number between 0 (not accepted) and 1 (very accepted)
+   */
+  public static function acceptance($type) {
+    $accept = a::get($_SERVER, 'HTTP_ACCEPT');
+
+    // if there is no header, everything is accepted
+    if(!$accept) return 1;
+
+    // check each type in the Accept header
+    foreach(str::split($accept, ',') as $item) {
+      $item = str::split($item, ';');
+      $mime = a::first($item); // $item now only contains params
+
+      // check if the type matches
+      if(!fnmatch($mime, $type, FNM_PATHNAME)) continue;
+
+      // check for the q param ("quality" of the type)
+      foreach($item as $param) {
+        $param = str::split($param, '=');
+        if(a::get($param, 0) === 'q' && $value = a::get($param, 1)) return (float)$value;
+      }
+
+      // no quality param, default to a quality of 1
+      return 1;
+    }
+
+    // no match at all, the type is not accepted
+    return 0;
+  }
+
+  /**
+   * Returns whether a specified MIME type is accepted by the
+   * visitor's browser
+   *
+   * @param  string  $type MIME type like "text/html"
+   * @return boolean
+   */
+  public static function accepts($type) {
+    return static::acceptance($type) > 0;
+  }
+
+  /**
    * Returns the referrer if available
    *
    * @return string
