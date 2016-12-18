@@ -114,7 +114,7 @@ data::$adapters['kd'] = array(
       }
 
     }
-    return implode("\n\n----\n\n", $result);
+    return Normalizer::normalize( implode("\n\n----\n\n", $result), Normalizer::FORM_C );
 
   },
   'decode' => function($string) {
