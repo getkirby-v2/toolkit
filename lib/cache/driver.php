@@ -41,7 +41,7 @@ abstract class Driver {
   public abstract function set($key, $value, $minutes = null);
 
   /**
-   * Private method to retrieve the cache value
+   * Public method to retrieve the cache value
    * This needs to be defined by the driver
    *
    * @param string $key
