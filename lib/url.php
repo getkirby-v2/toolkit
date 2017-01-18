@@ -260,10 +260,23 @@ class Url {
 
     if(static::isAbsolute($path)) return $path;
 
-    // build the full url
-    $path = ltrim($path, '/');
+    if(str::endsWith($home, '/')) {
+      $path = url::path($home) . '/' . $path;
+    }
+
     $home = is_null($home) ? static::$home : $home;
 
+    $filter = array(
+      'hash' => '',
+      'query' => '',
+      'params' => [],
+      'fragments' => []
+    );
+
+    $home = static::build($filter, $home);
+    $path = ltrim($path, '/');
+
+    if(empty($home)) $home = '/';
     if(empty($path)) return $home;
 
     return $home == '/' ? '/' . $path : $home . '/' . $path;
