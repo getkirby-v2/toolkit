@@ -99,4 +99,13 @@ class UrlTest extends PHPUnit_Framework_TestCase {
 
   }
 
+  public function testShort() {
+
+    $this->assertEquals(
+      url::short('http://no-www.org'),
+      'no-www.org'
+    );
+
+  }
+
 }

@@ -362,7 +362,7 @@ class Url {
     if($base) $url = static::base($url);
 
     // replace all the nasty stuff from the url
-    $url = str_replace(array('http://', 'https://', 'ftp://', 'www.'), '', $url);
+    $url = str_replace(array('http://www.', 'https://www.', 'ftp://', 'http://', 'https://'), '', $url);
 
     // try to remove the last / after the url
     $url = rtrim($url, '/');
