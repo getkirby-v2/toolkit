@@ -269,8 +269,8 @@ class Url {
     $filter = array(
       'hash' => '',
       'query' => '',
-      'params' => [],
-      'fragments' => []
+      'params' => array(),
+      'fragments' => array()
     );
 
     $home = static::build($filter, $home);
