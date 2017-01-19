@@ -14,4 +14,13 @@
  */
 class L extends Silo {
   public static $data = array();
+
+  public static function get($key = null, $default = null) {
+    $value = parent::get($key, $default);
+    if (is_array($default)) {
+      return str::template($value, $default);
+    }
+
+    return $value;
+  }
 }
