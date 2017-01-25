@@ -260,18 +260,15 @@ class Url {
 
     if(static::isAbsolute($path)) return $path;
 
-    $pathFragments = url::fragments($path);
+    $fragments = url::fragments($path);
 
-    // If the path starts with /, take only the path.
-    if(str::startsWith($path, '/')) {
+    // If the path is not /absolute, take $home in account
+    if(!str::startsWith($path, '/')) {
 
-      $fragments = $pathFragments;
-
-    } else {
-
+      $pathFragments = $fragments;
       $homeFragments = url::fragments($home);
 
-      // If home is not a folder, remove the last part
+      // If $home is not a folder, remove the last part
       if(!str::endsWith($home, '/')) array_pop($homeFragments);
 
       $fragments = $homeFragments;
