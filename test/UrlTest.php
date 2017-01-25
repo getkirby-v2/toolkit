@@ -39,6 +39,11 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     );
 
     $this->assertEquals(
+      url::makeAbsolute('parent-b/subpage', 'https://getkirby.com/page/parent-a'),
+      'https://getkirby.com/page/parent-b/subpage'
+    );
+
+    $this->assertEquals(
       url::makeAbsolute('page', 'http://getkirby.com/?query=weird'),
       'http://getkirby.com/page'
     );

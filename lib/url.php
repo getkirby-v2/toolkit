@@ -119,7 +119,7 @@ class Url {
   public static function fragments($url = null) {
     if(is_null($url)) $url = static::current();
     $path = static::path($url);
-    if(empty($path)) return null;
+    if(empty($path)) return array();
     $frag = array();
     foreach(explode('/', $path) as $part) {
       if(strpos($part, static::paramSeparator()) === false) $frag[] = $part;
@@ -260,8 +260,23 @@ class Url {
 
     if(static::isAbsolute($path)) return $path;
 
-    if(str::endsWith($home, '/')) {
-      $path = url::path($home) . '/' . $path;
+    $pathFragments = url::fragments($path);
+
+    // If the path starts with /, take only the path.
+    if(str::startsWith($path, '/')) {
+
+      $fragments = $pathFragments;
+
+    } else {
+
+      $homeFragments = url::fragments($home);
+
+      // If home is not a folder, remove the last part
+      if(!str::endsWith($home, '/')) array_pop($homeFragments);
+
+      $fragments = $homeFragments;
+
+      foreach($pathFragments as $f) $fragments []= $f;
     }
 
     $home = is_null($home) ? static::$home : $home;
@@ -270,16 +285,14 @@ class Url {
       'hash' => '',
       'query' => '',
       'params' => array(),
-      'fragments' => array()
+      'fragments' => $fragments,
     );
 
     $home = static::build($filter, $home);
-    $path = ltrim($path, '/');
 
     if(empty($home)) $home = '/';
-    if(empty($path)) return $home;
 
-    return $home == '/' ? '/' . $path : $home . '/' . $path;
+    return $home;
 
   }
 
