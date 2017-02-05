@@ -15,19 +15,21 @@ class Header {
 
   // configuration
   public static $codes = array(
-    
+
     // successful
     '_200' => 'OK', 
     '_201' => 'Created', 
     '_202' => 'Accepted',
-    
+
     // redirection
+    '_300' => 'Multiple Choices',
     '_301' => 'Moved Permanently',
     '_302' => 'Found',
     '_303' => 'See Other',
     '_304' => 'Not Modified',
-    '_307' => 'Temporary Redirect', 
-    
+    '_307' => 'Temporary Redirect',
+    '_308' => 'Permanent Redirect',
+
     // client error
     '_400' => 'Bad Request',
     '_401' => 'Unauthorized',
@@ -35,12 +37,17 @@ class Header {
     '_403' => 'Forbidden',
     '_404' => 'Not Found',
     '_405' => 'Method Not Allowed',
-    
+    '_406' => 'Not Acceptable',
+    '_410' => 'Gone',
+    '_418' => 'I\'m a teapot',
+    '_451' => 'Unavailable For Legal Reasons',
+
     // server error
     '_500' => 'Internal Server Error',
     '_501' => 'Not Implemented',
     '_502' => 'Bad Gateway',
-    '_503' => 'Service Unavailable'
+    '_503' => 'Service Unavailable',
+    '_504' => 'Gateway Time-out'
   );
 
   /**
@@ -52,7 +59,7 @@ class Header {
    * @return mixed
    */
   public static function contentType($mime, $charset = 'UTF-8', $send = true) {  
-    if(f::extensionToMime($mime)) $mime = f::extensionToMime($mime);
+    if($found = f::extensionToMime($mime)) $mime = $found;
     $header = 'Content-type: ' . $mime;
     if($charset) $header .= '; charset=' . $charset;
     if(!$send) return $header;
@@ -80,12 +87,19 @@ class Header {
    */
   public static function status($code, $send = true) {
 
-    $codes    = static::$codes;
-    $code     = !array_key_exists('_' . $code, $codes) ? 400 : $code;
-    $message  = isset($codes['_' . $code]) ? $codes['_' . $code] : 'Something went wrong';
+    $codes = static::$codes;
     $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
-    $header   = $protocol . ' ' . $code . ' ' . $message;
 
+    // allow full control over code and message
+    if(is_string($code) && preg_match('/^\d{3} .+$/', $code) === 1) {
+      $message = substr($code, 4);
+      $code = substr($code, 0, 3);
+    } else {
+      $code = !array_key_exists('_' . $code, $codes) ? 500 : $code;
+      $message = isset($codes['_' . $code]) ? $codes['_' . $code] : 'Something went wrong';
+    }
+
+    $header = $protocol . ' ' . $code . ' ' . $message;
     if(!$send) return $header;
 
     // try to send the header
@@ -161,6 +175,16 @@ class Header {
    */
   public static function missing($send = true) {
     return static::status(404, $send);
+  }
+
+  /**
+   * Sends a 410 header
+   *
+   * @param boolean $send
+   * @return mixed
+   */
+  public static function gone($send = true) {
+    return static::status(410, $send);
   }
 
   /**
