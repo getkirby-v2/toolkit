@@ -56,7 +56,7 @@ class Header {
    * @param string $mime
    * @param string $charset
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function contentType($mime, $charset = 'UTF-8', $send = true) {  
     if($found = f::extensionToMime($mime)) $mime = $found;
@@ -72,18 +72,22 @@ class Header {
    * @param string $mime
    * @param string $charset
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function type($mime, $charset = 'UTF-8', $send = true) {
     return static::contentType($mime, $charset, $send);
   }
 
   /**
-   * Sends a status header 
-   * 
-   * @param int $code The HTTP status code
+   * Sends a status header
+   *
+   * Checks $code against a list of known status codes. To bypass this check
+   * and send a custom status code and message, use a $code string formatted
+   * as 3 digits followed by a space and a message, e.g. '999 Custom Status'.
+   *
+   * @param int|string $code The HTTP status code
    * @param boolean $send If set to false the header will be returned instead
-   * @return mixed
+   * @return string|null
    */
   public static function status($code, $send = true) {
 
@@ -91,8 +95,8 @@ class Header {
     $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
 
     // allow full control over code and message
-    if(is_string($code) && preg_match('/^\d{3} .+$/', $code) === 1) {
-      $message = substr($code, 4);
+    if(is_string($code) && preg_match('/^\d{3} \w.+$/', $code) === 1) {
+      $message = substr(rtrim($code), 4);
       $code = substr($code, 0, 3);
     } else {
       $code = !array_key_exists('_' . $code, $codes) ? 500 : $code;
@@ -111,7 +115,7 @@ class Header {
    * Sends a 200 header
    * 
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function success($send = true) {
     return static::status(200, $send);
@@ -121,7 +125,7 @@ class Header {
    * Sends a 201 header
    * 
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function created($send = true) {
     return static::status(201, $send);
@@ -131,7 +135,7 @@ class Header {
    * Sends a 202 header
    * 
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function accepted($send = true) {
     return static::status(202, $send);
@@ -141,7 +145,7 @@ class Header {
    * Sends a 400 header
    * 
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function error($send = true) {
     return static::status(400, $send);
@@ -151,7 +155,7 @@ class Header {
    * Sends a 403 header
    * 
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function forbidden($send = true) {
     return static::status(403, $send);
@@ -161,7 +165,7 @@ class Header {
    * Sends a 404 header
    * 
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function notfound($send = true) {
     return static::status(404, $send);
@@ -171,7 +175,7 @@ class Header {
    * Sends a 404 header
    * 
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function missing($send = true) {
     return static::status(404, $send);
@@ -181,7 +185,7 @@ class Header {
    * Sends a 410 header
    *
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function gone($send = true) {
     return static::status(410, $send);
@@ -191,7 +195,7 @@ class Header {
    * Sends a 500 header
    * 
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function panic($send = true) {
     return static::status(500, $send);
@@ -201,7 +205,7 @@ class Header {
    * Sends a 503 header
    * 
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function unavailable($send = true) {
     return static::status(503, $send);
@@ -211,7 +215,7 @@ class Header {
    * Sends a redirect header
    * 
    * @param boolean $send
-   * @return mixed
+   * @return string|null
    */
   public static function redirect($url, $code = 301, $send = true) {
 
@@ -219,7 +223,7 @@ class Header {
     $location = 'Location:' . $url;
 
     if(!$send) {
-      return $status . PHP_EOL . $location;
+      return $status . "\r\n" . $location;
     }
 
     header($status);
