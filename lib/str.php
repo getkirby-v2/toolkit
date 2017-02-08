@@ -781,7 +781,7 @@ class Str {
   public static function after($string, $char) {
     $pos = strpos($string, $char);
     if($pos !== false) {
-      return static::substr($string, $pos+1);      
+      return static::substr($string, $pos + str::length($char));      
     } else {
       return false;
     }
