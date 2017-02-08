@@ -18,11 +18,11 @@ class Url {
   public static $current = null;
 
   public static function scheme($url = null) {
-    if(is_null($url)) {      
+    if(is_null($url)) {
       if(
         (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) != 'off') ||
-        server::get('SERVER_PORT')            == '443' || 
-        server::get('HTTP_X_FORWARDED_PORT')  == '443' || 
+        server::get('SERVER_PORT')            == '443' ||
+        server::get('HTTP_X_FORWARDED_PORT')  == '443' ||
         server::get('HTTP_X_FORWARDED_PROTO') == 'https' ||
         server::get('HTTP_X_FORWARDED_PROTO') == 'https, http'
       ) {
@@ -90,7 +90,7 @@ class Url {
   /**
    * Returns the correct separator for parameters
    * depending on the operating system
-   * 
+   *
    * @return string
    */
   public static function paramSeparator() {
@@ -346,7 +346,7 @@ class Url {
       $port   = static::port($url);
       $scheme = static::scheme($url);
       $host   = static::host($url) . r(is_int($port), ':' . $port);
-      return r($scheme, $scheme . '://') . $host;      
+      return r($scheme, $scheme . '://') . $host;
     }
   }
 
@@ -399,9 +399,9 @@ class Url {
   }
 
   /**
-   * Returns the URL for document root no 
-   * matter what the path is. 
-   * 
+   * Returns the URL for document root no
+   * matter what the path is.
+   *
    * @return string
    */
   public static function index() {
