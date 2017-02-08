@@ -11,95 +11,51 @@ class UrlTest extends PHPUnit_Framework_TestCase {
 
   }
 
-  public function testMakeAbsoluteWithDomain() {
+  public function testSolveRelative() {
 
     $this->assertEquals(
-      url::makeAbsolute('/', 'http://getkirby.com'),
+      url::solveRelative('http://getkirby.com', '/'),
       'http://getkirby.com'
     );
 
     $this->assertEquals(
-      url::makeAbsolute('http://someothersite.com', 'http://getkirby.com'),
+      url::solveRelative('http://getkirby.com', 'http://someothersite.com'),
       'http://someothersite.com'
     );
 
     $this->assertEquals(
-      url::makeAbsolute('/a/root/path', 'http://getkirby.com'),
+      url::solveRelative('http://getkirby.com', '/a/root/path'),
       'http://getkirby.com/a/root/path'
     );
 
     $this->assertEquals(
-      url::makeAbsolute('page-b', 'http://getkirby.com/page-a'),
+      url::solveRelative('http://getkirby.com/page-a', 'page-b'),
       'http://getkirby.com/page-b'
     );
 
     $this->assertEquals(
-      url::makeAbsolute('child', 'http://getkirby.com/parent/'),
+      url::solveRelative('http://getkirby.com/parent/', 'child'),
       'http://getkirby.com/parent/child'
     );
 
     $this->assertEquals(
-      url::makeAbsolute('parent-b/subpage', 'https://getkirby.com/page/parent-a'),
+      url::solveRelative('https://getkirby.com/page/parent-a', 'parent-b/subpage'),
       'https://getkirby.com/page/parent-b/subpage'
     );
 
     $this->assertEquals(
-      url::makeAbsolute('page', 'http://getkirby.com/?query=weird'),
+      url::solveRelative('http://getkirby.com/?query=weird', 'page'),
       'http://getkirby.com/page'
     );
 
     $this->assertEquals(
-      url::makeAbsolute('page', 'http://getkirby.com/#hash'),
+      url::solveRelative('http://getkirby.com/#hash', 'page'),
       'http://getkirby.com/page'
     );
 
     $this->assertEquals(
-      url::makeAbsolute('page', 'http://getkirby.com/param:kirby'),
+      url::solveRelative('http://getkirby.com/param:kirby', 'page'),
       'http://getkirby.com/page'
-    );
-
-  }
-
-  public function testMakeAbsoluteWithoutDomain() {
-
-    $this->assertEquals(
-      url::makeAbsolute('/'),
-      '/'
-    );
-
-    $this->assertEquals(
-      url::makeAbsolute('http://someothersite.com'),
-      'http://someothersite.com'
-    );
-
-    $this->assertEquals(
-      url::makeAbsolute('/a/root/path'),
-      '/a/root/path'
-    );
-
-    $this->assertEquals(
-      url::makeAbsolute('page-b'),
-      '/page-b'
-    );
-
-    $this->assertEquals(
-      url::makeAbsolute('child', '/parent/'),
-      '/parent/child'
-    );
-
-    $this->assertEquals(
-      url::makeAbsolute('page', '/?query=weird'),
-      '/page'
-    );
-
-    $this->assertEquals(
-      url::makeAbsolute('page', '/#hash'),
-      '/page'
-    );
-
-    $this->assertEquals(
-      url::makeAbsolute('page', '/param:kirby'),
-      '/page'
     );
 
   }

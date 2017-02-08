@@ -250,33 +250,47 @@ class Url {
   }
 
   /**
-   * Convert a relative path into an absolute URL
+   * Convert a path into an absolute URL
    *
    * @param string $path
    * @param string $home
    * @return string
    */
   public static function makeAbsolute($path, $home = null) {
+    if(static::isAbsolute($path)) return $path;
+    // build the full url
+    $path = ltrim($path, '/');
+    $home = is_null($home) ? static::$home : $home;
+    if(empty($path)) return $home;
+    return $home == '/' ? '/' . $path : $home . '/' . $path;
+  }
+
+  /**
+   * Solves an URL relative to another URL
+   *
+   * @param string $base
+   * @param string $path
+   * @return string
+   */
+  public static function solveRelative($base, $path) {
 
     if(static::isAbsolute($path)) return $path;
 
-    $fragments = url::fragments($path);
+    $fragments = static::fragments($path);
 
     // If the path is not /absolute, take $home in account
     if(!str::startsWith($path, '/')) {
 
       $pathFragments = $fragments;
-      $homeFragments = url::fragments($home);
+      $baseFragments = static::fragments($base);
 
-      // If $home is not a folder, remove the last part
-      if(!str::endsWith($home, '/')) array_pop($homeFragments);
+      // If $base is not a folder, remove the last part
+      if(!str::endsWith($base, '/')) array_pop($baseFragments);
 
-      $fragments = $homeFragments;
+      $fragments = $baseFragments;
 
       foreach($pathFragments as $f) $fragments []= $f;
     }
-
-    $home = is_null($home) ? static::$home : $home;
 
     $filter = array(
       'hash' => '',
@@ -285,11 +299,7 @@ class Url {
       'fragments' => $fragments,
     );
 
-    $home = static::build($filter, $home);
-
-    if(empty($home)) $home = '/';
-
-    return $home;
+    return static::build($filter, $base);
 
   }
 
