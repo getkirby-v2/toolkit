@@ -23,7 +23,18 @@ class StrTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testParse() {
-    // no test yet
+    $array = array(
+      'test' => array(
+        'cool' => 'nice'
+      ),
+      'super' => 'genious'
+    );
+
+    $this->assertEquals(str::parse('<xml><test><cool>nice</cool></test><super>genious</super></xml>', 'xml'), $array);
+
+    $this->assertEquals(str::parse('{"test":{"cool":"nice"},"super":"genious"}'), $array);
+
+    $this->assertEquals(str::parse('test[cool]=nice&super=genious', 'form'), $array);
   }
 
   public function testEncode() {

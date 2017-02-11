@@ -188,6 +188,7 @@ class Str {
    * - url
    * - query
    * - php
+   * - form
    *
    * <code>
    *
@@ -223,6 +224,9 @@ class Str {
         return (array)@parse_url($string);
       case 'php':
         return @unserialize($string);
+      case 'form':
+        @parse_str($string, $result);
+        return $result;
       default:
         return $string;
     }
