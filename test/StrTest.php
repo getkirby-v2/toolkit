@@ -34,7 +34,7 @@ class StrTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals(str::parse('{"test":{"cool":"nice"},"super":"genious"}'), $array);
 
-    $this->assertEquals(str::parse('test[cool]=nice&super=genious', 'form'), $array);
+    $this->assertEquals(str::parse('test[cool]=nice&super=genious', 'query'), $array);
   }
 
   public function testEncode() {
