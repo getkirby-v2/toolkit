@@ -165,16 +165,12 @@ class Thumb extends Obj {
   public function settingsIdentifier() {
 
     // build the settings string
-    return implode('-', array(
-      ($this->options['width'])   ? $this->options['width']   : 0,
-      ($this->options['height'])  ? $this->options['height']  : 0,
-      ($this->options['upscale']) ? $this->options['upscale'] : 0,
-      ($this->options['crop'])    ? $this->options['crop']    : 0,
-       $this->options['blur'],
-       $this->options['grayscale'],
-       $this->options['quality']
-    ));
+    $keys = $this->options;
 
+    // skip keys that can't be converted to strings
+    unset($keys['destination']);
+ 
+    return implode('-', array_keys($keys)) . implode('-', $keys);
   }
 
   /**
