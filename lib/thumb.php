@@ -33,7 +33,8 @@ class Thumb extends Obj {
     'grayscale'   => false,
     'overwrite'   => false,
     'autoOrient'  => false,
-    'interlace'   => false
+    'interlace'   => false,
+    'strip'       => true
   );
 
   public $source      = null;
@@ -88,7 +89,7 @@ class Thumb extends Obj {
 
   /**
    * Build the destination object
-   * 
+   *
    * @return Obj
    */
   public function destination() {
@@ -97,7 +98,7 @@ class Thumb extends Obj {
       return call($this->options['destination'], $this);
     } else {
 
-      $destination = new Obj();      
+      $destination = new Obj();
       $safeName    = f::safeName($this->source->name());
 
       $destination->filename = str::template($this->options['filename'], array(
@@ -278,7 +279,10 @@ thumb::$drivers['im'] = function($thumb) {
 
   $command[] = isset($thumb->options['bin']) ? $thumb->options['bin'] : 'convert';
   $command[] = '"' . $thumb->source->root() . '"';
-  $command[] = '-strip';
+
+  if($this->options['strip']) {
+    $command[] = '-strip';
+  }
 
   if($thumb->options['interlace']) {
     $command[] = '-interlace line';
@@ -351,7 +355,7 @@ thumb::$drivers['gd'] = function($thumb) {
 
     if($thumb->options['autoOrient']) {
       $img->auto_orient();
-    }    
+    }
 
     @$img->save($thumb->destination->root);
   } catch(Exception $e) {
