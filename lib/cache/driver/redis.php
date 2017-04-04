@@ -16,11 +16,11 @@ use Predis\Client;
  */
 class Redis extends Driver {
 
-  // store for the memache connection
+  // store for the redis connection
   protected $connection = null;
 
   /**
-   * Set all parameters which are needed for the memcache client
+   * Set all parameters which are needed for the redis client
    * see defaults for available parameters
    *
    * @param array $params
