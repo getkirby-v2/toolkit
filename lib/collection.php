@@ -328,8 +328,10 @@ class Collection extends I implements Countable {
     $collection = clone $this;
     $array      = $collection->data;
     $params     = array();
+    
+    $args = array_filter($args);
 
-    if(empty($array)) return $collection;
+    if(empty($array) || empty($args)) return $collection;
 
     foreach($args as $i => $param) {
       if(is_string($param)) {
