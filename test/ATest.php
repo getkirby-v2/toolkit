@@ -9,7 +9,9 @@ class ATest extends PHPUnit_Framework_TestCase {
     $this->user = array(
       'username' => 'testuser',
       'password' => 'testpassword',
-      'email'    => 'test@user.com'
+      'email'    => 'test@user.com',
+      'image'    => null,
+      'logins'   => 0
     );
 
     $this->users = array();
@@ -97,11 +99,11 @@ class ATest extends PHPUnit_Framework_TestCase {
   public function testMissing() {
 
     $user = $this->user;
-    $required = array('username', 'password', 'website');
+    $required = array('username', 'password', 'website', 'image', 'logins');
 
     $missing = a::missing($user, $required);
 
-    $this->assertEquals(array('website'), $missing);
+    $this->assertEquals(array('website', 'image'), $missing);
 
   }
 

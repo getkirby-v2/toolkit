@@ -350,7 +350,7 @@ class A {
   public static function missing($array, $required = []) {
     $missing = [];
     foreach($required as $r) {
-      if(!isset($array[$r]) || $array[$r] === null) $missing[] = $r;
+      if(!isset($array[$r])) $missing[] = $r;
     }
     return $missing;
   }
