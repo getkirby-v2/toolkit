@@ -156,7 +156,7 @@ class Remote {
     if(!empty($parts[0]) && !empty($parts[1])) {
       $key = array_shift($parts);
 
-      if (empty($this->headers[$key])) {
+      if (!isset($this->headers[$key])) {
         $this->headers[$key] = implode(':', $parts);
       } elseif (is_array($this->headers[$key])) {
           $this->headers[$key][] = implode(':', $parts);
