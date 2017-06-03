@@ -3,8 +3,11 @@
 require_once('lib/bootstrap.php');
 
 class ATest extends PHPUnit_Framework_TestCase {
+
+  protected $user;
+  protected $users;
   
-  public function __construct() {
+  protected function setUp() {
 
     $this->user = array(
       'username' => 'testuser',
