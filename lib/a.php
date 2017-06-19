@@ -447,7 +447,7 @@ class A {
    * @return  int    The average value
    */
   public static function average($array, $decimals = 0) {
-    return round(array_sum($array), $decimals) / sizeof($array);
+    return round((array_sum($array) / sizeof($array)), $decimals);
   }
 
   /**
