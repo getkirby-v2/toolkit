@@ -240,13 +240,14 @@ function csrf($check = null) {
   s::start();
 
   if(is_null($check)) {
-    $token = str::random(64);
-    s::set('csrf', $token);
+    if(!s::get('csrf')) {
+      $token = str::random(64);
+      s::set('csrf', $token);
+    }
     return $token;
+  } else {
+    return $check === s::get('csrf');
   }
-
-  return ($check === s::get('csrf')) ? true : false;
-
 }
 
 /**
