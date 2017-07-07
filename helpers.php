@@ -211,9 +211,11 @@ function memory() {
  */
 function size($value) {
   if(is_numeric($value)) return $value;
-  if(is_string($value))  return str::length(trim($value));
+  if(is_string($value))  {
+    if(f::exists($value))  return f::size($value) / 1024;
+    return str::length(trim($value));
+  }
   if(is_array($value))   return count($value);
-  if(f::exists($value))  return f::size($value) / 1024;
 }
 
 /**
