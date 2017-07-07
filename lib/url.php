@@ -359,8 +359,8 @@ class Url {
   }
 
   /**
-   * Tries to convert an internationalized domain name to
-   * the human-readable UTF8 representation
+   * Tries to convert a URL with an internationalized domain
+   * name to the human-readable UTF8 representation
    * Requires the intl PHP extension
    *
    * @param string $url
