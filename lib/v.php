@@ -133,5 +133,40 @@ v::$validators = array(
     // In search for the perfect regular expression: https://mathiasbynens.be/demo/url-regex
     $regex = '_^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]+-?)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]+-?)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,})))(?::\d{2,5})?(?:/[^\s]*)?$_iu';
     return preg_match($regex, $value) !== 0;
-  }
+  },
+  'file' => function ($value) {
+    return is_array($value) && array_key_exists('tmp_name', $value) && is_uploaded_file($value['tmp_name']);
+  },
+  'filesize' => function ($value, $size) {
+    // $size is in kb and $value['size'] is in byte, so multiply by 1000
+    return is_array($value) && array_key_exists('size', $value) && $value['size'] <= $size * 1000;
+  },
+  'mime' => function ($value, $allowed) {
+    if (is_string($value)) {
+      $name = $value;
+    } elseif (is_array($value) && array_key_exists('tmp_name', $value)) {
+      // This is for uploaded files from $_FILES
+      $name = $value['tmp_name'];
+    }
+
+    if (isset($name)) {
+      return in_array(f::mime($name), $allowed);
+    }
+
+    return false;
+  },
+  'image' => function ($value) {
+    if (is_string($value)) {
+      $name = $value;
+    } elseif (is_array($value) && array_key_exists('tmp_name', $value)) {
+      // This is for uploaded files from $_FILES
+      $name = $value['tmp_name'];
+    }
+
+    if (isset($name)) {
+      return f::type($name) === 'image';
+    }
+
+    return false;
+  },
 );

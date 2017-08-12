@@ -3,7 +3,7 @@
 require_once('lib/bootstrap.php');
 
 class VTest extends PHPUnit_Framework_TestCase {
-  
+
   public function testMatch() {
 
     $value = 'super-09';
@@ -143,6 +143,33 @@ class VTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue(v::size('super', 5));
     $this->assertTrue(v::size('1234', 1234));
     $this->assertTrue(v::size(range(0,9), 10));
+  }
+
+  public function testFilesize() {
+    $this->assertTrue(v::filesize(['size' => 9000], 9));
+    $this->assertFalse(v::filesize(['size' => 9000], 8));
+    $this->assertFalse(v::filesize([], 8));
+    $this->assertFalse(v::filesize('asdf', 8));
+  }
+
+  public function testMime() {
+    $path = sys_get_temp_dir().'/kirby_test_mime';
+    file_put_contents($path, 'sometext');
+    $this->assertTrue(v::mime(['tmp_name' => $path], ['text/plain']));
+    $this->assertTrue(v::mime($path, ['text/plain']));
+    $this->assertFalse(v::mime($path, ['image/png']));
+    unlink($path);
+  }
+
+  public function testImage()
+  {
+    $path = sys_get_temp_dir().'/kirby_test_image';
+    file_put_contents($path, 'sometext');
+    $this->assertFalse(v::image($path));
+    // This is a GIF: http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever
+    file_put_contents($path, base64_decode('R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='));
+    $this->assertTrue(v::image($path));
+    unlink($path);
   }
 
 }
