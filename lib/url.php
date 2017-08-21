@@ -327,7 +327,11 @@ class Url {
     if(is_null($url)) {
       $port = server::get('SERVER_PORT');
       $port = in_array($port, array(80, 443)) ? null : $port;
-      return static::scheme() . '://' . server::get('SERVER_NAME', server::get('SERVER_ADDR')) . r($port, ':' . $port);
+      $host = server::get('SERVER_NAME', server::get('SERVER_ADDR'));
+      if ($host === '_') {
+        $host = static::host(server::get('HTTP_HOST', $host));
+      }
+      return static::scheme() . '://' . $host . r($port, ':' . $port);
     } else {
       $port   = static::port($url);
       $scheme = static::scheme($url);
