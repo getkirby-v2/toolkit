@@ -445,7 +445,7 @@ class Media {
     if(isset($this->cache['dimensions'])) return $this->cache['dimensions'];
 
     if(in_array($this->mime(), array('image/jpeg', 'image/png', 'image/gif'))) {
-      $size   = (array)getimagesize($this->root);
+      $size   = $this->imagesize();
       $width  = a::get($size, 0, 0);
       $height = a::get($size, 1, 0);
     } else if($this->extension() == 'svg') {
