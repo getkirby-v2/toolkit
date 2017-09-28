@@ -402,7 +402,7 @@ class Media {
 
   /**
    * Unzip the current file to the given directory
-   * 
+   *
    * @param string $dir
    * @return boolean
    */
@@ -432,7 +432,8 @@ class Media {
    * @return array
    */
   public function imagesize() {
-    return (array)getimagesize($this->root);
+    $image = new Fastimage($this->root);
+    return = (array) $image->getSize();
   }
 
   /**
@@ -446,13 +447,13 @@ class Media {
 
     if(in_array($this->mime(), array('image/jpeg', 'image/png', 'image/gif'))) {
       $size   = $this->imagesize();
-      $width  = a::get($size, 0, 0);
-      $height = a::get($size, 1, 0);
+      $width  = a::get($size, 'width', 0);
+      $height = a::get($size, 'height', 0);
     } else if($this->extension() == 'svg') {
       $content = $this->read();
       $xml     = simplexml_load_string($content);
-      $attr    = $xml->attributes();  
-      $width   = floatval($attr->width); 
+      $attr    = $xml->attributes();
+      $width   = floatval($attr->width);
       $height  = floatval($attr->height);
       if($width == 0 or $height == 0 and !empty($attr->viewBox)) {
         $box    = str::split($attr->viewBox, ' ');
@@ -547,7 +548,7 @@ class Media {
     if(is_string($attr) || (is_object($attr) && method_exists($attr, '__toString'))) {
       $img->attr('alt', (string)$attr);
     } else if(is_array($attr)) {
-      $img->attr($attr);      
+      $img->attr($attr);
     }
 
     return $img;
@@ -556,7 +557,7 @@ class Media {
 
   /**
    * Scales the image if possible
-   * 
+   *
    * @param int $width
    * @param mixed $height
    * @param mixed $quality
@@ -577,7 +578,7 @@ class Media {
 
   /**
    * Scales and crops the image if possible
-   * 
+   *
    * @param int $width
    * @param mixed $height
    * @param mixed $quality
@@ -597,10 +598,10 @@ class Media {
   }
 
   /**
-   * Converts the media object to a 
+   * Converts the media object to a
    * plain PHP array
-   * 
-   * @param closure $callback 
+   *
+   * @param closure $callback
    * @return array
    */
   public function toArray($callback = null) {
@@ -635,9 +636,9 @@ class Media {
   }
 
   /**
-   * Converts the entire file array into 
+   * Converts the entire file array into
    * a json string
-   * 
+   *
    * @param closure $callback Filter callback
    * @return string
    */
@@ -657,7 +658,7 @@ class Media {
 
   /**
    * Improved var_dump() output
-   * 
+   *
    * @return array
    */
   public function __debuginfo() {

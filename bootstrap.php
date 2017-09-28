@@ -13,7 +13,7 @@ function load($classmap, $base = null) {
     $class = strtolower($class);
     if(!isset($classmap[$class])) return false;
     if($base) {
-      include($base . DS . $classmap[$class]);      
+      include($base . DS . $classmap[$class]);
     } else {
       include($classmap[$class]);
     }
@@ -90,6 +90,7 @@ load(array(
   'spyc'                        => __DIR__ . DS . 'vendors' . DS . 'yaml' . DS . 'yaml.php',
   'abeautifulsite\\simpleimage' => __DIR__ . DS . 'vendors' . DS . 'abeautifulsite' . DS . 'SimpleImage.php',
   'mimereader'                  => __DIR__ . DS . 'vendors' . DS . 'mimereader' . DS . 'mimereader.php',
+  'fastimage'                   => __DIR__ . DS . 'vendors' . DS . 'fastimage' . DS . 'Fastimage.php',
 
 ));
 
