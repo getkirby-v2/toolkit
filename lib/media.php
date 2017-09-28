@@ -432,6 +432,8 @@ class Media {
    * @return array
    */
   public function imagesize() {
+    var_dump('hi');
+    exit;
     $image = new Fastimage($this->root);
     return (array) $image->getSize();
   }
@@ -447,8 +449,8 @@ class Media {
 
     if(in_array($this->mime(), array('image/jpeg', 'image/png', 'image/gif'))) {
       $size   = $this->imagesize();
-      $width  = a::get($size, 'width', 0);
-      $height = a::get($size, 'height', 0);
+      $width  = a::get($size, 0, 0);
+      $height = a::get($size, 1, 0);
     } else if($this->extension() == 'svg') {
       $content = $this->read();
       $xml     = simplexml_load_string($content);
