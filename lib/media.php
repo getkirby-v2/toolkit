@@ -433,7 +433,7 @@ class Media {
    */
   public function imagesize() {
     $image = new Fastimage($this->root);
-    return = (array) $image->getSize();
+    return (array) $image->getSize();
   }
 
   /**
