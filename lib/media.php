@@ -432,8 +432,6 @@ class Media {
    * @return array
    */
   public function imagesize() {
-    var_dump('hi');
-    exit;
     $image = new Fastimage($this->root);
     return (array) $image->getSize();
   }
