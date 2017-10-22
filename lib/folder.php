@@ -259,6 +259,7 @@ class Folder {
   public function copy($to) {
 
     // Get content before destination directory is made
+    // (prevents endless recursion)
     $content = $this->content();
 
     // Make destination directory
