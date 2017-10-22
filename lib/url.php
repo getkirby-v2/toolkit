@@ -83,7 +83,7 @@ class Url {
     // to trick the url parser. It's a bit hacky but it works
     if(!static::isAbsolute($url)) $url = 'http://0.0.0.0/' . $url;
 
-    return trim(parse_url($url, PHP_URL_PATH), '/');
+    return ltrim(parse_url($url, PHP_URL_PATH), '/');
 
   }
 
