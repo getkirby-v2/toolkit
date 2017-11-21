@@ -248,6 +248,28 @@ class R {
   }
 
   /**
+   * Checks whether the method is cacheable or not
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+   *
+   * @return bool
+   */
+  public function isMethodCacheable() {
+    return in_array(static::method(), ['GET', 'HEAD']);
+  }
+
+  /**
+   * Checks whether the method is safe or not
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.1
+   *
+   * @return bool
+   */
+  public function isMethodSafe() {
+    return in_array(static::method(), ['GET', 'HEAD', 'OPTIONS', 'TRACE']);
+  }
+
+  /**
    * Returns the referer if available
    *
    * <code>
