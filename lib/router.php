@@ -24,12 +24,13 @@ class Router {
 
   // all registered routes
   protected $routes = array(
-    'GET'    => array(),
-    'POST'   => array(),
-    'HEAD'   => array(),
-    'PUT'    => array(),
-    'PATCH'  => array(),
-    'DELETE' => array()
+    'GET'     => array(),
+    'POST'    => array(),
+    'HEAD'    => array(),
+    'PUT'     => array(),
+    'PATCH'   => array(),
+    'DELETE'  => array(),
+    'OPTIONS' => array()
   );
 
   // The wildcard patterns supported by the router.
