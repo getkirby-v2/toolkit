@@ -35,11 +35,4 @@ class HTMLTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected, html::img('myimage.jpg', array('width' => 100, 'height' => 200)));
   }
 
-  /**
-   * @expectedException PHPUnit\Framework\Error\Deprecated
-   */
-  public function testShiv() {
-    html::shiv();
-  }
-
 }
