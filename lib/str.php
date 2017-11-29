@@ -611,6 +611,10 @@ class Str {
   public static function convert($string, $targetEncoding, $sourceEncoding = null) {
     // detect the source encoding if not passed as third argument
     if(is_null($sourceEncoding)) $sourceEncoding = static::encoding($string);
+
+    // no need to convert if the target encoding is the same
+    if(strtolower($sourceEncoding) === strtolower($targetEncoding)) return $string;
+
     return iconv($sourceEncoding, $targetEncoding, $string);
   }
 
