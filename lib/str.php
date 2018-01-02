@@ -376,7 +376,7 @@ class Str {
    * @return string
    */
   public static function widont($string = '') {
-    return preg_replace_callback('|([^\s])\s+([^\s]+)\s*$|', function($matches) {
+    return preg_replace_callback('|([^\s])\s+([^\s]+)\s*$|u', function($matches) {
       if(str::contains($matches[2], '-')) {
         return $matches[1] . ' ' . str_replace('-', '&#8209;', $matches[2]);
       } else {
