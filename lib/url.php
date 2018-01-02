@@ -264,8 +264,11 @@ class Url {
    * @return boolean
    */
   public static function isAbsolute($url) {
-    // don't convert absolute urls
-    return (str::startsWith($url, 'http://') || str::startsWith($url, 'https://') || str::startsWith($url, '//'));
+    // matches the following groups of URLs:
+    //  //example.com/uri
+    //  http://example.com/uri, https://example.com/uri, ftp://example.com/uri
+    //  mailto:example@example.com
+    return preg_match('!^(//|[a-z0-9+-.]+://|mailto:)!i', $url) === 1;
   }
 
   /**
