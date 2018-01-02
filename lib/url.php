@@ -380,22 +380,21 @@ class Url {
   /**
    * Tries to convert a URL with an internationalized domain
    * name to the human-readable UTF8 representation
-   * Requires the intl PHP extension
    *
    * @param string $url
    * @return string
    */
   public static function idn($url) {
 
-    if(!function_exists('idn_to_utf8')) return $url;
-
     // disassemble the URL, convert the domain name and reassemble
-    $variant = defined('INTL_IDNA_VARIANT_UTS46') ? INTL_IDNA_VARIANT_UTS46 : INTL_IDNA_VARIANT_2003;
-    $host = idn_to_utf8(static::host($url), 0, $variant);
-    if($host === false) return $url;
-    $url  = static::build(['host' => $host], $url);
-
-    return $url;
+    $punycode = new TrueBV\Punycode();
+    try {
+      $host = $punycode->decode(static::host($url));
+      return static::build(['host' => $host], $url);
+    } catch(Exception $e) {
+      // on error don't do anything
+      return $url;
+    }
 
   }
 
@@ -408,15 +407,16 @@ class Url {
    */
   public static function unIdn($url) {
 
-    if(!function_exists('idn_to_ascii')) return $url;
-
     // disassemble the URL, convert the domain name and reassemble
-    $variant = defined('INTL_IDNA_VARIANT_UTS46') ? INTL_IDNA_VARIANT_UTS46 : INTL_IDNA_VARIANT_2003;
-    $host = idn_to_ascii(static::host($url), 0, $variant);
-    if($host === false) return $url;
-    $url  = static::build(['host' => $host], $url);
+    $punycode = new TrueBV\Punycode();
+    try {
+      $host = $punycode->encode(static::host($url));
+      return static::build(['host' => $host], $url);
+    } catch(Exception $e) {
+      // on error don't do anything
+      return $url;
+    }
 
-    return $url;
   }
 
   /**
