@@ -41,16 +41,8 @@ class ATest extends PHPUnit_Framework_TestCase {
 
   }
 
-  public function testShow() {
-    // not really testable
-  }
-
   public function testJson() {
     $this->assertEquals(json_encode($this->user), a::json($this->user));
-  }
-
-  public function testXml() {
-    // to be tested in the x class
   }
 
   public function testExtract() {

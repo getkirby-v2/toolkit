@@ -37,14 +37,6 @@ class StrTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(str::parse('test[cool]=nice&super=genious', 'query'), $array);
   }
 
-  public function testEncode() {
-    // no test yet
-  }
-
-  public function testEmail() {
-    // no test yet
-  }
-
   public function testLink() {
 
     // without text
@@ -69,10 +61,6 @@ class StrTest extends PHPUnit_Framework_TestCase {
     // with different ellipsis character
     $this->assertEquals('Super---', str::short($this->sample, 5, '---'));
 
-  }
-
-  public function testExcerpt() {
-    // no test yet
   }
 
   public function testSubstr() {
@@ -112,10 +100,6 @@ class StrTest extends PHPUnit_Framework_TestCase {
     // check for something which isn't there
     $this->assertFalse(str::contains($this->sample, 'Peter'));
 
-  }
-
-  public function testMatch() {
-    // no test yet
   }
 
   public function testRandom() {
@@ -232,10 +216,6 @@ class StrTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals($this->sample, str::utf8($this->sample));
 
-  }
-
-  public function testStripslashes() {
-    // no test yet
   }
 
   public function testBefore() {
