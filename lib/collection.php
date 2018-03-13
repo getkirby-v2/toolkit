@@ -238,7 +238,7 @@ class Collection extends I implements Countable {
   /**
    * Filter the elements in the array by a callback function
    *
-   * @param  func $callback the callback function
+   * @param  callable $callback the callback function
    * @return Collection
    */
   public function filter($callback) {
