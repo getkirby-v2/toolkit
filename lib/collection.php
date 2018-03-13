@@ -408,7 +408,7 @@ class Collection extends I implements Countable {
   /**
    * Map a function to each item in the collection
    *
-   * @param function $callback
+   * @param callable $callback
    * @return Collection
    */
   public function map($callback) {
