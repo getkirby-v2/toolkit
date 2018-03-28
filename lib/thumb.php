@@ -17,23 +17,24 @@ class Thumb extends Obj {
   public static $drivers = array();
 
   public static $defaults = array(
-    'destination' => false,
-    'filename'    => '{safeName}-{hash}.{extension}',
-    'url'         => '/thumbs',
-    'root'        => '/thumbs',
-    'driver'      => 'im',
-    'memory'      => '128M',
-    'quality'     => 90,
-    'blur'        => false,
-    'blurpx'      => 10,
-    'width'       => null,
-    'height'      => null,
-    'upscale'     => false,
-    'crop'        => false,
-    'grayscale'   => false,
-    'overwrite'   => false,
-    'autoOrient'  => false,
-    'interlace'   => false
+    'destination'  => false,
+    'filename'     => '{safeName}-{hash}.{extension}',
+    'url'          => '/thumbs',
+    'root'         => '/thumbs',
+    'driver'       => 'im',
+    'memory'       => '128M',
+    'quality'      => 90,
+    'blur'         => false,
+    'blurpx'       => 10,
+    'width'        => null,
+    'height'       => null,
+    'upscale'      => false,
+    'crop'         => false,
+    'grayscale'    => false,
+    'overwrite'    => false,
+    'autoOrient'   => false,
+    'interlace'    => false,
+    'brightness'   => false
   );
 
   public $source      = null;
@@ -88,7 +89,7 @@ class Thumb extends Obj {
 
   /**
    * Build the destination object
-   * 
+   *
    * @return Obj
    */
   public function destination() {
@@ -97,7 +98,7 @@ class Thumb extends Obj {
       return call($this->options['destination'], $this);
     } else {
 
-      $destination = new Obj();      
+      $destination = new Obj();
       $safeName    = f::safeName($this->source->name());
 
       $destination->filename = str::template($this->options['filename'], array(
@@ -172,6 +173,7 @@ class Thumb extends Obj {
       ($this->options['crop'])    ? $this->options['crop']    : 0,
        $this->options['blur'],
        $this->options['grayscale'],
+       $this->options['brightness'],
        $this->options['quality']
     ));
 
@@ -349,9 +351,13 @@ thumb::$drivers['gd'] = function($thumb) {
       $img->blur('gaussian', $thumb->options['blurpx']);
     }
 
+    if ($thumb->options['brightness']) {
+      $img->brightness($thumb->options['brightness']);
+    }
+
     if($thumb->options['autoOrient']) {
       $img->auto_orient();
-    }    
+    }
 
     @$img->save($thumb->destination->root);
   } catch(Exception $e) {
