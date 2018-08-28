@@ -103,14 +103,16 @@ function ecco($condition, $value, $alternative = null) {
  * @param boolean $echo
  * @return string
  */
-function dump($variable, $echo = true) {
-  if(r::cli()) {
-    $output = print_r($variable, true) . PHP_EOL;
-  } else {
-    $output = '<pre>' . print_r($variable, true) . '</pre>';
+if (!function_exists('dump')) {
+  function dump($variable, $echo = true) {
+    if(r::cli()) {
+      $output = print_r($variable, true) . PHP_EOL;
+    } else {
+      $output = '<pre>' . print_r($variable, true) . '</pre>';
+    }
+    if($echo === true) echo $output;
+    return $output;
   }
-  if($echo === true) echo $output;
-  return $output;
 }
 
 /**
