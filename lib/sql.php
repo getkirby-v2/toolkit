@@ -106,7 +106,7 @@ sql::registerMethod('generateBindingName', function($sql, $label) {
   // make sure that the binding name is valid to prevent injections
   if(!preg_match('/^[a-z0-9]+$/', $label)) $label = 'invalid';
   
-  return ':' . $label . '_' . uniqid();
+  return str_replace('.', '', uniqid(':' . $label . '_', true));
 });
 
 /**
