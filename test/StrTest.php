@@ -311,24 +311,18 @@ class StrTest extends PHPUnit_Framework_TestCase {
 
   }
 
-  /**
-   * @expectedException Error
-   */
   public function testReplaceInvalid1() {
+    $this->expectException('Error');
     str::replace('some string', 'string', ['array'], 1);
   }
 
-  /**
-   * @expectedException Error
-   */
   public function testReplaceInvalid2() {
+    $this->expectException('Error');
     str::replace('some string', 'string', 'other string', 'some invalid string as limit');
   }
 
-  /**
-   * @expectedException Error
-   */
   public function testReplaceInvalid3() {
+    $this->expectException('Error');
     str::replace('some string', ['some', 'string'], 'other string', [1, 'string']);
   }
 
@@ -371,10 +365,8 @@ class StrTest extends PHPUnit_Framework_TestCase {
 
   }
 
-  /**
-   * @expectedException Error
-   */
   public function testMakeReplacementsInvalid() {
+    $this->expectException('Error');
     str::makeReplacements('string', ['array'], 1);
   }
 
@@ -409,10 +401,8 @@ class StrTest extends PHPUnit_Framework_TestCase {
 
   }
 
-  /**
-   * @expectedException Error
-   */
   public function testReplaceReplacementsInvalid() {
+    $this->expectException('Error');
     str::replaceReplacements('some string', [
       [
         'search'  => 'some',
