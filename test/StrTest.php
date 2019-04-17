@@ -107,7 +107,7 @@ class StrTest extends PHPUnit_Framework_TestCase {
     $length = 200;
 
     $this->assertRegexp("/^[[:alnum:]]+$/", str::random());
-    $this->assertInternalType('string', str::random());
+    $this->assertTrue(is_string(str::random()));
     $this->assertEquals($length, strlen(str::random($length)));
 
     $this->assertRegexp("/^[[:alpha:]]+$/", str::random($length, 'alpha'));
@@ -126,7 +126,7 @@ class StrTest extends PHPUnit_Framework_TestCase {
     $length = 200;
 
     $this->assertRegexp("/^[[:alnum:]]+$/", str::quickRandom());
-    $this->assertInternalType('string', str::quickRandom());
+    $this->assertTrue(is_string(str::quickRandom()));
     $this->assertEquals($length, strlen(str::quickRandom($length)));
 
     $this->assertRegexp("/^[[:alpha:]]+$/", str::quickRandom($length, 'alpha'));
