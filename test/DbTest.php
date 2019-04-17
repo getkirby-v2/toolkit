@@ -56,7 +56,7 @@ class DbTest extends PHPUnit_Framework_TestCase {
 
   }
 
-  public static function tearDownAfterClass() {
+  public static function tearDownAfterClass(): void {
     // kill the database
     f::remove(self::$database);
   }
